@@ -61,19 +61,19 @@ timeline: 2-days
   - Test with sample users
 
 ### Phase 4: Evaluation (3 hours)
-- [ ] **W1-D2-P4-T1**: Implement ranking metrics with scikit-learn
-  - Explore scikit-learn ranking metrics (top_k_accuracy_score)
-  - Implement custom Precision@K calculation function
-  - Implement custom Recall@K calculation function
-  - Implement NDCG@K (Normalized Discounted Cumulative Gain) calculation
-  - Test metrics with simple known cases
+- [ ] **W1-D2-P4-T1**: Implement ranking metrics (direct implementation)
+  - WARNING: scikit-learn has NO NDCG@K function; `top_k_accuracy_score` measures multiclass label ranking, NOT a substitute for P@K/R@K/NDCG@K.
+  - Implement Precision@K directly (assert known cases)
+  - Implement Recall@K directly (assert known cases)
+  - Implement NDCG@K directly (assert known cases)
+  - Evaluation MUST exclude each user's already-rated training items before scoring
   - Document metric formulas and implementation details
 
 - [ ] **W1-D2-P4-T2**: Run evaluation and document results
-  - Generate recommendations for test users
+  - Generate recommendations for test users (excluding already-rated items)
   - Calculate P@K, R@K, NDCG@K for K=5,10,20
   - Document baseline performance
-  - Compare against expected performance floor
+  - Compare against expected performance floor (e.g., random baseline Precision@K ~ K/num_items)
 
 ### Phase 5: Testing & Documentation (2 hours)
 - [ ] **W1-D2-P5-T1**: Implement basic automated tests
@@ -109,6 +109,13 @@ timeline: 2-days
   - Note challenges faced
   - Record learnings
   - Prepare for portal submission
+
+### Phase 6: Cold-Start Handling (Planning)
+- [ ] **W1-D2-P6-T1**: Document + plan cold-start handling
+  - Project theme = "Hybrid Recommendation Engine with Cold-Start Handling" (must be addressed, not only noted)
+  - New-user fallback: popularity/demographic prior until enough ratings accrue
+  - New-item fallback: recency/genre prior (66.4% of items have <=5 ratings)
+  - Record strategy + evaluation gap; full mitigation deferred to later weeks (master spec specs/recolab/)
 
 ## Portal Submission Checklist
 - [ ] Repository pushed to GitHub

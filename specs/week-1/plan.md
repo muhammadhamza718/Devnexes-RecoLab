@@ -33,7 +33,7 @@ timeline: 2-days
 ### Phase 1: Quick Setup (Day 1 - 4 hours)
 - Download MovieLens dataset from GroupLens official source
 - Initialize repository with modern git practices
-- Set up Python 3.12+ environment with virtual environment
+- Set up Python 3.14 environment with virtual environment
 - Create requirements.txt with latest stable versions
 - Create basic README with GroupLens citation
 
@@ -51,7 +51,7 @@ timeline: 2-days
 - Document baseline methodology
 
 ### Phase 4: Evaluation (Day 2 - 3 hours)
-- Implement ranking metrics using scikit-learn (top_k_accuracy_score)
+- Implement ranking metrics directly: Precision@K, Recall@K, NDCG@K (hand-implemented; scikit-learn has NO NDCG@K, and top_k_accuracy_score is for multiclass label ranking, not a substitute)
 - Implement custom Precision@K calculation function
 - Implement custom Recall@K calculation function
 - Implement NDCG@K (Normalized Discounted Cumulative Gain) calculation
@@ -65,6 +65,13 @@ timeline: 2-days
 - Update README with all required sections per constitution
 - Create essential learning documentation
 - Prepare for portal submission with required artifacts
+
+### Phase 6: Cold-Start Handling (Planning)
+- Project theme is "Hybrid Recommendation Engine with Cold-Start Handling" — this must be addressed, not only noted.
+- Document limitations (sparsity 98.3%, 66.4% cold items) AND outline the handling approach:
+  - New-user fallback: popularity-based / demographic prior until enough ratings accrue.
+  - New-item fallback: recency/genre prior until rated (66.4% of items have <=5 ratings).
+- Full mitigation deferred to later weeks per master spec (specs/recolab/), but Day 2 must record the strategy and its evaluation gap.
 
 ## 3. Risk Mitigation (Time-Constrained)
 

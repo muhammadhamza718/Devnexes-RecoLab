@@ -17,7 +17,7 @@ Week 1 requires establishing an evaluation framework for recommendation system m
 - **Fixed Random Seed**: Use `numpy.random.default_rng(42)` for reproducibility
 - **Complete Ranking Metrics**: Precision@K, Recall@K, and NDCG@K as primary evaluation metrics
 - **Leakage Prevention**: Strict train/test separation with validation
-- **scikit-learn Integration**: Use top_k_accuracy_score where applicable
+- **Metric Implementation**: P@K, R@K, NDCG@K are implemented directly (no scikit-learn equivalent for NDCG@K; scikit-learn `top_k_accuracy_score` measures multiclass label ranking and is NOT a substitute for these top-N ranking metrics)
 - **Sparsity Documentation**: Mandatory analysis and documentation of data sparsity characteristics
 - **Model Artifact Persistence**: Pickle/serialization for trained model saving and loading
 
@@ -43,11 +43,11 @@ Week 1 requires establishing an evaluation framework for recommendation system m
 **Negative Outcomes:**
 - Chronological splitting more complex than random splitting
 - Ranking metrics may be less intuitive than accuracy for beginners
-- Time constraint limits comprehensive metric exploration (NDCG@K deferred)
+- Time constraint limits comprehensive metric exploration (additional metrics such as MAP/MRR deferred; P@K, R@K, NDCG@K are in scope)
 
 **Risks:**
 - Data sparsity may make ranking metrics less meaningful (mitigated by baseline comparison)
-- Cold-start users may have insufficient test data (mitigated by documenting limitations)
+- Cold-start users may have insufficient test data (mitigated by documenting limitations; evaluation MUST also exclude items each user already rated in training to avoid inflated metrics)
 - Manual implementation required for custom ranking metrics (mitigated by scikit-learn where possible)
 
 ## Alternatives Considered
@@ -64,8 +64,8 @@ Week 1 requires establishing an evaluation framework for recommendation system m
 
 **Alternative 3: Comprehensive Metric Suite (P@K, R@K, NDCG@K, MAP, MRR)**
 - **Pros:** Complete evaluation picture
-- **Cons:** Implementation time, complexity, timeline constraint
-- **Rejected:** NDCG@K essential per master spec, but additional metrics deferred due to timeline
+- **Cons:** Implementation time, complexity, timeline constraint for MAP/MRR
+- **Partially adopted:** P@K, R@K, NDCG@K are in scope (REQ-009 / master spec AC); MAP/MRR deferred to a later week
 
 ## References
 - Week 1 spec.md: Critical requirements REQ-008, REQ-009

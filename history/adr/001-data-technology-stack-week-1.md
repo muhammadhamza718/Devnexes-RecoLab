@@ -10,18 +10,18 @@ date: 2026-07-18
 Week 1 requires a data processing and evaluation foundation for the RecoLab recommendation system. The timeline is constrained to 2 days, requiring rapid implementation while maintaining code quality and reproducibility. The project must align with Devnexes brief requirements for latest stable technology and proper evaluation methodology.
 
 ## Decision
-**Clustered Decision:** Python 3.12+ with pandas (latest stable), numpy (latest stable), and scikit-learn (latest stable) using modern best practices.
+**Clustered Decision:** Python 3.14 (latest stable in this environment) with pandas (latest stable), numpy (latest stable), and scikit-learn (latest stable) using modern best practices.
 
 **Components:**
-- **Python 3.12+**: Latest stable version with performance improvements and enhanced f-string capabilities
+- **Python 3.14**: Latest stable version in use (per project decision; environment runs 3.14.0)
 - **pandas (latest stable)**: Data manipulation with time series support for chronological splitting
 - **numpy (latest stable)**: Numerical computing with modern random number generation (default_rng)
-- **scikit-learn (latest stable)**: Machine learning utilities with ranking metrics for evaluation
+- **scikit-learn (latest stable)**: Machine learning utilities; ranking metrics (P@K, R@K, NDCG@K) implemented directly with validation support from scikit-learn where appropriate
 
 **Modern Practices:**
 - Use `numpy.random.default_rng(seed)` instead of legacy `numpy.random.seed()`
 - Leverage pandas time series functionality for chronological data handling
-- Utilize scikit-learn ranking metrics (top_k_accuracy_score) for recommendation evaluation
+- Implement top-N ranking metrics (P@K, R@K, NDCG@K) directly; scikit-learn `top_k_accuracy_score` is for multiclass label ranking, not a substitute
 - Focus on ranking quality rather than classification accuracy
 
 ## Consequences
@@ -63,4 +63,4 @@ Week 1 requires a data processing and evaluation foundation for the RecoLab reco
 - Week 1 plan.md: Implementation strategy and technology choices
 - spec-architecture-recolab-hybrid-recommender.md: Technology platform dependencies
 - .specify/memory/constitution.md: Latest & stable tech stack policy
-- Context7 documentation: Python 3.12 features, pandas time series, numpy random generation, scikit-learn metrics
+- Context7 documentation: Python 3.14 features, pandas time series, numpy random generation, scikit-learn metrics

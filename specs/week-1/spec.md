@@ -4,6 +4,7 @@ version: 1.0
 date_created: 2026-07-18
 derived_from: spec-architecture-recolab-hybrid-recommender.md, Devnexes_AI_ML_Individual_Project_Plans.pdf
 week: 1
+note: This week-1 slice targets Python 3.14 (current env) and a time-optimized 2-day scope. The master spec (specs/recolab/) plans the full 6-week build (FastAPI serving, Python 3.9+ floor); treat it as the canonical long-term source of truth. Where they differ, week-1 decisions are scoped to Week 1 only.
 timeline: 2-days
 ---
 
@@ -38,7 +39,7 @@ This is a **portfolio-grade prototype** (not a production system) as specified i
 ## 2. Technology Stack (Latest Stable with Best Practices)
 
 **Core Dependencies (Latest Stable as of 2026-07-18):**
-- **Python 3.12+** - Latest stable with performance improvements, f-string enhancements, better reproducibility
+- **Python 3.14** - Latest stable in use (per project decision; environment runs 3.14.0)
 - **pandas (latest stable)** - Data manipulation with time series support for chronological splitting
 - **numpy (latest stable)** - Numerical computing with modern random number generation (default_rng)
 - **scikit-learn (latest stable)** - Machine learning utilities with ranking metrics
@@ -46,7 +47,7 @@ This is a **portfolio-grade prototype** (not a production system) as specified i
 **Best Practices Integration:**
 - Use `numpy.random.default_rng(seed)` for reproducibility (not legacy `numpy.random.seed`)
 - Use pandas time series functionality for chronological data handling
-- Leverage scikit-learn ranking metrics (top_k_accuracy_score) for recommendation evaluation
+- Implement top-N ranking metrics (Precision@K, Recall@K, NDCG@K) directly; scikit-learn `top_k_accuracy_score` is for multiclass label ranking, NOT a substitute for these metrics
 
 ## 3. Critical Requirements (Time-Constrained)
 
@@ -67,11 +68,11 @@ This is a **portfolio-grade prototype** (not a production system) as specified i
 - Skip complex filtering for now
 
 ### REQ-009: Ranking Metrics (Complete Implementation)
-- Implement Precision@K using scikit-learn ranking metrics
-- Implement Recall@K using scikit-learn ranking metrics  
-- Implement NDCG@K (Normalized Discounted Cumulative Gain) for ranking quality
-- Consider `top_k_accuracy_score` for ranking evaluation
-- Consider `label_ranking_average_precision_score` for multi-label ranking
+- Implement Precision@K directly (top-N hit ratio over recommended list)
+- Implement Recall@K directly (fraction of relevant items recovered)
+- Implement NDCG@K (Normalized Discounted Cumulative Gain) directly for ranking quality
+- NOTE: scikit-learn has NO NDCG@K function; `top_k_accuracy_score` measures multiclass label ranking and is NOT a substitute. Metrics are hand-implemented and unit-tested against known cases.
+- CRITICAL EVAL RULE: evaluation MUST exclude each user's already-rated training items before scoring, or metrics are inflated.
 - Focus on ranking quality rather than classification accuracy
 
 ### REQ-012: Model Artifact Persistence
@@ -80,10 +81,10 @@ This is a **portfolio-grade prototype** (not a production system) as specified i
 - Test save/load cycle to verify state preservation
 - Document persistence strategy for deployment
 
-### REQ-011: Sparsity Documentation
+### REQ-011: Sparsity Documentation & Cold-Start
 - Calculate and document data sparsity percentage
 - Analyze popularity distribution and bias
-- Document cold-start limitations
+- Document cold-start limitations AND outline a cold-start handling approach (see plan Phase 6 / master spec: new-user and new-item fallback)
 - Create sparsity analysis report for future reference
 
 ## 4. Acceptance Criteria (Minimum Viable)

@@ -23,20 +23,20 @@ For complete methodology definitions, see `.specify/methodology/sdd-methodology.
 ## Week 1 Tasks
 
 ### Phase 1: Dataset Setup
-- [ ] **CON-001, COM-001**: Dataset selected + license cited in README
+- [x] **CON-001, COM-001**: Dataset selected + license cited in README
   - Download MovieLens ml-latest-small dataset
   - Verify license terms (GroupLens research license)
   - Add citation to README with proper attribution
   - Document dataset source and usage rights
 
-- [ ] **REQ-008**: Chronological per-user split implemented, seed fixed
+- [x] **REQ-008**: Chronological per-user split implemented, seed fixed
   - Implement train/test split per user (chronological)
-  - Set fixed random seed for reproducibility
+  - Set fixed random seed for reproducibility (`default_rng(42)`)
   - Validate no data leakage between train/test
   - Document split methodology in code comments
 
 ### Phase 2: Repository Initialization
-- [ ] **Constitution #1, #6**: Repo initialized under `Devnexes-RecoLab`, README skeleton
+- [x] **Constitution #1, #6**: Repo initialized under `Devnexes-RecoLab`, README skeleton
   - Create repository with proper naming convention
   - Initialize README with required sections:
     - Problem statement
@@ -52,7 +52,7 @@ For complete methodology definitions, see `.specify/methodology/sdd-methodology.
   - Verify no confidential data in repository
 
 ### Phase 3: Baseline Model Implementation
-- [ ] **GUD-001**: Popularity baseline implemented
+- [x] **GUD-001**: Popularity baseline implemented
   - Calculate item popularity scores from training data
   - Implement top-N popularity-based recommendations
   - Create evaluation script for baseline metrics
@@ -63,6 +63,7 @@ For complete methodology definitions, see `.specify/methodology/sdd-methodology.
   - Verify model artifacts can be saved and loaded
   - Document storage strategy and limitations
   - Create fallback plan if storage is ephemeral
+  - *(Status: LOCAL pickle save/load + ModelBundle round-trip verified in persistence.py; but NO host chosen yet — deployment is Week 5. This item is genuinely incomplete until a hosting platform is selected and its storage tested.)*
 
 ---
 

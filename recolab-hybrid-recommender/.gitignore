@@ -1,0 +1,6 @@
+# Model artifacts (binary, reproducible via training — not committed)
+models/
+
+# Python caches
+__pycache__/
+*.pyc

@@ -44,3 +44,9 @@
 recolab-hybrid-recommender/data/ml-latest-small.zip
 recolab-hybrid-recommender/data/ml-latest-small/
 recolab-hybrid-recommender/venv/
+
+# Python compiled artifacts
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/

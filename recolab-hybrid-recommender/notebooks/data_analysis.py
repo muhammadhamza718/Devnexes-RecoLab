@@ -4,15 +4,11 @@ Following data-scientist agent standards for exploratory data analysis
 """
 
 import pandas as pd
-import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
-
-# Set reproducibility seed per data-scientist standards
-np.random.seed(42)
 
 # Configure plotting
 sns.set_style("whitegrid")

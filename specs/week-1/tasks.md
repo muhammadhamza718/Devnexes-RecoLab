@@ -14,18 +14,18 @@ timeline: 2-days
 ## Day 1 Tasks
 
 ### Phase 1: Quick Setup (4 hours)
-- [ ] **W1-D1-P1-T1**: Download MovieLens dataset
+- [x] **W1-D1-P1-T1**: Download MovieLens dataset
   - Download ml-latest-small from GroupLens
   - Extract to data/ directory
   - Verify file integrity
 
-- [ ] **W1-D1-P1-T2**: Initialize repository
+- [x] **W1-D1-P1-T2**: Initialize repository
   - Create `Devnexes-RecoLab` repository
   - Initialize git
   - Create basic directory structure
   - Create .gitignore
 
-- [ ] **W1-D1-P1-T3**: Set up environment
+- [x] **W1-D1-P1-T3**: Set up environment
   - Create Python virtual environment
   - Create requirements.txt
   - Install dependencies
@@ -37,7 +37,7 @@ timeline: 2-days
   - Basic validation (shape, types, missing values)
   - Quick statistics (users, movies, ratings)
 
-- [ ] **W1-D1-P2-T2**: Implement chronological split with modern practices
+- [x] **W1-D1-P2-T2**: Implement chronological split with modern practices
   - Load ratings.csv with pandas datetime parsing
   - Sort user ratings by timestamp using pandas time series
   - Split per-user (80% train, 20% test) chronologically
@@ -45,7 +45,7 @@ timeline: 2-days
   - Validate no data leakage between train/test
   - Save train.csv and test.csv with proper naming
 
-- [ ] **W1-D1-P2-T3**: Basic data analysis and sparsity documentation
+- [x] **W1-D1-P2-T3**: Basic data analysis and sparsity documentation
   - Calculate sparsity percentage of user-item matrix
   - Analyze rating distribution and popularity bias
   - Document cold-start limitations and data characteristics

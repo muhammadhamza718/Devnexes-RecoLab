@@ -21,6 +21,18 @@ A prior report (`history/validation/day-1-completion-ivp-report.md`) concluded C
 
 ---
 
+## Post-Fix Resolution (2026-07-18, commit 769128c)
+
+The CF-1 critical finding (missing chronological split) was **closed** by commit `769128c` on branch `data-processing-foundation`:
+- Added `src/recolab/split.py` (`load_ratings`, `chronological_split` with `numpy.random.default_rng(42)`, `validate_no_leakage`, `save_split`) and `notebooks/data_split.py`.
+- Produces leakage-free, chronological, reproducible 80/20 splits (train 80,419 / test 20,417 rows; 0 shared user-item pairs; coverage 100,836; all users retain ≥1 train row).
+- WF-3 (removed dead `np.random.seed` import), WF-4 (`requires-python` bumped `>=3.14`), WF-5-adjacent (added `__pycache__`/`*.pyc` to `.gitignore`) also addressed.
+- Independent verification agent returned **PASS** on split correctness, data_analysis run, git exclusions, and pycache cleanliness.
+
+**Revised status after fix: RESOLVED — Day 1 satisfies the Week 1 spec.** Day 2 remains out of scope and unbuilt.
+
+---
+
 ## Perspective 1: Security Perspective — PASS
 
 **No critical or warning security findings.**

@@ -129,3 +129,32 @@ timeline: 2-days
 - [x] Automated tests implemented and passing (32 passed)
 - [x] Learning summary prepared (learning/week-1/technical-acquisition-record-day2.md)
 - [ ] Ready for portal submission — **USER ACTION**: fill Devnexes portal form (repo URL live; demo link = Week 5, leave blank)
+
+## Carried-Forward to Week 2 (from Day-2 IVP + recommender audit)
+
+These items were identified as non-blocking during Week 1 validation. They are
+explicitly deferred here so they are not lost; each becomes a concrete Week-2 task.
+
+- [ ] **CF-2 (REQ-009 acceptance value)**: Record the random-baseline floor
+  `P@K_random = K / 9724` (K / num_movies) as a **hardcoded acceptance assertion**
+  in `specs/week-1/spec.md` REQ-009 (currently only a note in test docstrings).
+  Then add a test asserting every later model's mean P@K beats this floor.
+  - *Why:* proves each smarter model earns its complexity vs the popularity floor.
+
+- [ ] **CI lint + type gate (constitution)**: Install `ruff` + `mypy` in the venv
+  and add a CI workflow (GitHub Actions) running `ruff`, `mypy`, and `pytest`.
+  - *Why:* constitution mandates a lint/type gate; deferred in Week 1 only because
+    the linters were not yet in the venv. Cheap portfolio credibility.
+
+- [ ] **CF-3 (designed cold-start interface)**: Promote cold-start from the
+  `baseline.py` behavioral fallback to a real `ColdStartStrategy` interface +
+  dedicated test (project namesake = "Hybrid ... with Cold-Start Handling").
+  - *Why:* audit CF-3 flagged it as documentation/behavior-only; the PDF puts
+    cold-start in the project TITLE, so it must be a designed, tested feature
+    (v1 in Week 2–3, full design Week 4).
+
+- [ ] **Comparison-harness contract (pre-build)**: Define the common eval contract
+  so each Week 2–6 model plugs into `evaluate_all(recommendations_fn, ...)` +
+  `ModelBundle` and the final 4-way table (popularity / content / collaborative /
+  hybrid on P@K/R@K/NDCG@K) is assembly, not a scramble.
+  - *Why:* de-risks the Week 4–6 "impressive payoff" by locking the harness early.

@@ -10,6 +10,9 @@
 .kiro/skills/*
 .kiro/steering/*
 .kiro/workflows/*
+.openclaude/agent/*
+.openclaude/commands/*
+.openclaude/skills/*
 .workflows/*
 
 # Keep the .gitignore files themselves
@@ -24,12 +27,16 @@
 !.kiro/skills/.gitignore
 !.kiro/steering/.gitignore
 !.kiro/workflows/.gitignore
+!.openclaude/agent/.gitignore
+!.openclaude/commands/.gitignore
+!.openclaude/skills/.gitignore
 !.workflows/.gitignore
 
 # Keep README files in agent and workflow directories
 !.agents/README.md
 !.claude/README.md
 !.kiro/README.md
+!.openclaude/README.md
 !.workflows/README.md
 
 # SDD methodology files - keep directory structure, hide specific files

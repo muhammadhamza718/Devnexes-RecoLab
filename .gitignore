@@ -1,20 +1,16 @@
 # Agent and AI tool directories - show structure, hide contents
 .agents/agents/*
 .agents/commands/*
-.agents/skills/*
+.agents/skills/
 .claude/agents/*
 .claude/commands/*
-.claude/skills/*
+.claude/skills/
 .kiro/agents/*
 .kiro/settings/*
 .kiro/skills/*
 .kiro/steering/*
 .kiro/workflows/*
 .workflows/*
-
-# Embedded git repositories
-.agents/skills/
-.claude/skills/
 
 # Keep the .gitignore files themselves
 !.agents/agents/.gitignore
@@ -43,3 +39,13 @@
 # Keep the methodology and memory directories and other files
 !.specify/methodology/
 !.specify/memory/
+
+# Large dataset files
+recolab-hybrid-recommender/data/ml-latest-small.zip
+recolab-hybrid-recommender/data/ml-latest-small/
+recolab-hybrid-recommender/venv/
+
+# Large dataset files
+recolab-hybrid-recommender/data/ml-latest-small.zip
+recolab-hybrid-recommender/data/ml-latest-small/
+recolab-hybrid-recommender/venv/

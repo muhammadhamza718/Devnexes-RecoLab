@@ -1,0 +1,14 @@
+=== MovieLens Data Analysis Summary ===
+
+Number of Users: 610
+Number of Movies: 9724
+Number of Ratings: 100836
+Sparsity: 0.9830 (98.30%)
+
+User Activity Mean: 165.30
+User Activity Median: 70.50
+Item Popularity Mean: 10.37
+Item Popularity Median: 3.00
+
+Cold Users (<=5 ratings): 0
+Cold Items (<=5 ratings): 6456

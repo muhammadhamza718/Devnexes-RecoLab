@@ -1,0 +1,45 @@
+# Agent and AI tool directories - show structure, hide contents
+.agents/agents/*
+.agents/commands/*
+.agents/skills/*
+.claude/agents/*
+.claude/commands/*
+.claude/skills/*
+.kiro/agents/*
+.kiro/settings/*
+.kiro/skills/*
+.kiro/steering/*
+.kiro/workflows/*
+.workflows/*
+
+# Embedded git repositories
+.agents/skills/
+.claude/skills/
+
+# Keep the .gitignore files themselves
+!.agents/agents/.gitignore
+!.agents/commands/.gitignore
+!.agents/skills/.gitignore
+!.claude/agents/.gitignore
+!.claude/commands/.gitignore
+!.claude/skills/.gitignore
+!.kiro/agents/.gitignore
+!.kiro/settings/.gitignore
+!.kiro/skills/.gitignore
+!.kiro/steering/.gitignore
+!.kiro/workflows/.gitignore
+!.workflows/.gitignore
+
+# Keep README files in agent and workflow directories
+!.agents/README.md
+!.claude/README.md
+!.kiro/README.md
+!.workflows/README.md
+
+# SDD methodology files - keep directory structure, hide specific files
+.specify/methodology/sdd-methodology.md
+.specify/memory/constitution.md
+
+# Keep the methodology and memory directories and other files
+!.specify/methodology/
+!.specify/memory/

@@ -1,6 +1,6 @@
 ---
 id: 001
-title: Week 1 Technical Acquisition Record
+title: Week 1 Technical Acquisition Record (DEPRECATED — see 002)
 stage: plan
 date: 2026-07-18
 surface: agent
@@ -28,16 +28,24 @@ tests:
 
 # Week 1 Technical Acquisition Record
 
-## Executive Summary
-Week 1 establishes the data processing and evaluation foundation for the RecoLab recommendation system prototype. This document provides deep technical understanding of the tools and technologies used: Python 3.12, pandas, numpy, and scikit-learn. Each tool is examined in detail - understanding the tools, their purposes, how they work, and how we use them to build our recommendation system recipe.
+> ## ⚠️ DEPRECATED — READ `technical-acquisition-record-day2.md` (id 002) INSTEAD
+> This file (id 001) was written before Day 2 was implemented and contains **two factual errors** that were corrected in id 002. **Do not treat this file as authoritative.**
+> 1. **Python version is wrong.** The project runs on **Python 3.14**, not 3.12. (`pyproject.toml` pins `>=3.14`; venv is 3.14.0.) The "3.12" mentions below are stale.
+> 2. **The ranking-metric guidance is wrong.** `top_k_accuracy_score` is a **multiclass-label ranking** metric, **not** a Top-N recommender metric, and `sklearn.metrics` has **no** `precision_at_k`/`recall_at_k` (they don't exist) and **no NDCG@K**. Day 2 hand-implements P@K/R@K/NDCG@K in `metrics.py`. The `top_k_accuracy_score` usage and the `from sklearn.metrics import precision_at_k, recall_at_k` lines in §14/§15 are **incorrect** and must not be copied.
+> The remaining "kitchen analogy" background is kept for context only. For the correct, complete Week 1 + Day 2 record, use **`technical-acquisition-record-day2.md`**.
 
-## 1. Python 3.12 - The Kitchen Foundation
+## Executive Summary
+Week 1 establishes the data processing and evaluation foundation for the RecoLab recommendation system prototype. This document provides deep technical understanding of the tools and technologies used: Python (3.14 — see banner), pandas, numpy, and scikit-learn. Each tool is examined in detail - understanding the tools, their purposes, how they work, and how we use them to build our recommendation system recipe.
+
+> **Correction:** Python version is **3.14**, not 3.12 as stated in the original summary above. See the deprecation banner.
+
+## 1. Python 3.14 - The Kitchen Foundation  *(correction: id 001 originally titled this "3.12"; project pins >=3.14)*
 
 ### Tool Name
-Python 3.12+ (latest stable version)
+Python 3.14+ (project pin: `requires-python = ">=3.14"`; venv is 3.14.0) — *correction: id 001 originally said 3.12*
 
 ### Version
-Python 3.12.x (latest stable as of 2026-07-18)
+Python 3.14.x (latest stable as of 2026-07-18) — *correction: id 001 originally said 3.12*
 
 ### Primary Purpose
 Python serves as the foundational programming language and execution environment for the entire RecoLab project. It's the "kitchen" where all other tools (pandas, numpy, scikit-learn) operate together to process data and build recommendation models.
@@ -534,6 +542,7 @@ scikit-learn provides:
 - **Machine learning algorithms**: Classification, regression, clustering, dimensionality reduction
 - **Model evaluation**: Metrics for accuracy, precision, recall, F1-score, AUC, etc.
 - **Ranking metrics**: top_k_accuracy_score, label_ranking_average_precision_score
+  > **Correction (id 002):** `top_k_accuracy_score` is **multiclass-label ranking**, NOT a Top-N recommender metric, and scikit-learn ships **no NDCG@K** and **no** `precision_at_k`/`recall_at_k`. RecoLab hand-implements P@K/R@K/NDCG@K in `metrics.py`.
 - **Data preprocessing**: Scaling, encoding, feature extraction
 - **Model selection**: Cross-validation, hyperparameter tuning
 - **Pipeline**: Data preprocessing and model training workflow orchestration
@@ -570,11 +579,12 @@ scikit-learn machine learning pipeline:
 ## 14. Project Integration
 
 ### How We're Using It
-scikit-learn provides evaluation metrics for Week 1:
-- **Ranking metrics**: `top_k_accuracy_score` for recommendation evaluation
-- **Custom metrics**: Implementing Precision@K, Recall@K, NDCG@K
-- **Metric calculation**: Comparing recommendations against ground truth
-- **Future weeks**: Will provide collaborative filtering and content-based algorithms
+scikit-learn provides the ML *framework* (split helpers, pipeline API) for Week 1:
+- **Evaluation metrics**: **NOT** for Top-N ranking — see correction below.
+- **Custom metrics**: Precision@K, Recall@K, NDCG@K are **hand-implemented** in `metrics.py` (numpy), because scikit-learn has no NDCG@K and `top_k_accuracy_score` is the wrong semantic.
+- **Future weeks**: Will provide collaborative filtering and content-based algorithms.
+
+> **Correction (id 002 — IMPORTANT):** Do **not** use `top_k_accuracy_score` for recommendation evaluation. It scores a single multiclass prediction (true label within top-k score positions), which is semantically different from Top-N hit-rate over a relevance set. And `sklearn.metrics.precision_at_k` / `recall_at_k` **do not exist**. The original §15 import `from sklearn.metrics import precision_at_k, recall_at_k` would raise `ImportError`. RecSys metrics are hand-written in `metrics.py`.
 
 ### Integration Points
 - **numpy**: scikit-learn uses numpy arrays for all inputs/outputs
@@ -584,16 +594,10 @@ scikit-learn provides evaluation metrics for Week 1:
 
 ### Configuration and Setup
 ```python
-from sklearn.metrics import top_k_accuracy_score, label_ranking_average_precision_score
-import numpy as np
-
-# Ranking metric evaluation
-y_true = np.array([0, 1, 2, 2])  # True labels
-y_score = np.array([[0.5, 0.2, 0.2],
-                   [0.3, 0.4, 0.2],
-                   [0.2, 0.4, 0.3],
-                   [0.7, 0.2, 0.1]])
-score = top_k_accuracy_score(y_true, y_score, k=2)  # 0.75
+# Correct approach (id 002): hand-implement Top-N metrics with numpy.
+# scikit-learn provides NO NDCG@K and NO precision_at_k / recall_at_k.
+# top_k_accuracy_score is multiclass-label ranking — NOT a recsys metric.
+from recolab.metrics import precision_at_k, recall_at_k, ndcg_at_k  # our hand-written module
 ```
 
 ### Data Structures Used
@@ -605,28 +609,18 @@ score = top_k_accuracy_score(y_true, y_score, k=2)  # 0.75
 
 ### Code Patterns and Best Practices
 ```python
-from sklearn.metrics import precision_at_k, recall_at_k
-import numpy as np
-
-# Custom Precision@K implementation
-def precision_at_k(y_true, y_score, k=10):
-    """Calculate Precision@K ranking metric."""
-    # Sort by scores in descending order
-    order = np.argsort(y_score)[::-1]
-    y_true_sorted = y_true[order]
-    precision_at_k = np.mean(y_true_sorted[:k])
-    return precision_at_k
-
-# Use scikit-learn ranking metrics
-from sklearn.metrics import top_k_accuracy_score
-score = top_k_accuracy_score(y_true, y_score, k=10)
+# CORRECTED (id 002): the import below does NOT exist in scikit-learn and
+# top_k_accuracy_score is the wrong metric for Top-N recsys. Use our hand-written
+# metrics in metrics.py instead.
+from recolab.metrics import precision_at_k, recall_at_k, ndcg_at_k
 ```
 
 ### Key Functions and Methods
-- **`top_k_accuracy_score()`**: Fraction of true labels in top-k predictions
+- **`top_k_accuracy_score()`**: Multiclass-label ranking metric — **NOT for Top-N recsys** (see id 002 correction).
 - **`label_ranking_average_precision_score()`**: Average precision for multi-label ranking
-- **`precision_score()**: Standard precision for binary/multiclass classification
-- **`recall_score()**: Standard recall for binary/multiclass classification
+- **`precision_score()`**: Standard precision for binary/multiclass classification
+- **`recall_score()`**: Standard recall for binary/multiclass classification
+- **RecoLab Top-N metrics (hand-written)**: `recolab.metrics.precision_at_k`, `.recall_at_k`, `.ndcg_at_k` — the correct tools for this project.
 
 ### Error Handling and Edge Cases
 ```python
@@ -706,14 +700,14 @@ if len(y_score) == 0:
 ## 18. Interview Preparation
 
 ### Technical Discussion Points
-- **Python 3.12 choice**: Latest stable version with modern features and performance improvements
+- **Python 3.14 choice**: The project pins `>=3.14` (venv is 3.14.0). **Correction:** id 001 originally said 3.12 — see deprecation banner.
 - **pandas time series**: Why chronological splitting requires time series functionality
 - **numpy reproducibility**: Why `default_rng()` is preferred over legacy `seed()`
 - **Ranking metrics**: Why P@K, R@K, NDCG@K are essential for recommendation evaluation
 - **Prototype scope**: Understanding this is a portfolio-grade prototype, not production system
 
 ### Decision-Making Examples
-- **Technology stack**: Chose Python 3.12+ for modern features and ecosystem
+- **Technology stack**: Chose Python **3.14** (correction: id 001 said 3.12 — see banner) for modern features and ecosystem
 - **Chronological split**: Chose over random split to prevent data leakage
 - **Ranking metrics**: Chose over accuracy for recommendation quality evaluation
 - **Baseline first**: Implemented popularity baseline to establish performance floor
@@ -725,10 +719,10 @@ if len(y_score) == 0:
 - **Prototype requirements**: Clarified scope boundaries and quality expectations
 
 ### Key Takeaways for Explanation
-- **Python 3.12**: Foundation with modern features and performance improvements
+- **Python 3.14** (not 3.12 — see banner): Foundation with modern features and performance improvements
 - **pandas**: Data manipulation workhorse with time series support for chronological data
 - **numpy**: Numerical foundation with vectorized operations and reproducibility
-- **scikit-learn**: ML evaluation toolkit with ranking metrics for recommendations
+- **scikit-learn**: ML framework; but Top-N ranking metrics are hand-written in `recolab.metrics` (sklearn has no NDCG@K / precision_at_k / recall_at_k)
 - **Integration**: All tools work together in a cohesive data pipeline for evaluation
 
 ## 19. References and Resources

@@ -40,12 +40,7 @@
 !.specify/methodology/
 !.specify/memory/
 
-# Large dataset files
-recolab-hybrid-recommender/data/ml-latest-small.zip
-recolab-hybrid-recommender/data/ml-latest-small/
-recolab-hybrid-recommender/venv/
-
-# Large dataset files
+# Large dataset files and virtual environment
 recolab-hybrid-recommender/data/ml-latest-small.zip
 recolab-hybrid-recommender/data/ml-latest-small/
 recolab-hybrid-recommender/venv/

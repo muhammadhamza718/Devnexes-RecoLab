@@ -14,7 +14,7 @@ because the test items are typically the most popular and would be trivially
 from __future__ import annotations
 
 from collections.abc import Collection, Mapping, Sequence
-from typing import TypeVar
+from typing import TypeVar, cast
 
 import numpy as np
 import pandas as pd
@@ -221,13 +221,15 @@ def evaluate_all(
     catalog = set(train_df[ITEM_ID].astype(int).tolist())
     decile_map = _build_popularity_decile_map(train_df)
 
-    # Group test items and training items per user.
-    test_by_user = test_df.groupby(USER_ID, sort=False)[ITEM_ID].apply(
-        lambda s: set(s.astype(int).tolist())
-    )
-    train_by_user = train_df.groupby(USER_ID, sort=False)[ITEM_ID].apply(
-        lambda s: set(s.astype(int).tolist())
-    )
+    # Group test items and training items per user. Keys are cast to int.
+    test_by_user: dict[int, set[int]] = {
+        cast(int, uid): set(items.astype(int).tolist())
+        for uid, items in test_df.groupby(USER_ID)[ITEM_ID]
+    }
+    train_by_user: dict[int, set[int]] = {
+        cast(int, uid): set(items.astype(int).tolist())
+        for uid, items in train_df.groupby(USER_ID)[ITEM_ID]
+    }
 
     ks = list(ks)
     sum_metrics: dict[str, float] = {
@@ -241,10 +243,10 @@ def evaluate_all(
     for user_id, test_items in test_by_user.items():
         train_items = set(train_by_user.get(user_id, set()))
         # The caller is responsible for excluding known items; we also assert.
-        recommended = list(recommendations_fn(int(user_id), set(train_items)))
+        recommended = list(recommendations_fn(user_id, set(train_items)))
 
         user_metrics = evaluate_user(
-            int(user_id),
+            user_id,
             recommended,
             test_items,
             train_items,

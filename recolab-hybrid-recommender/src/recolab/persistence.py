@@ -148,7 +148,8 @@ def load_artifact(
         with target.open("rb") as fh:
             return pickle.load(fh)
     except (pickle.UnpicklingError, EOFError, OSError) as exc:
-        raise PersistError(f"Failed to load artifact from {target}: corrupt file") from exc
+        msg = f"Failed to load artifact from {target}: corrupt file"
+        raise PersistError(msg) from exc
 
 
 @dataclass(slots=True)

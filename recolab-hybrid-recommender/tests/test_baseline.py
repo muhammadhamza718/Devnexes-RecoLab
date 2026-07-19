@@ -6,7 +6,6 @@ import pandas as pd
 import pytest
 
 from recolab.baseline import PopularityModel, compute_popularity
-from recolab.split import validate_no_leakage
 
 ITEM_ID = "movieId"
 RATING_COL = "rating"

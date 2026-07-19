@@ -18,7 +18,10 @@ RATING_COL = "rating"
 _TIE_RNG_SEED = 42
 
 
-def compute_popularity(train_df: pd.DataFrame, weight_by_rating: bool = True) -> pd.DataFrame:
+def compute_popularity(
+    train_df: pd.DataFrame,
+    weight_by_rating: bool = True,
+) -> pd.DataFrame:
     """Compute per-item popularity from training data only.
 
     Args:
@@ -52,7 +55,12 @@ def _stable_sort_descending(df: pd.DataFrame, col: str) -> pd.DataFrame:
     rng = np.random.default_rng(_TIE_RNG_SEED)
     jitter = rng.random(len(df)) * 1e-9
     order = (df[col].to_numpy() + jitter)
-    return df.assign(_order=order).sort_values("_order", ascending=False, kind="mergesort").drop(columns="_order").reset_index(drop=True)
+    return (
+        df.assign(_order=order)
+        .sort_values("_order", ascending=False, kind="mergesort")
+        .drop(columns="_order")
+        .reset_index(drop=True)
+    )
 
 
 class PopularityModel:

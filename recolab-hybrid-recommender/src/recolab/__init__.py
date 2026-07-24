@@ -1,11 +1,17 @@
-"""RecoLab hybrid recommender prototype — Day 1 data processing foundation.
+"""RecoLab hybrid recommender prototype — data processing foundation + interfaces.
 
-Public surface for the data-splitting utilities introduced on Day 1.
+Public surface for data-splitting utilities (Week 1) and shared recommendation
+model interfaces (Week 2).
 """
 
 from recolab.baseline import (
     PopularityModel,
     compute_popularity,
+)
+from recolab.interfaces import (
+    ColdStartHandler,
+    FeatureError,
+    Recommender,
 )
 from recolab.metrics import (
     evaluate_all,
@@ -32,6 +38,9 @@ __all__ = [
     "save_split",
     "PopularityModel",
     "compute_popularity",
+    "Recommender",
+    "ColdStartHandler",
+    "FeatureError",
     "ARTIFACT_PROTOCOL",
     "MODELS_DIRNAME",
     "PersistError",

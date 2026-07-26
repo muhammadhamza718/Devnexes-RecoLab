@@ -8,6 +8,7 @@ from recolab.baseline import (
     PopularityModel,
     compute_popularity,
 )
+from recolab.content import ContentModel
 from recolab.interfaces import (
     ColdStartHandler,
     FeatureError,
@@ -38,6 +39,7 @@ __all__ = [
     "save_split",
     "PopularityModel",
     "compute_popularity",
+    "ContentModel",
     "Recommender",
     "ColdStartHandler",
     "FeatureError",

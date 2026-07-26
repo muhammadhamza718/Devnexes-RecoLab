@@ -123,25 +123,13 @@ mypy src/
 
 ### Week 2: Content-Based Recommendation Model
 
-#### Manual Test Results
-![Manual Tests](docs/screenshots/week-2-manual-tests.png)
-*Demonstrates all 5 manual tests passing with performance metrics*
-
-#### Automated Test Coverage
-![Test Coverage](docs/screenshots/week-2-coverage.png)
-*Shows 84% overall coverage, 92% for content.py*
+#### Test Results and Coverage
+![Test Results and Coverage](docs/screenshots/week-2-tests-coverage.png)
+*Shows manual tests (5/5 passed), automated tests (73 passed), and coverage (84% overall, 92% for content.py)*
 
 #### Code Quality Checks
 ![Code Quality](docs/screenshots/week-2-code-quality.png)
 *Shows ruff and mypy checks passing*
-
-#### Implementation
-![ContentModel Code](docs/screenshots/week-2-implementation.png)
-*Shows ContentModel class with protocol conformance*
-
-### Screen Recording
-[Watch Week 2 Demo](docs/videos/week-2-content-model-demo.mp4)
-*Demonstrates manual tests, automated tests, and code quality checks*
 
 ### Screenshot Instructions
 See [docs/screenshot-instructions.md](docs/screenshot-instructions.md) for detailed guidance on creating screenshots and screen recordings.

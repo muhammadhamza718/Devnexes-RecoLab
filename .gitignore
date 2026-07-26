@@ -42,10 +42,12 @@
 # SDD methodology files - keep directory structure, hide specific files
 .specify/methodology/sdd-methodology.md
 .specify/memory/constitution.md
+.specify/rules/coding_rules.md
 
 # Keep the methodology and memory directories and other files
 !.specify/methodology/
 !.specify/memory/
+!.specify/rules/
 
 # Large dataset files and virtual environment
 recolab-hybrid-recommender/data/ml-latest-small.zip

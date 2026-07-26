@@ -20,6 +20,11 @@ Portfolio-grade prototype of a hybrid recommendation system for Devnexes AI-06 p
 - ⏳ Week 5: UI development
 - ⏳ Week 6: Deployment
 
+### Weekly Progress
+For detailed weekly progress notes, testing evidence, and next week tasks, see:
+- [WEEKLY_PROGRESS.md](WEEKLY_PROGRESS.md) - Weekly progress notes and next week tasks
+- [TESTING_EVIDENCE.md](TESTING_EVIDENCE.md) - Detailed testing evidence and quality gates
+
 ## Project Structure
 ```
 recolab-hybrid-recommender/
@@ -177,7 +182,15 @@ See [docs/screenshot-instructions.md](docs/screenshot-instructions.md) for detai
 - Type annotations improve deserialization safety
 
 ## Next Steps (Week 3)
-- Implement collaborative filtering model (user-based, item-based)
-- Add collaborative filtering to ColdStartHandler protocol
-- Create hybrid model combining content + collaborative signals
-- Compare model performance against baseline
+### Week 3 Tasks
+1. Implement collaborative filtering model (user-based, item-based)
+2. Define model comparison framework
+3. Add performance benchmarks
+4. Begin hybrid model planning
+
+### Week 3 Goals
+- Implement user-based collaborative filtering with cosine similarity
+- Implement item-based collaborative filtering
+- Create framework for comparing content-based vs collaborative approaches
+- Add performance benchmarks (latency, accuracy, coverage)
+- Begin planning hybrid model integration (content + collaborative signals)

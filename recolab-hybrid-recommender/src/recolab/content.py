@@ -14,8 +14,8 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore[import-untyped]
-from sklearn.metrics.pairwise import cosine_similarity  # type: ignore[import-untyped]
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 from recolab.interfaces import ColdStartHandler, FeatureError, Recommender
 
@@ -194,8 +194,8 @@ class ContentModel(Recommender, ColdStartHandler):
                 candidate_idx = self.item_index[candidate_id]
                 rated_idx = self.item_index[rated_id]
                 sim = cosine_similarity(
-                    self.tfidf_matrix[candidate_idx:candidate_idx + 1],
-                    self.tfidf_matrix[rated_idx:rated_idx + 1],
+                    self.tfidf_matrix[candidate_idx : candidate_idx + 1],
+                    self.tfidf_matrix[rated_idx : rated_idx + 1],
                 )[0][0]
                 max_sim = max(max_sim, sim)
 
@@ -261,11 +261,11 @@ class ContentModel(Recommender, ColdStartHandler):
         query_idx = self.item_index[item_id]
 
         # Compute cosine similarity with all items
-        query_vector = self.tfidf_matrix[query_idx:query_idx+1]
+        query_vector = self.tfidf_matrix[query_idx : query_idx + 1]
         similarities = cosine_similarity(query_vector, self.tfidf_matrix)[0]
 
         # Get top-k similar items (excluding the query item itself)
-        similar_indices = np.argsort(similarities)[::-1][1:k+1]  # Skip first (self)
+        similar_indices = np.argsort(similarities)[::-1][1 : k + 1]  # Skip first (self)
 
         results = []
         for idx in similar_indices:

@@ -49,9 +49,6 @@
 !.specify/memory/
 !.specify/rules/
 
-# History prompts directory - keep structure, ignore files
-history/prompts/
-
 # Large dataset files and virtual environment
 Devnexes-RecoLab/data/ml-latest-small.zip
 Devnexes-RecoLab/data/ml-latest-small/

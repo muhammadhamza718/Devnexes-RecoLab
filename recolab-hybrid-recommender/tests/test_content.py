@@ -235,9 +235,169 @@ class TestContentModelSimilarItems:
     def test_similar_items_returns_scores_descending(self, sample_ratings, sample_movies):
         """Test similar_items() returns items sorted by similarity score."""
         model = ContentModel().fit(sample_ratings, sample_movies)
-        
+
         similar = model.similar_items(item_id=10, k=5)
-        
+
         if len(similar) > 1:
             scores = [score for _, score in similar]
             assert scores == sorted(scores, reverse=True)
+
+
+class TestContentModelRecommendEnhanced:
+    """Test enhanced recommend() with user history."""
+
+    def test_recommend_uses_user_history(self, sample_ratings, sample_movies):
+        """Test recommend() uses user's rated items for similarity."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        # User 1 rated items 10, 20, 30
+        recs = model.recommend(user_id=1, k=3, exclude_items={10, 20, 30})
+
+        assert isinstance(recs, list)
+        assert len(recs) <= 3
+        # Should not include items the user already rated
+        assert all(item_id not in {10, 20, 30} for item_id in recs)
+
+    def test_recommend_excludes_items(self, sample_ratings, sample_movies):
+        """Test recommend() respects exclude_items parameter."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        recs = model.recommend(user_id=1, k=5, exclude_items={10, 20})
+
+        assert 10 not in recs
+        assert 20 not in recs
+
+    def test_recommend_fills_with_popular(self, sample_ratings, sample_movies):
+        """Test recommend() fills with popular items when no similar items."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        # User with very few ratings should get popular items as fallback
+        recs = model.recommend(user_id=1, k=10, exclude_items={10, 20, 30})
+
+        assert isinstance(recs, list)
+        assert len(recs) <= 10
+
+
+class TestContentModelColdStartEnhanced:
+    """Test enhanced recommend_cold_start() functionality."""
+
+    def test_recommend_cold_start_genre_filtering(self, sample_ratings, sample_movies):
+        """Test recommend_cold_start() filters by preferred genres."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        # User likes Action movies
+        recs = model.recommend_cold_start(
+            genres=["Action"], liked_movie_ids=[], k=3
+        )
+
+        assert isinstance(recs, list)
+        assert len(recs) <= 3
+        # All recommendations should be Action movies
+        for item_id in recs:
+            assert item_id in model.item_features
+            genres = model.item_features[item_id].split()
+            assert "Action" in genres
+
+    def test_recommend_cold_start_excludes_liked(self, sample_ratings, sample_movies):
+        """Test recommend_cold_start() excludes liked movie IDs."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        recs = model.recommend_cold_start(
+            genres=["Action"], liked_movie_ids=[10], k=5
+        )
+
+        assert 10 not in recs
+
+    def test_recommend_cold_start_multiple_genres(self, sample_ratings, sample_movies):
+        """Test recommend_cold_start() with multiple genre preferences."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        recs = model.recommend_cold_start(
+            genres=["Action", "Drama"], liked_movie_ids=[], k=3
+        )
+
+        assert isinstance(recs, list)
+        assert len(recs) <= 3
+
+
+class TestContentModelExplanation:
+    """Test get_explanation() method."""
+
+    def test_get_explanation_known_item(self, sample_ratings, sample_movies):
+        """Test get_explanation() for known item."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        explanation = model.get_explanation(user_id=1, item_id=10)
+
+        assert isinstance(explanation, str)
+        assert "Action" in explanation or "matches your interest" in explanation
+
+    def test_get_explanation_unknown_item(self, sample_ratings, sample_movies):
+        """Test get_explanation() for unknown item."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        explanation = model.get_explanation(user_id=1, item_id=999)
+
+        assert "not found" in explanation
+
+
+class TestContentModelPersistence:
+    """Test to_bundle/from_bundle persistence."""
+
+    def test_to_bundle_from_bundle_roundtrip(self, sample_ratings, sample_movies):
+        """Test model serialization and deserialization."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        bundle = model.to_bundle()
+        loaded_model = ContentModel.from_bundle(bundle)
+
+        assert loaded_model.item_features == model.item_features
+        assert loaded_model.item_index == model.item_index
+        assert loaded_model.item_popularity == model.item_popularity
+        assert loaded_model.fitted == model.fitted
+
+    def test_to_bundle_includes_ratings(self, sample_ratings, sample_movies):
+        """Test to_bundle() includes ratings data."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        bundle = model.to_bundle()
+
+        assert "ratings" in bundle
+        assert bundle["ratings"] is not None
+
+    def test_from_bundle_restores_ratings(self, sample_ratings, sample_movies):
+        """Test from_bundle() restores ratings data."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        bundle = model.to_bundle()
+        loaded_model = ContentModel.from_bundle(bundle)
+
+        assert loaded_model._ratings is not None
+        assert len(loaded_model._ratings) == len(model._ratings)
+
+    def test_save_load_roundtrip(self, sample_ratings, sample_movies, tmp_path):
+        """Test save() and load() roundtrip."""
+        model = ContentModel().fit(sample_ratings, sample_movies)
+
+        path = tmp_path / "content_model.pkl"
+        model.save(path)
+
+        loaded_model = ContentModel.load(path)
+
+        assert loaded_model.item_features == model.item_features
+        assert loaded_model.fitted == model.fitted
+
+    def test_from_bundle_missing_field(self):
+        """Test from_bundle() handles missing fields gracefully."""
+        bundle = {
+            "item_features": {},
+            "item_index": {},
+            "tfidf_matrix": None,
+            "item_popularity": {},
+            "fitted": False,
+        }
+
+        model = ContentModel.from_bundle(bundle)
+
+        assert model.item_features == {}
+        assert model.fitted is False

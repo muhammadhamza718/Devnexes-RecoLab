@@ -9,7 +9,7 @@ __pycache__/
 .Python
 
 # Virtual environments
-venv/
+.venv/
 env/
 ENV/
 .venv/
@@ -54,3 +54,6 @@ dmypy.json
 *.tmp
 *.temp
 *.log
+
+# Learning directory (moved to parent)
+learning/

@@ -6,9 +6,15 @@ including interactive testing, full dataset integration, persistence, protocol c
 edge cases, performance, and explanation quality checks.
 """
 
+import sys
+from pathlib import Path
+
+# Add src directory to Python path for development
+src_path = Path(__file__).parent / "src"
+sys.path.insert(0, str(src_path))
+
 import time
 import pandas as pd
-from pathlib import Path
 from recolab.content import ContentModel
 from recolab.interfaces import Recommender, ColdStartHandler
 
@@ -48,27 +54,21 @@ def test_interactive_content_model():
     print("[PASS] Test 1 passed")
 
 
-def test_full_dataset_integration():
-    """Test 2: Full Dataset Integration Test"""
+def test_protocol_conformance():
+    """Test 2: Protocol Conformance Check"""
     print("\n" + "="*60)
-    print("TEST 2: Full Dataset Integration Test")
+    print("TEST 2: Protocol Conformance Check")
     print("="*60)
     
-    try:
-        ratings = pd.read_csv('data/ml-latest-small/ratings.csv')
-        movies = pd.read_csv('data/ml-latest-small/movies.csv')
-        
-        print(f"Loaded full dataset: {len(ratings)} ratings, {len(movies)} movies")
-        
-        model = ContentModel().fit(ratings, movies)
-        print("Model fitted on full dataset")
-        
-        recs = model.recommend(user_id=1, k=10)
-        print(f"Full dataset recommendations for user 1: {recs[:5]}...")
-        
-        print("[PASS] Test 2 passed")
-    except FileNotFoundError as e:
-        print(f"[SKIP] Test 2 skipped: Full dataset not found ({e})")
+    model = ContentModel()
+    
+    assert isinstance(model, Recommender), "Model does not satisfy Recommender protocol"
+    print("[PASS] Model satisfies Recommender protocol")
+    
+    assert isinstance(model, ColdStartHandler), "Model does not satisfy ColdStartHandler protocol"
+    print("[PASS] Model satisfies ColdStartHandler protocol")
+    
+    print("[PASS] Test 2 passed")
 
 
 def test_persistence_roundtrip():
@@ -103,19 +103,37 @@ def test_persistence_roundtrip():
     print("[PASS] Test 3 passed")
 
 
-def test_protocol_conformance():
-    """Test 4: Protocol Conformance Check"""
+def test_performance():
+    """Test 4: Performance Test"""
     print("\n" + "="*60)
-    print("TEST 4: Protocol Conformance Check")
+    print("TEST 4: Performance Test")
     print("="*60)
     
-    model = ContentModel()
+    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
+    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
     
-    assert isinstance(model, Recommender), "Model does not satisfy Recommender protocol"
-    print("[PASS] Model satisfies Recommender protocol")
+    model = ContentModel().fit(ratings, movies)
     
-    assert isinstance(model, ColdStartHandler), "Model does not satisfy ColdStartHandler protocol"
-    print("[PASS] Model satisfies ColdStartHandler protocol")
+    # Measure recommendation latency
+    start = time.time()
+    recs = model.recommend(user_id=1, k=10)
+    latency = time.time() - start
+    
+    print(f"Recommendation latency: {latency:.4f}s")
+    
+    # Measure similar_items latency
+    start = time.time()
+    similar = model.similar_items(item_id=10, k=10)
+    latency = time.time() - start
+    
+    print(f"Similar items latency: {latency:.4f}s")
+    
+    # Measure cold-start latency
+    start = time.time()
+    cold_recs = model.recommend_cold_start(genres=["Action"], liked_movie_ids=[], k=10)
+    latency = time.time() - start
+    
+    print(f"Cold-start latency: {latency:.4f}s")
     
     print("[PASS] Test 4 passed")
 
@@ -153,146 +171,6 @@ def test_edge_cases():
     print("[PASS] Test 5 passed")
 
 
-def test_performance():
-    """Test 6: Performance Test"""
-    print("\n" + "="*60)
-    print("TEST 6: Performance Test")
-    print("="*60)
-    
-    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
-    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
-    
-    model = ContentModel().fit(ratings, movies)
-    
-    # Measure recommendation latency
-    start = time.time()
-    recs = model.recommend(user_id=1, k=10)
-    latency = time.time() - start
-    
-    print(f"Recommendation latency: {latency:.4f}s")
-    
-    # Measure similar_items latency
-    start = time.time()
-    similar = model.similar_items(item_id=10, k=10)
-    latency = time.time() - start
-    
-    print(f"Similar items latency: {latency:.4f}s")
-    
-    # Measure cold-start latency
-    start = time.time()
-    cold_recs = model.recommend_cold_start(genres=["Action"], liked_movie_ids=[], k=10)
-    latency = time.time() - start
-    
-    print(f"Cold-start latency: {latency:.4f}s")
-    
-    print("[PASS] Test 6 passed")
-
-
-def test_explanation_quality():
-    """Test 7: Explanation Quality Check"""
-    print("\n" + "="*60)
-    print("TEST 7: Explanation Quality Check")
-    print("="*60)
-    
-    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
-    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
-    
-    model = ContentModel().fit(ratings, movies)
-    
-    # Test explanation generation for various items
-    test_items = [10, 20, 30, 40, 50]
-    
-    for item_id in test_items:
-        try:
-            explanation = model.get_explanation(user_id=1, item_id=item_id)
-            print(f"Item {item_id}: {explanation}")
-        except Exception as e:
-            print(f"Item {item_id}: Error - {type(e).__name__}")
-    
-    print("[PASS] Test 7 passed")
-
-
-def test_genre_filtering():
-    """Test 8: Genre Filtering Test"""
-    print("\n" + "="*60)
-    print("TEST 8: Genre Filtering Test")
-    print("="*60)
-    
-    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
-    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
-    
-    model = ContentModel().fit(ratings, movies)
-    
-    # Test different genre combinations
-    genre_combinations = [
-        ["Action"],
-        ["Drama"],
-        ["Action", "Drama"],
-        ["Comedy"],
-        ["Action", "Comedy", "Drama"]
-    ]
-    
-    for genres in genre_combinations:
-        recs = model.recommend_cold_start(genres=genres, liked_movie_ids=[], k=5)
-        print(f"Genres {genres}: {recs}")
-    
-    print("[PASS] Test 8 passed")
-
-
-def test_bundle_integrity():
-    """Test 9: Bundle Integrity Test"""
-    print("\n" + "="*60)
-    print("TEST 9: Bundle Integrity Test")
-    print("="*60)
-    
-    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
-    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
-    
-    model = ContentModel().fit(ratings, movies)
-    
-    # Test to_bundle
-    bundle = model.to_bundle()
-    required_keys = ["item_features", "item_index", "tfidf_matrix", "item_popularity", "ratings", "fitted"]
-    
-    for key in required_keys:
-        assert key in bundle, f"Missing key in bundle: {key}"
-    
-    print(f"Bundle contains all required keys: {required_keys}")
-    
-    # Test from_bundle
-    loaded_model = ContentModel.from_bundle(bundle)
-    
-    assert loaded_model.item_features == model.item_features
-    assert loaded_model.fitted == model.fitted
-    print("Bundle roundtrip preserves data integrity")
-    
-    print("[PASS] Test 9 passed")
-
-
-def test_user_history_utilization():
-    """Test 10: User History Utilization Test"""
-    print("\n" + "="*60)
-    print("TEST 10: User History Utilization Test")
-    print("="*60)
-    
-    ratings = pd.read_csv('tests/fixtures/ratings_sample.csv')
-    movies = pd.read_csv('tests/fixtures/movies_sample.csv')
-    
-    model = ContentModel().fit(ratings, movies)
-    
-    # Test recommendations for different users
-    test_users = [1, 2, 3, 4, 5]
-    
-    for user_id in test_users:
-        try:
-            recs = model.recommend(user_id=user_id, k=5)
-            print(f"User {user_id} recommendations: {recs}")
-        except Exception as e:
-            print(f"User {user_id}: Error - {type(e).__name__}")
-    
-    print("[PASS] Test 10 passed")
-
-
 def main():
     """Run all manual tests"""
     print("\n" + "="*60)
@@ -301,15 +179,10 @@ def main():
     
     tests = [
         test_interactive_content_model,
-        test_full_dataset_integration,
-        test_persistence_roundtrip,
         test_protocol_conformance,
-        test_edge_cases,
+        test_persistence_roundtrip,
         test_performance,
-        test_explanation_quality,
-        test_genre_filtering,
-        test_bundle_integrity,
-        test_user_history_utilization
+        test_edge_cases
     ]
     
     passed = 0

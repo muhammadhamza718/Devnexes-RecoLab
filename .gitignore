@@ -49,10 +49,16 @@
 !.specify/memory/
 !.specify/rules/
 
+# History prompts directory - keep structure, ignore files
+history/prompts/
+
 # Large dataset files and virtual environment
-recolab-hybrid-recommender/data/ml-latest-small.zip
-recolab-hybrid-recommender/data/ml-latest-small/
-recolab-hybrid-recommender/venv/
+Devnexes-RecoLab/data/ml-latest-small.zip
+Devnexes-RecoLab/data/ml-latest-small/
+Devnexes-RecoLab/venv/
+
+# Old directory name (for cleanup)
+recolab-hybrid-recommender/
 
 # Python compiled artifacts
 __pycache__/

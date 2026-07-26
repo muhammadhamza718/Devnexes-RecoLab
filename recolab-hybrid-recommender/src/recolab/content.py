@@ -41,6 +41,11 @@ class ContentModel(Recommender, ColdStartHandler):
     tfidf_matrix: np.ndarray | None = None
     item_popularity: dict[int, int] = field(default_factory=dict)
     fitted: bool = False
+    _ratings: pd.DataFrame = field(init=False)
+
+    def __post_init__(self) -> None:
+        """Initialize fields that can't use default_factory with init=False."""
+        self._ratings = pd.DataFrame()
 
     def fit(
         self,
@@ -69,6 +74,9 @@ class ContentModel(Recommender, ColdStartHandler):
 
         if movies is None:
             movies = pd.DataFrame(columns=["movieId", "title", "genres"])
+
+        # Store ratings for user-based recommendations
+        self._ratings = ratings.copy()
 
         # Build item features from genres
         self._build_item_features(movies)
@@ -152,19 +160,73 @@ class ContentModel(Recommender, ColdStartHandler):
         if exclude_items is None:
             exclude_items = set()
 
-        # Content model needs user history to find similar items
-        # For now, return popular items as fallback
-        # This will be enhanced in Phase 4c
-        popular_items = sorted(
-            self.item_popularity.items(),
+        # Get user's rated items
+        user_ratings = self._ratings[self._ratings["userId"] == user_id]
+        user_rated_items = set(user_ratings["movieId"].unique())
+
+        # If user has no ratings, fall back to popularity
+        if not user_rated_items:
+            popular_items = sorted(
+                self.item_popularity.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+            recommendations: list[int] = []
+            for item_id, _ in popular_items:
+                if item_id not in exclude_items and len(recommendations) < k:
+                    recommendations.append(item_id)
+            return recommendations
+
+        # Compute similarity scores for all items
+        # For each candidate item, find max similarity to any of user's rated items
+        candidate_scores: dict[int, float] = {}
+        for candidate_id in self.item_index.keys():
+            if candidate_id in user_rated_items or candidate_id in exclude_items:
+                continue
+
+            max_sim = 0.0
+            for rated_id in user_rated_items:
+                if rated_id not in self.item_index:
+                    continue
+                # Compute similarity between candidate and rated item
+                if self.tfidf_matrix is None or self.tfidf_matrix.size == 0:
+                    continue
+                candidate_idx = self.item_index[candidate_id]
+                rated_idx = self.item_index[rated_id]
+                sim = cosine_similarity(
+                    self.tfidf_matrix[candidate_idx:candidate_idx + 1],
+                    self.tfidf_matrix[rated_idx:rated_idx + 1],
+                )[0][0]
+                max_sim = max(max_sim, sim)
+
+            if max_sim > 0:
+                candidate_scores[candidate_id] = max_sim
+
+        # Sort by similarity score
+        sorted_candidates = sorted(
+            candidate_scores.items(),
             key=lambda x: x[1],
             reverse=True,
         )
 
-        recommendations: list[int] = []
-        for item_id, _ in popular_items:
-            if item_id not in exclude_items and len(recommendations) < k:
-                recommendations.append(item_id)
+        # Return top-k
+        recommendations = [item_id for item_id, _ in sorted_candidates[:k]]
+
+        # If not enough similar items, fill with popular items
+        if len(recommendations) < k:
+            popular_items = sorted(
+                self.item_popularity.items(),
+                key=lambda x: x[1],
+                reverse=True,
+            )
+            for item_id, _ in popular_items:
+                if (
+                    item_id not in exclude_items
+                    and item_id not in user_rated_items
+                    and item_id not in recommendations
+                    and len(recommendations) < k
+                ):
+                    recommendations.append(item_id)
 
         return recommendations
 
@@ -298,6 +360,7 @@ class ContentModel(Recommender, ColdStartHandler):
             ),
             "item_popularity": self.item_popularity,
             "fitted": self.fitted,
+            "ratings": self._ratings.to_dict() if self._ratings is not None else None,
         }
 
     @classmethod
@@ -319,6 +382,9 @@ class ContentModel(Recommender, ColdStartHandler):
             item_popularity=bundle.get("item_popularity", {}),
             fitted=bundle.get("fitted", False),
         )
+        # Restore ratings if present
+        if bundle.get("ratings") is not None:
+            model._ratings = pd.DataFrame.from_dict(bundle["ratings"])
         return model
 
     def save(self, path: str | Path) -> Path:

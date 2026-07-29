@@ -8,6 +8,7 @@ from recolab.baseline import (
     PopularityModel,
     compute_popularity,
 )
+from recolab.collaborative import ItemBasedCF, UserBasedCF
 from recolab.content import ContentModel
 from recolab.interfaces import (
     ColdStartHandler,
@@ -40,6 +41,8 @@ __all__ = [
     "PopularityModel",
     "compute_popularity",
     "ContentModel",
+    "UserBasedCF",
+    "ItemBasedCF",
     "Recommender",
     "ColdStartHandler",
     "FeatureError",

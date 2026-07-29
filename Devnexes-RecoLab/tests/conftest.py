@@ -1,6 +1,7 @@
 """Pytest configuration and shared fixtures for RecoLab tests."""
 
 import pytest
+import numpy as np
 import pandas as pd
 from pathlib import Path
 

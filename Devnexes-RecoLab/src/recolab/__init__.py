@@ -10,6 +10,15 @@ from recolab.baseline import (
 )
 from recolab.collaborative import ItemBasedCF, UserBasedCF
 from recolab.content import ContentModel
+from recolab.hybrid import (
+    EnhancedColdStartHandler,
+    FallbackManager,
+    HybridRecommender,
+    NewItemDetector,
+    ParameterOptimizer,
+    PerformanceMonitor,
+    UserProfile,
+)
 from recolab.interfaces import (
     ColdStartHandler,
     FeatureError,
@@ -43,6 +52,13 @@ __all__ = [
     "ContentModel",
     "UserBasedCF",
     "ItemBasedCF",
+    "HybridRecommender",
+    "UserProfile",
+    "EnhancedColdStartHandler",
+    "NewItemDetector",
+    "ParameterOptimizer",
+    "FallbackManager",
+    "PerformanceMonitor",
     "Recommender",
     "ColdStartHandler",
     "FeatureError",
@@ -60,3 +76,4 @@ __all__ = [
     "evaluate_user",
     "evaluate_all",
 ]
+

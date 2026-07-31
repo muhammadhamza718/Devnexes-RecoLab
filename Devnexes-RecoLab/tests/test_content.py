@@ -321,22 +321,22 @@ class TestContentModelColdStartEnhanced:
 
 
 class TestContentModelExplanation:
-    """Test get_explanation() method."""
+    """Test explain() method."""
 
-    def test_get_explanation_known_item(self, sample_ratings, sample_movies):
-        """Test get_explanation() for known item."""
+    def test_explain_known_item(self, sample_ratings, sample_movies):
+        """Test explain() for known item."""
         model = ContentModel().fit(sample_ratings, sample_movies)
 
-        explanation = model.get_explanation(user_id=1, item_id=10)
+        explanation = model.explain(user_id=1, item_id=10)
 
         assert isinstance(explanation, str)
         assert "Action" in explanation or "matches your interest" in explanation
 
-    def test_get_explanation_unknown_item(self, sample_ratings, sample_movies):
-        """Test get_explanation() for unknown item."""
+    def test_explain_unknown_item(self, sample_ratings, sample_movies):
+        """Test explain() for unknown item."""
         model = ContentModel().fit(sample_ratings, sample_movies)
 
-        explanation = model.get_explanation(user_id=1, item_id=999)
+        explanation = model.explain(user_id=1, item_id=999)
 
         assert "not found" in explanation
 

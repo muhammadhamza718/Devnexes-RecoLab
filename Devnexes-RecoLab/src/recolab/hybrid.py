@@ -447,7 +447,8 @@ class HybridRecommender:
                 logger.warning(f"Model mode {mode} failed for user {user_id}: {exc}")
                 continue
 
-        # If all fallbacks yield empty, return empty list
+        # If all fallbacks yield empty, return empty list with diagnostic info
+        logger.warning(f"All fallback modes failed for user {user_id}")
         return []
 
     def recommend_cold_start(
@@ -499,9 +500,9 @@ class HybridRecommender:
             if (
                 model_name == "content"
                 and self.content_model
-                and hasattr(self.content_model, "get_explanation")
+                and hasattr(self.content_model, "explain")
             ):
-                return self.content_model.get_explanation(user_id, movie_id)
+                return self.content_model.explain(user_id, movie_id)
             elif (
                 model_name == "collaborative"
                 and self.user_based_cf
@@ -758,21 +759,34 @@ class NewItemDetector:
     """Detector and booster for new catalog items with limited ratings."""
 
     def __init__(
-        self, rating_count_threshold: int = 5, boost_weight: float = 0.3
+        self, rating_count_threshold: int = 5, boost_weight: float = 0.3, time_decay_days: int = 30
     ) -> None:
         """Initialize new-item detector."""
         self.rating_count_threshold = int(rating_count_threshold)
         self.boost_weight = float(boost_weight)
+        self.time_decay_days = int(time_decay_days)
+        self.item_timestamps: Dict[int, float] = {}
 
     def detect_new_items(self, movie_id: int, rating_count: int) -> bool:
         """Check if item is classified as new based on rating threshold."""
         return rating_count <= self.rating_count_threshold
 
-    def apply_popularity_boost(self, score: float, is_new: bool) -> float:
-        """Apply temporary popularity boost to new item score."""
-        if is_new:
-            return float(score * (1.0 + self.boost_weight))
-        return float(score)
+    def apply_popularity_boost(self, score: float, is_new: bool, item_id: Optional[int] = None) -> float:
+        """Apply temporary popularity boost to new item score with optional time decay."""
+        if not is_new:
+            return float(score)
+
+        # Calculate time decay if item_id and timestamp are available
+        decay_factor = 1.0
+        if item_id and item_id in self.item_timestamps:
+            item_time = self.item_timestamps[item_id]
+            current_time = time.time()
+            days_since_addition = (current_time - item_time) / (24 * 3600)
+            if days_since_addition > 0:
+                decay_factor = max(0.0, 1.0 - (days_since_addition / self.time_decay_days))
+
+        effective_boost = self.boost_weight * decay_factor
+        return float(score * (1.0 + effective_boost))
 
     def flag_new_items(
         self, item_ids: List[int], item_rating_counts: Dict[int, int]
@@ -806,7 +820,9 @@ class ParameterOptimizer:
         best_score = -1.0
 
         for a in candidates:
-            score = 1.0 - abs(a - 0.5)  # Deterministic score proxy for validation
+            # NOTE: For production, replace with actual NDCG@K evaluation on validation set
+            # Current deterministic proxy prioritizes alpha values near 0.5 for prototype
+            score = 1.0 - abs(a - 0.5)
             if score > best_score:
                 best_score = score
                 best_alpha = a

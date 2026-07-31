@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pathlib
+import time
 from typing import Any, Dict, List
 
 import numpy as np
@@ -405,6 +406,13 @@ def test_new_item_detector_and_boost() -> None:
     assert pytest.approx(boosted) == 1.3
     unboosted = detector.apply_popularity_boost(score=1.0, is_new=False)
     assert pytest.approx(unboosted) == 1.0
+
+    # Test time decay with item_id
+    detector.item_timestamps[10] = time.time() - (25 * 24 * 3600)  # 25 days ago
+    decayed_boost = detector.apply_popularity_boost(score=1.0, is_new=True, item_id=10)
+    # After 25 days with 30-day decay, boost should be reduced: 0.3 * (1 - 25/30) = 0.3 * 0.167 = 0.05
+    # Total boost: 1.0 * (1.0 + 0.05) = 1.05
+    assert pytest.approx(decayed_boost, rel=0.1) == 1.05
 
     flags = detector.flag_new_items([10, 20], {10: 2, 20: 100})
     assert flags[10] is True

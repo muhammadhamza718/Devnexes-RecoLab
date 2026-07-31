@@ -326,7 +326,7 @@ class ContentModel(Recommender, ColdStartHandler):
 
         return matching_items[:k]
 
-    def get_explanation(
+    def explain(
         self,
         user_id: int,
         item_id: int,

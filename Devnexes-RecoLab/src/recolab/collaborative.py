@@ -154,6 +154,7 @@ class UserBasedCF:
         if self.user_item_matrix is None:
             raise ValueError("user_item_matrix is not built.")
 
+        # pyrefly: ignore [bad-argument-type]
         self.similarity_matrix = np.asarray(cosine_similarity(self.user_item_matrix))
 
     def _find_similar_users(self, user_id: int) -> List[Tuple[int, float]]:
@@ -179,7 +180,9 @@ class UserBasedCF:
             return []
 
         # Sort candidate indices by similarity descending
-        sorted_indices = sorted(candidate_indices, key=lambda idx: sim_scores[idx], reverse=True)
+        sorted_indices = sorted(
+            candidate_indices, key=lambda idx: sim_scores[idx], reverse=True
+        )
         top_k_indices = sorted_indices[: self.k_similar_users]
 
         return [
@@ -216,7 +219,9 @@ class UserBasedCF:
 
             for col_idx, rating in zip(movie_indices, ratings):
                 if col_idx not in target_consumed:
-                    weighted_sums[col_idx] = weighted_sums.get(col_idx, 0.0) + (sim_score * rating)
+                    weighted_sums[col_idx] = weighted_sums.get(col_idx, 0.0) + (
+                        sim_score * rating
+                    )
                     sim_sums[col_idx] = sim_sums.get(col_idx, 0.0) + sim_score
 
         predictions: Dict[int, float] = {}
@@ -235,7 +240,7 @@ class UserBasedCF:
 
         user_idx = self.user_mapping[user_id]
         num_ratings = self.user_item_matrix[user_idx].nnz
-        return num_ratings <= self.cold_start_threshold
+        return bool(num_ratings <= self.cold_start_threshold)
 
     def recommend(
         self,
@@ -261,33 +266,45 @@ class UserBasedCF:
         if k <= 0:
             raise ValueError("k must be a positive integer.")
 
-        exclude_set: Set[int] = set(exclude_items) if exclude_items is not None else set()
+        exclude_set: Set[int] = (
+            set(exclude_items) if exclude_items is not None else set()
+        )
 
         # Handle cold-start fallback if user has <= cold_start_threshold ratings or is unknown
         if self._is_cold_start(user_id):
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         # Find similar users
         similar_users = self._find_similar_users(user_id)
         if not similar_users:
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         # Aggregate predictions for candidate movies
         predictions = self._aggregate_predictions(similar_users, target_user_id=user_id)
         if not predictions:
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         # Exclude items explicitly specified in exclude_items
         candidate_items = [
-            (mid, score)
-            for mid, score in predictions.items()
-            if mid not in exclude_set
+            (mid, score) for mid, score in predictions.items() if mid not in exclude_set
         ]
 
         # Sort candidate items by predicted rating descending, then movie_id ascending
@@ -308,9 +325,11 @@ class UserBasedCF:
         if not self.is_fitted:
             return "Model is not fitted."
         if self._is_cold_start(user_id):
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
                 if hasattr(self.content_model, "explain"):
-                    return self.content_model.explain(user_id, movie_id)
+                    return str(self.content_model.explain(user_id, movie_id))
             return "Recommended based on overall popular choices (cold-start fallback)."
         return "Recommended based on ratings from users with similar taste to you."
 
@@ -521,7 +540,9 @@ class ItemBasedCF:
         if not candidate_indices:
             return []
 
-        sorted_indices = sorted(candidate_indices, key=lambda idx: sim_scores[idx], reverse=True)
+        sorted_indices = sorted(
+            candidate_indices, key=lambda idx: sim_scores[idx], reverse=True
+        )
         top_k_indices = sorted_indices[: self.k_similar_items]
 
         return [
@@ -551,7 +572,9 @@ class ItemBasedCF:
             similar_items = self._find_similar_items(rated_mid)
             for cand_mid, sim_score in similar_items:
                 if cand_mid not in consumed_movie_ids:
-                    weighted_sums[cand_mid] = weighted_sums.get(cand_mid, 0.0) + (sim_score * user_rating)
+                    weighted_sums[cand_mid] = weighted_sums.get(cand_mid, 0.0) + (
+                        sim_score * user_rating
+                    )
                     sim_sums[cand_mid] = sim_sums.get(cand_mid, 0.0) + sim_score
 
         predictions: Dict[int, float] = {}
@@ -590,12 +613,18 @@ class ItemBasedCF:
         if k <= 0:
             raise ValueError("k must be a positive integer.")
 
-        exclude_set: Set[int] = set(exclude_items) if exclude_items is not None else set()
+        exclude_set: Set[int] = (
+            set(exclude_items) if exclude_items is not None else set()
+        )
 
         if user_id not in self.user_mapping or self.user_item_matrix is None:
             # Fallback to ContentModel for unknown user
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         # Extract user's rated items
@@ -605,8 +634,12 @@ class ItemBasedCF:
         ratings = user_row.data
 
         if len(movie_indices) == 0:
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         user_rated_items = [
@@ -616,14 +649,16 @@ class ItemBasedCF:
 
         predictions = self._aggregate_predictions(user_rated_items)
         if not predictions:
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
-                return self.content_model.recommend(user_id=user_id, k=k, exclude_items=exclude_set)
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
+                return self.content_model.recommend(
+                    user_id=user_id, k=k, exclude_items=exclude_set
+                )
             return []
 
         candidate_items = [
-            (mid, score)
-            for mid, score in predictions.items()
-            if mid not in exclude_set
+            (mid, score) for mid, score in predictions.items() if mid not in exclude_set
         ]
 
         candidate_items.sort(key=lambda item: (-item[1], item[0]))
@@ -643,9 +678,11 @@ class ItemBasedCF:
         if not self.is_fitted:
             return "Model is not fitted."
         if self._is_new_item(movie_id):
-            if self.content_model is not None and getattr(self.content_model, "fitted", False):
+            if self.content_model is not None and getattr(
+                self.content_model, "fitted", False
+            ):
                 if hasattr(self.content_model, "explain"):
-                    return self.content_model.explain(user_id, movie_id)
+                    return str(self.content_model.explain(user_id, movie_id))
             return "Recommended based on content metadata features (new-item fallback)."
         return "Recommended because you rated similar movies highly."
 

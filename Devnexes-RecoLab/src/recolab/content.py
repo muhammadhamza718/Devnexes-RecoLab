@@ -177,30 +177,31 @@ class ContentModel(Recommender, ColdStartHandler):
                     recommendations.append(item_id)
             return recommendations
 
-        # Compute similarity scores for all items
-        # For each candidate item, find max similarity to any of user's rated items
+        # Compute similarity scores for all items.
+        # For each candidate item, find max similarity to any of user's rated
+        # items. This is computed with a single matrix operation (candidate x
+        # rated similarity) instead of a nested per-pair loop, which is
+        # orders of magnitude faster for the full catalog.
         candidate_scores: dict[int, float] = {}
-        for candidate_id in self.item_index.keys():
-            if candidate_id in user_rated_items or candidate_id in exclude_items:
-                continue
-
-            max_sim = 0.0
-            for rated_id in user_rated_items:
-                if rated_id not in self.item_index:
-                    continue
-                # Compute similarity between candidate and rated item
-                if self.tfidf_matrix is None or self.tfidf_matrix.size == 0:
-                    continue
-                candidate_idx = self.item_index[candidate_id]
-                rated_idx = self.item_index[rated_id]
-                sim = cosine_similarity(
-                    self.tfidf_matrix[candidate_idx : candidate_idx + 1],
-                    self.tfidf_matrix[rated_idx : rated_idx + 1],
-                )[0][0]
-                max_sim = max(max_sim, sim)
-
-            if max_sim > 0:
-                candidate_scores[candidate_id] = max_sim
+        if self.tfidf_matrix is not None and self.tfidf_matrix.size > 0:
+            rated_ids = [rid for rid in user_rated_items if rid in self.item_index]
+            candidate_ids = [
+                cid
+                for cid in self.item_index
+                if cid not in user_rated_items and cid not in exclude_items
+            ]
+            if rated_ids and candidate_ids:
+                rated_vectors = self.tfidf_matrix[
+                    [self.item_index[rid] for rid in rated_ids]
+                ]
+                candidate_vectors = self.tfidf_matrix[
+                    [self.item_index[cid] for cid in candidate_ids]
+                ]
+                similarities = cosine_similarity(candidate_vectors, rated_vectors)
+                max_sims = similarities.max(axis=1)
+                for cid, sim in zip(candidate_ids, max_sims):
+                    if sim > 0:
+                        candidate_scores[cid] = float(sim)
 
         # Sort by similarity score
         sorted_candidates = sorted(

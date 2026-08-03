@@ -23,10 +23,14 @@ st.set_page_config(
 
 from ui.components.model_selection import render_model_selector  # noqa: E402
 from ui.components.recommendation_display import render_recommendations  # noqa: E402
+from ui.components.similar_items import render_similar_items  # noqa: E402
 from ui.components.user_selection import render_user_selector  # noqa: E402
+from ui.components.visualizations import render_visualizations_panel  # noqa: E402
 from ui.data_provider import DataProvider  # noqa: E402
 from ui.model_manager import ModelManager  # noqa: E402
 from ui.session_manager import SessionManager  # noqa: E402
+from ui.similarity_provider import SimilarityProvider  # noqa: E402
+from ui.statistics_aggregator import StatisticsAggregator  # noqa: E402
 
 SessionManager.ensure_initialized()
 
@@ -113,17 +117,38 @@ def _generate(
         st.caption("Tip: try another user or model.")
 
 
+def _render_similar_items_view(
+    provider: DataProvider,
+    similarity_provider: SimilarityProvider,
+) -> None:
+    """Render the similar-items view with back navigation (Tasks 005/006).
+
+    Shown when ``current_view`` is "similar_items": a back button returns to
+    the recommendations view, then the cached similar items are rendered as a
+    poster grid with the source movie's title as context.
+    """
+    if st.button("← Back to recommendations"):
+        SessionManager.set_current_view("recommendations")
+        st.rerun()
+
+    render_similar_items(
+        similarity_provider,
+        SessionManager.get_similar_items(),
+        source_title=SessionManager.get_similar_source_title(),
+    )
+
+
 def main() -> None:
     with st.spinner("Loading data…"):
         provider = _load_provider()
     model_manager = ModelManager()
+    similarity_provider = SimilarityProvider(model_manager, provider)
+    stats_aggregator = StatisticsAggregator(provider)
 
     with st.sidebar:
         st.header("Configuration")
         user_id = render_user_selector(provider)
         model_name, params = render_model_selector()
-
-    st.header("Recommendations")
 
     if user_id is None:
         st.info("Select a user from the sidebar to get started.")
@@ -136,10 +161,22 @@ def main() -> None:
     activity = str(profile.get("activity_level", "unknown")).replace("-", " ").title()
     cols[2].metric("Activity", activity)
 
+    if SessionManager.get_current_view() == "similar_items":
+        _render_similar_items_view(provider, similarity_provider)
+        return
+
     if st.button("Generate Recommendations", type="primary"):
         _generate(user_id, model_name, params, provider, model_manager)
 
-    render_recommendations(provider, SessionManager.get_recommendations(), model_name, params)
+    render_recommendations(
+        provider,
+        SessionManager.get_recommendations(),
+        model_name,
+        params,
+        similarity_provider=similarity_provider,
+    )
+
+    render_visualizations_panel(user_id, stats_aggregator)
 
 
 if __name__ == "__main__":

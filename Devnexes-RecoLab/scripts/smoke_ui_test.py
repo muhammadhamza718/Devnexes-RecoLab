@@ -1,7 +1,10 @@
 """Headless smoke test for the RecoLab Streamlit UI using streamlit.testing.
 
-Covers Task-012 (core functionality), Task-013 (session persistence) and
-Task-014 (error handling). Run from the project root:
+Covers Task-012 (core functionality), Task-013 (session persistence),
+Task-014 (error handling) and the Day 3 Afternoon rich-UI features: the
+visualization panel (Task-012), similar-items navigation and back navigation
+(Tasks 005/006), and the item-detail expander (Task-014). Run from the
+project root:
 
     python scripts/smoke_ui_test.py
 """
@@ -74,6 +77,56 @@ at.text_input[0].set_value("99999999")
 at.run()
 check("unknown user does not crash", not at.exception)
 check("unknown user shows sidebar warning", len(at.warning) > 0)
+
+# ---------------------------------------------------------------------------
+# Day 3 Afternoon - rich UI features (Tasks 005/006, 012, 014)
+# ---------------------------------------------------------------------------
+# Back to a known user, then regenerate so rows render with detail panels.
+at.text_input[0].set_value("1")
+at.run()
+gen_btn = next((b for b in at.button if b.label == "Generate Recommendations"), None)
+check("generate button present", gen_btn is not None)
+if gen_btn is not None:
+    gen_btn.click()
+    at.run()
+check("rich UI: recommendations regenerated", len(at.session_state["recommendations"]) > 0)
+
+# Visualization panel: closed by default, toggles via the session key.
+check("visualization panel closed by default", not at.session_state["visualization_panel_open"])
+viz_cb = next((cb for cb in at.checkbox if "Show visualizations" in cb.label), None)
+check("visualization toggle present", viz_cb is not None)
+if viz_cb is not None:
+    viz_cb.check()
+    at.run()
+    check("visualization panel opens", at.session_state["visualization_panel_open"] is True)
+    # Re-query the checkbox after the rerun (the previous handle is stale).
+    viz_cb = next((cb for cb in at.checkbox if "Show visualizations" in cb.label), None)
+    if viz_cb is not None:
+        viz_cb.uncheck()
+        at.run()
+        check("visualization panel closes", not at.session_state["visualization_panel_open"])
+
+# "More like this" switches to the similar-items view.
+similar_btn = next((b for b in at.button if "More like this" in b.label), None)
+check("more like this button present", similar_btn is not None)
+if similar_btn is not None:
+    similar_btn.click()
+    at.run()
+    check("similar items computed", len(at.session_state["similar_items"]) > 0)
+    check("view switched to similar_items", at.session_state["current_view"] == "similar_items")
+    check("similar source title stored", bool(at.session_state["similar_source_title"]))
+
+    # Back navigation returns to the recommendations view.
+    back_btn = next((b for b in at.button if "Back to recommendations" in b.label), None)
+    check("back navigation button present", back_btn is not None)
+    if back_btn is not None:
+        back_btn.click()
+        at.run()
+        check("back restores recommendations view", at.session_state["current_view"] == "recommendations")
+
+# Item-detail expander is rendered inside each recommendation row.
+detail_expanders = [e for e in at.expander if e.label == "Movie details"]
+check("item detail expanders present", len(detail_expanders) > 0)
 
 print()
 failed = [name for name, ok in RESULTS if not ok]

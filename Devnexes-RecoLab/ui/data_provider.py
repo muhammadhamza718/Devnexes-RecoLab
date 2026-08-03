@@ -145,3 +145,18 @@ class DataProvider:
     def get_movie_year(self, movie_id: int) -> int | None:
         movie = self.get_movie(movie_id)
         return movie["year"] if movie else None
+
+    def get_movie_stats(self, movie_id: int) -> dict[str, Any]:
+        """Rating statistics for a movie from the train split.
+
+        Returns ``{"rating_count": int, "mean_rating": float | None}``. The
+        rating count doubles as the popularity metric (mirrors the Popularity
+        model's ranking signal). Unknown movies return a zero count.
+        """
+        rows = self._train[self._train["movieId"] == int(movie_id)]
+        if rows.empty:
+            return {"rating_count": 0, "mean_rating": None}
+        return {
+            "rating_count": int(len(rows)),
+            "mean_rating": float(rows["rating"].mean()),
+        }

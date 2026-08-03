@@ -5,13 +5,19 @@ UI components never talk to the Streamlit runtime directly. New state keys are
 declared in :data:`DEFAULT_SESSION_STATE` and are lazily initialised on first
 access, which keeps the app working across Streamlit reruns and refreshes.
 
-Schema (per the Day 3 Morning implementation prompt):
+Schema (per the Day 3 Morning + Day 3 Afternoon implementation prompts):
 
-    selected_user_id: int | None   currently selected user
-    selected_model:    str          one of the five model display names
-    model_params:      dict         {"alpha": 0.0-1.0, "k": 5-50, "n": 5/10/20}
-    recommendations:   list[dict]   rendered recommendation rows
-    user_profile:      dict         {"user_id", "rating_count", "activity_level"}
+    selected_user_id:        int | None   currently selected user
+    selected_model:          str          one of the five model display names
+    model_params:            dict         {"alpha": 0.0-1.0, "k": 5-50, "n": 5/10/20}
+    recommendations:         list[dict]   rendered recommendation rows
+    user_profile:            dict         {"user_id", "rating_count", "activity_level"}
+    poster_cache:            dict         movie_id -> poster_url (placeholder)
+    similar_items:           list[dict]   similar items for the selected movie
+    similar_source_title:    str|None     title of the movie the items are similar to
+    current_view:            str          "recommendations" or "similar_items"
+    visualization_panel_open: bool        expandable panel state
+    rating_statistics:       dict         cached per-user rating statistics
 """
 
 from __future__ import annotations
@@ -28,6 +34,13 @@ DEFAULT_SESSION_STATE: dict[str, Any] = {
     "model_params": {"alpha": 0.5, "k": 10, "n": 10},
     "recommendations": [],
     "user_profile": {},
+    # Day 3 Afternoon: rich UI state
+    "poster_cache": {},  # movie_id -> poster_url
+    "similar_items": [],  # Similar items for selected movie
+    "similar_source_title": None,  # Title of the movie the items are similar to
+    "current_view": "recommendations",  # "recommendations" or "similar_items"
+    "visualization_panel_open": False,  # Expandable panel state
+    "rating_statistics": {},  # Cached user statistics
 }
 
 
@@ -98,3 +111,63 @@ class SessionManager:
     @staticmethod
     def set_user_profile(profile: dict[str, Any]) -> None:
         st.session_state["user_profile"] = profile
+
+    # --- Day 3 Afternoon: rich UI accessors ------------------------------
+
+    @staticmethod
+    def get_poster_cache() -> dict[int, str]:
+        return st.session_state.get("poster_cache") or {}
+
+    @staticmethod
+    def set_poster_for(movie_id: int, poster_url: str) -> None:
+        cache = SessionManager.get_poster_cache()
+        cache[movie_id] = poster_url
+        st.session_state["poster_cache"] = cache
+
+    @staticmethod
+    def get_poster_for(movie_id: int) -> str | None:
+        return SessionManager.get_poster_cache().get(movie_id)
+
+    @staticmethod
+    def get_similar_items() -> list[dict[str, Any]]:
+        return st.session_state.get("similar_items") or []
+
+    @staticmethod
+    def set_similar_items(items: list[dict[str, Any]]) -> None:
+        st.session_state["similar_items"] = items
+
+    @staticmethod
+    def clear_similar_items() -> None:
+        st.session_state["similar_items"] = []
+
+    @staticmethod
+    def get_similar_source_title() -> str | None:
+        return st.session_state.get("similar_source_title")
+
+    @staticmethod
+    def set_similar_source_title(title: str | None) -> None:
+        st.session_state["similar_source_title"] = title
+
+    @staticmethod
+    def get_current_view() -> str:
+        return st.session_state.get("current_view") or "recommendations"
+
+    @staticmethod
+    def set_current_view(view: str) -> None:
+        st.session_state["current_view"] = view
+
+    @staticmethod
+    def is_visualization_panel_open() -> bool:
+        return bool(st.session_state.get("visualization_panel_open"))
+
+    @staticmethod
+    def set_visualization_panel_open(open_: bool) -> None:
+        st.session_state["visualization_panel_open"] = open_
+
+    @staticmethod
+    def get_rating_statistics() -> dict[str, Any]:
+        return st.session_state.get("rating_statistics") or {}
+
+    @staticmethod
+    def set_rating_statistics(stats: dict[str, Any]) -> None:
+        st.session_state["rating_statistics"] = stats

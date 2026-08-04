@@ -41,6 +41,16 @@ DEFAULT_SESSION_STATE: dict[str, Any] = {
     "current_view": "recommendations",  # "recommendations" or "similar_items"
     "visualization_panel_open": False,  # Expandable panel state
     "rating_statistics": {},  # Cached user statistics
+    # Day 4 Morning: onboarding state (namespaced with onboarding_)
+    "onboarding_active": False,  # Whether onboarding is currently active
+    "onboarding_step": 0,  # Current wizard step (0, 1, 2)
+    "onboarding_complete": False,  # Whether onboarding is completed
+    "onboarding_timestamp": None,  # ISO timestamp of onboarding completion
+    "selected_genres": [],  # Selected genre preferences
+    "liked_movies": [],  # Selected liked movie IDs or metadata dicts
+    "preference_weights": {},  # Genre preference weights
+    "onboarding_preferences": {},  # Complete preference set
+    "recommendation_preview": [],  # Preview recommendations
 }
 
 
@@ -171,3 +181,91 @@ class SessionManager:
     @staticmethod
     def set_rating_statistics(stats: dict[str, Any]) -> None:
         st.session_state["rating_statistics"] = stats
+
+    # --- Day 4 Morning: onboarding accessors ------------------------------
+
+    @staticmethod
+    def is_onboarding_active() -> bool:
+        return bool(st.session_state.get("onboarding_active"))
+
+    @staticmethod
+    def set_onboarding_active(active: bool) -> None:
+        st.session_state["onboarding_active"] = active
+
+    @staticmethod
+    def get_onboarding_step() -> int:
+        return st.session_state.get("onboarding_step") or 0
+
+    @staticmethod
+    def set_onboarding_step(step: int) -> None:
+        st.session_state["onboarding_step"] = step
+
+    @staticmethod
+    def is_onboarding_complete() -> bool:
+        return bool(st.session_state.get("onboarding_complete"))
+
+    @staticmethod
+    def set_onboarding_complete(complete: bool) -> None:
+        st.session_state["onboarding_complete"] = complete
+
+    @staticmethod
+    def get_onboarding_timestamp() -> str | None:
+        return st.session_state.get("onboarding_timestamp")
+
+    @staticmethod
+    def set_onboarding_timestamp(timestamp: str | None) -> None:
+        st.session_state["onboarding_timestamp"] = timestamp
+
+    @staticmethod
+    def get_selected_genres() -> list[str]:
+        return st.session_state.get("selected_genres") or []
+
+    @staticmethod
+    def set_selected_genres(genres: list[str]) -> None:
+        st.session_state["selected_genres"] = genres
+
+    @staticmethod
+    def get_liked_movies() -> list[Any]:
+        return st.session_state.get("liked_movies") or []
+
+    @staticmethod
+    def set_liked_movies(movies: list[Any]) -> None:
+        st.session_state["liked_movies"] = movies
+
+    @staticmethod
+    def get_preference_weights() -> dict[str, float]:
+        return st.session_state.get("preference_weights") or {}
+
+    @staticmethod
+    def set_preference_weights(weights: dict[str, float]) -> None:
+        st.session_state["preference_weights"] = weights
+
+    @staticmethod
+    def get_onboarding_preferences() -> dict[str, Any]:
+        return st.session_state.get("onboarding_preferences") or {}
+
+    @staticmethod
+    def set_onboarding_preferences(prefs: dict[str, Any]) -> None:
+        st.session_state["onboarding_preferences"] = prefs
+
+    @staticmethod
+    def get_recommendation_preview() -> list[dict[str, Any]]:
+        return st.session_state.get("recommendation_preview") or []
+
+    @staticmethod
+    def set_recommendation_preview(preview: list[dict[str, Any]]) -> None:
+        st.session_state["recommendation_preview"] = preview
+
+    @staticmethod
+    def reset_onboarding_state() -> None:
+        """Reset all onboarding-related session state keys to defaults."""
+        st.session_state["onboarding_active"] = True
+        st.session_state["onboarding_step"] = 0
+        st.session_state["onboarding_complete"] = False
+        st.session_state["onboarding_timestamp"] = None
+        st.session_state["selected_genres"] = []
+        st.session_state["liked_movies"] = []
+        st.session_state["preference_weights"] = {}
+        st.session_state["onboarding_preferences"] = {}
+        st.session_state["recommendation_preview"] = []
+

@@ -32,6 +32,14 @@ from ui.session_manager import SessionManager  # noqa: E402
 from ui.similarity_provider import SimilarityProvider  # noqa: E402
 from ui.statistics_aggregator import StatisticsAggregator  # noqa: E402
 
+from ui.onboarding.genre_provider import GenreProvider  # noqa: E402
+from ui.onboarding.movie_search_provider import MovieSearchProvider  # noqa: E402
+from ui.onboarding.wizard_controller import OnboardingWizard  # noqa: E402
+from ui.onboarding.onboarding_recommender import OnboardingRecommender  # noqa: E402
+from ui.onboarding.components.genre_selection import render_genre_selection  # noqa: E402
+from ui.onboarding.components.liked_movies import render_liked_movies  # noqa: E402
+from ui.onboarding.components.confirmation import render_confirmation  # noqa: E402
+
 SessionManager.ensure_initialized()
 
 st.title("Devnexes RecoLab — Movie Recommendation System")
@@ -145,14 +153,60 @@ def main() -> None:
     similarity_provider = SimilarityProvider(model_manager, provider)
     stats_aggregator = StatisticsAggregator(provider)
 
+    genre_provider = GenreProvider(provider)
+    search_provider = MovieSearchProvider(provider)
+    wizard = OnboardingWizard()
+    onboarding_recommender = OnboardingRecommender(provider)
+
     with st.sidebar:
         st.header("Configuration")
         user_id = render_user_selector(provider)
         model_name, params = render_model_selector()
 
-    if user_id is None:
-        st.info("Select a user from the sidebar to get started.")
+        st.markdown("---")
+        st.subheader("Cold-Start Onboarding")
+        if st.button("✨ Start New User Onboarding", key="btn_start_onboarding_sidebar", use_container_width=True):
+            SessionManager.reset_onboarding_state()
+            st.rerun()
+
+    # If onboarding wizard is active, render the wizard instead of main recommendations dashboard
+    if SessionManager.is_onboarding_active():
+        current_step = wizard.get_current_step()
+        progress_val = int((current_step + 1) / wizard.TOTAL_STEPS * 100)
+
+        col_head, col_exit = st.columns([4, 1])
+        with col_head:
+            st.markdown(f"### 🚀 New User Onboarding Wizard — Step {current_step + 1} of {wizard.TOTAL_STEPS}")
+        with col_exit:
+            if st.button("✖️ Cancel Wizard", key="btn_cancel_wizard"):
+                SessionManager.set_onboarding_active(False)
+                st.rerun()
+
+        st.progress(progress_val)
+
+        if current_step == 0:
+            render_genre_selection(genre_provider, wizard)
+        elif current_step == 1:
+            render_liked_movies(search_provider, wizard)
+        elif current_step == 2:
+            render_confirmation(wizard, onboarding_recommender)
+
         return
+
+    if user_id is None:
+        st.info("Select a user from the sidebar or click '✨ Start New User Onboarding' to get started.")
+        return
+
+    # Display active onboarding preferences banner if user completed onboarding
+    if SessionManager.is_onboarding_complete():
+        prefs = SessionManager.get_onboarding_preferences()
+        if prefs:
+            g_count = len(prefs.get("genres", []))
+            m_count = len(prefs.get("liked_movies", []))
+            st.success(
+                f"✨ Cold-Start Profile Active! Preferences: {g_count} genres, {m_count} liked movies. "
+                f"Showing cold-start recommendations."
+            )
 
     profile = SessionManager.get_user_profile()
     cols = st.columns(3)

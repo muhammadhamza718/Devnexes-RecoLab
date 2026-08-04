@@ -7,6 +7,30 @@
 
 ---
 
+## Implementation Constraints (MUST DO / MUST NOT DO)
+
+### MUST DO
+- **MUST** extend existing SessionManager with onboarding-specific methods
+- **MUST** use `ui/onboarding/` directory for all onboarding components
+- **MUST** maintain Day 3 backward compatibility
+- **MUST** integrate with existing ColdStartHandler protocol
+- **MUST** use existing DataProvider for movie search
+- **MUST** implement proper error handling with user-friendly messages
+- **MUST** ensure onboarding state persists across page refreshes
+- **MUST** provide skip functionality with default genres ['Action', 'Comedy', 'Drama']
+
+### MUST NOT DO
+- **MUST NOT** modify existing Day 3 session state keys
+- **MUST NOT** create new state management systems
+- **MUST NOT** break existing Day 3 UI functionality
+- **MUST NOT** hardcode movie data or genre lists
+- **MUST NOT** implement real poster image loading
+- **MUST NOT** create conflicts with Day 4 Afternoon session state
+- **MUST NOT** modify backend model implementations
+- **MUST NOT** use external APIs for movie data
+
+---
+
 ## Task Breakdown
 
 ### Phase 1: Foundation (1 hour)

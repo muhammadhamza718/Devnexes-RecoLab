@@ -1,0 +1,77 @@
+"""Movie search provider with efficient lookup and preview capabilities (Task-003)."""
+
+from __future__ import annotations
+
+import re
+from typing import Any
+import pandas as pd
+import streamlit as st
+
+from ui.data_provider import DataProvider, extract_year
+
+
+class MovieSearchProvider:
+    """Provides movie search functionality for onboarding liked-movies input."""
+
+    def __init__(self, data_provider: DataProvider | None = None) -> None:
+        self._dp = data_provider or DataProvider()
+        self._movies_df = self._dp.movies
+
+    def search_movies(self, query: str, limit: int = 10) -> list[dict[str, Any]]:
+        """Search movies by title substring matching, returning top `limit` results.
+
+        Sanitizes search query for XSS and regex safety.
+        """
+        query_str = (query or "").strip()
+        if not query_str:
+            # Default to top popular movies if no search query provided
+            popular_ids = [1, 2571, 296, 356, 318, 593, 480, 110, 589, 527]
+            results = []
+            for mid in popular_ids:
+                m = self.get_movie_preview(mid)
+                if m:
+                    results.append(m)
+            return results[:limit]
+
+        # Sanitize query by removing dangerous characters
+        clean_query = re.sub(r"[<>]", "", query_str)
+        if not clean_query:
+            return []
+
+        # Case-insensitive substring search on title
+        mask = self._movies_df["title"].str.contains(clean_query, case=False, na=False, regex=False)
+        matches = self._movies_df[mask].head(limit)
+
+        results = []
+        for row in matches.itertuples():
+            mid = int(row.movieId)
+            stats = self._dp.get_movie_stats(mid)
+            genres_list = [g.strip() for g in str(row.genres).split("|") if g.strip()]
+            results.append({
+                "movieId": mid,
+                "title": str(row.title),
+                "genres": str(row.genres),
+                "genres_list": genres_list,
+                "year": extract_year(row.title),
+                "popularity": stats.get("rating_count", 0),
+                "mean_rating": stats.get("mean_rating"),
+            })
+        return results
+
+    def get_movie_preview(self, movie_id: int) -> dict[str, Any] | None:
+        """Get detailed preview info for a specific movie."""
+        movie = self._dp.get_movie(movie_id)
+        if not movie:
+            return None
+
+        stats = self._dp.get_movie_stats(movie_id)
+        genres_list = [g.strip() for g in str(movie["genres"]).split("|") if g.strip()]
+        return {
+            "movieId": int(movie["movieId"]),
+            "title": str(movie["title"]),
+            "genres": str(movie["genres"]),
+            "genres_list": genres_list,
+            "year": movie.get("year"),
+            "popularity": stats.get("rating_count", 0),
+            "mean_rating": stats.get("mean_rating"),
+        }

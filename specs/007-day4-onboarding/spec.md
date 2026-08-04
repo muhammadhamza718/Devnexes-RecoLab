@@ -30,6 +30,51 @@ This specification defines the cold-start onboarding UI that enables new users t
 
 ---
 
+## Implementation Guidelines (MUST DO / MUST NOT DO)
+
+### MUST DO
+- **MUST** use the existing SessionManager from Day 3 for state management
+- **MUST** namespace all onboarding session state keys with `onboarding_` prefix
+- **MUST** integrate with existing ColdStartHandler protocol from Day 2
+- **MUST** maintain backward compatibility with Day 3 UI components
+- **MUST** handle empty data states gracefully with user-friendly messages
+- **MUST** implement skip functionality with sensible default preferences
+- **MUST** validate all user inputs before processing
+- **MUST** provide clear visual feedback for all user actions
+- **MUST** persist onboarding state across page refreshes using session state
+- **MUST** integrate with existing DataProvider for movie search
+- **MUST** use text-based poster placeholders (as per Day 3 architectural decision)
+- **MUST** follow the established component structure from Day 3
+- **MUST** implement proper error handling with user-friendly messages
+- **MUST** ensure accessibility with keyboard navigation and screen reader support
+
+### MUST NOT DO
+- **MUST NOT** modify existing Day 3 session state keys or structure
+- **MUST NOT** create new state management systems (use existing SessionManager)
+- **MUST NOT** bypass existing DataProvider for data access
+- **MUST NOT** hardcode movie data or genre lists (derive from dataset)
+- **MUST NOT** implement real poster image loading (use text-based placeholders)
+- **MUST NOT** break existing Day 3 UI functionality
+- **MUST NOT** create conflicts with Day 4 Afternoon session state keys
+- **MUST NOT** implement user authentication or account management
+- **MUST NOT** modify backend model implementations
+- **MUST NOT** use external APIs for movie posters or data
+- **MUST NOT** implement complex routing beyond view-based state management
+- **MUST NOT** store sensitive user data in session state
+- **MUST NOT** create blocking operations that freeze the UI
+
+### ARCHITECTURAL CONSTRAINTS
+- Onboarding MUST be a toggleable module that doesn't interfere with main recommendation flow
+- All onboarding components MUST be in `ui/onboarding/` directory
+- Wizard MUST have exactly 3 steps: genre selection, liked movies, confirmation
+- Preference data MUST be validated before backend API calls
+- Movie search MUST use existing DataProvider.get_movie() method
+- Cold-start recommendations MUST use existing HybridRecommender.recommend_cold_start()
+- Skip functionality MUST set default genres: ['Action', 'Comedy', 'Drama']
+- Onboarding completion MUST transition smoothly to main recommendation interface
+
+---
+
 ## Functional Requirements
 
 ### FR-001: Genre Preference Selection
@@ -74,6 +119,22 @@ The system shall manage onboarding preferences with:
 - Clear onboarding state management
 
 ### FR-006: Backend Integration
+The system shall integrate with backend cold-start handling via:
+- ColdStartHandler protocol implementation
+- recommend_cold_start() method calls
+- Genre and liked-movies parameter passing
+- Fallback to content model if hybrid unavailable
+- Error handling for cold-start failures
+
+### FR-007: Input Validation and Security
+The system shall implement comprehensive input validation and security with:
+- Input sanitization for all user inputs (genre selection, movie search, preference data)
+- XSS prevention for all UI rendering (movie titles, genres, search results)
+- Output encoding for user-controlled data before display
+- Input length limits and format validation
+- Rate limiting for search functionality (max 10 searches per minute)
+- Session state security (no sensitive data stored, proper key namespacing)
+- Data sanitization for search queries (remove special characters, limit length)
 The system shall integrate with backend cold-start handling via:
 - ColdStartHandler protocol implementation
 - recommend_cold_start() method calls
@@ -243,6 +304,15 @@ The system shall integrate with backend cold-start handling via:
 - [ ] Genre and liked-movies parameters pass correctly
 - [ ] Fallback to content model works if needed
 - [ ] Error handling covers cold-start failures
+
+### AC-007: Input Validation and Security
+- [ ] Input sanitization works for all user inputs
+- [ ] XSS prevention works for all UI rendering
+- [ ] Output encoding works for user-controlled data
+- [ ] Input validation enforces length limits and format
+- [ ] Rate limiting works for search functionality
+- [ ] Session state security is maintained
+- [ ] Data sanitization works for search queries
 
 ---
 

@@ -61,19 +61,25 @@ def render_similar_items(
         items: Similar-item dicts from :func:`compute_similar_items`.
         source_title: Title of the movie the items are similar to.
     """
-    st.subheader("More Like This")
+    heading = "More Like This"
+    if source_title:
+        heading += f" — because you liked {source_title}"
+    st.subheader(heading, anchor=f"similar-items-{source_title or 'grid'}")
 
     if not items:
         st.info("No similar items found for this movie.")
         return
 
-    if source_title:
-        st.caption(f"Because you liked **{source_title}**")
-
+    st.markdown(
+        f'<div role="region" aria-label="Similar movies to {source_title or "selected movie"}">',
+        unsafe_allow_html=True,
+    )
     cols = st.columns(_GRID_COLUMNS)
     for idx, item in enumerate(items):
         with cols[idx % _GRID_COLUMNS]:
             _render_item_card(item)
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def _render_item_card(item: dict[str, Any]) -> None:

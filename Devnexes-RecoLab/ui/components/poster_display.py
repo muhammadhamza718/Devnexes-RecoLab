@@ -64,8 +64,11 @@ def _render_text_card(
         if year is not None
         else ""
     )
+    aria_label = f"Poster for {escaped_title}"
+    if year is not None:
+        aria_label += f", {year}"
     st.markdown(
-        f"""<div style="{_CARD_STYLE}">
+        f"""<div style="{_CARD_STYLE}" role="img" aria-label="{aria_label}">
             <span style="font-weight:600; color:#f2f3f7; font-size:12px;
                          line-height:1.35; word-break:break-word;">{escaped_title}</span>
             {year_html}

@@ -321,12 +321,6 @@ Feature Importance Extraction → Contribution Analysis → UI Display
 - Confidence data cache
 - Accessibility configuration
 
-### Persistent Storage (Future)
-- Evaluation metrics history
-- User dashboard preferences
-- Accessibility preferences
-- Performance analytics
-
 ---
 
 ## Data Migration Requirements

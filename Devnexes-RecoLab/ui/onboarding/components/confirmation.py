@@ -52,7 +52,7 @@ def render_confirmation(
     st.markdown("### ⚖️ Fine-Tune Genre Weights (Optional)")
     if genres:
         st.caption("Adjust the weight/importance of each genre for your personalized recommendations (0.1 to 2.0):")
-        current_weights = SessionManager.get_preference_weights()
+        current_weights = SessionManager.get_onboarding_preference_weights()
         updated_weights = {}
         weight_cols = st.columns(min(len(genres), 4))
         for idx, genre in enumerate(genres):
@@ -66,7 +66,7 @@ def render_confirmation(
                     key=f"weight_slider_{genre}",
                 )
                 updated_weights[genre] = w
-        SessionManager.set_preference_weights(updated_weights)
+        SessionManager.set_onboarding_preference_weights(updated_weights)
     else:
         st.write("Select genres in Step 1 to customize genre weights.")
 
@@ -74,14 +74,14 @@ def render_confirmation(
 
     # Preview section
     st.markdown("### 🔮 Initial Recommendation Preview")
-    preview_items = SessionManager.get("recommendation_preview", [])
+    preview_items = SessionManager.get_onboarding_recommendation_preview()
 
     if st.button("🔄 Generate Recommendation Preview", key="btn_gen_preview"):
         if onboarding_recommender is not None:
             with st.spinner("Calculating personalized cold-start recommendations..."):
                 current_prefs = wizard.get_preferences()
                 recs = onboarding_recommender.get_preview_recommendations(current_prefs, top_n=5)
-                SessionManager.set("recommendation_preview", recs)
+                SessionManager.set_onboarding_recommendation_preview(recs)
                 preview_items = recs
         else:
             st.info("Recommender integration pending.")

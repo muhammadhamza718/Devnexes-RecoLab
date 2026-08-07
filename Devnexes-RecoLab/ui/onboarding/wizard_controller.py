@@ -27,13 +27,13 @@ class OnboardingWizard:
         """Validate if the current step can advance to the next step."""
         step = self.get_current_step()
         if step == 0:
-            genres = self.sm.get_selected_genres()
+            genres = self.sm.get_onboarding_selected_genres()
             # On step 0, allow proceeding if at least 1 genre is selected, or if they want to skip
             if not genres:
                 return True, None  # User can proceed without genres (they might add liked movies on step 1)
             return PreferenceValidator.validate_genres(genres)
         elif step == 1:
-            liked = self.sm.get_liked_movies()
+            liked = self.sm.get_onboarding_liked_movies()
             return PreferenceValidator.validate_liked_movies(liked)
         elif step == 2:
             prefs = self.get_preferences()
@@ -69,9 +69,9 @@ class OnboardingWizard:
 
     def skip_onboarding(self) -> dict[str, Any]:
         """Skip onboarding wizard using default genres ['Action', 'Comedy', 'Drama']."""
-        self.sm.set_selected_genres(list(DEFAULT_SKIP_GENRES))
-        self.sm.set_liked_movies([])
-        self.sm.set_preference_weights({g: 1.0 for g in DEFAULT_SKIP_GENRES})
+        self.sm.set_onboarding_selected_genres(list(DEFAULT_SKIP_GENRES))
+        self.sm.set_onboarding_liked_movies([])
+        self.sm.set_onboarding_preference_weights({g: 1.0 for g in DEFAULT_SKIP_GENRES})
 
         now_iso = datetime.now(timezone.utc).isoformat()
         prefs = {
@@ -91,9 +91,9 @@ class OnboardingWizard:
 
     def get_preferences(self) -> dict[str, Any]:
         """Collect current selections into a preference dict."""
-        genres = self.sm.get_selected_genres()
-        liked = self.sm.get_liked_movies()
-        weights = self.sm.get_preference_weights()
+        genres = self.sm.get_onboarding_selected_genres()
+        liked = self.sm.get_onboarding_liked_movies()
+        weights = self.sm.get_onboarding_preference_weights()
         if not weights and genres:
             weights = {g: 1.0 for g in genres}
 

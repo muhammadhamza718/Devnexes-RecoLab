@@ -3,7 +3,7 @@
 **Feature ID:** 008-day4-advanced  
 **Date:** 2026-08-03  
 **Status:** Draft  
-**Effort:** 4 hours (Day 4 Afternoon)
+**Effort:** 6 hours (Day 4 Afternoon)
 
 ---
 
@@ -25,6 +25,51 @@ This specification defines the advanced features and final polish for the Devnex
 - New recommendation algorithms
 - User authentication and account management
 - Production deployment infrastructure
+
+---
+
+## Implementation Guidelines (MUST DO / MUST NOT DO)
+
+### MUST DO
+- **MUST** use the existing SessionManager from Day 3 for state management
+- **MUST** namespace all dashboard session state keys with `dashboard_` prefix
+- **MUST** maintain backward compatibility with Day 3 and Day 4 Morning functionality
+- **MUST** handle missing evaluation data gracefully with fallback mechanisms
+- **MUST** implement responsive design that works on all screen sizes
+- **MUST** ensure WCAG AA accessibility compliance
+- **MUST** provide clear visual hierarchy and information architecture
+- **MUST** implement proper error handling with user-friendly messages
+- **MUST** use existing ModelManager for model access
+- **MUST** leverage existing Plotly integration from Day 3 Afternoon
+- **MUST** follow the established component structure from Day 3
+- **MUST** implement caching for expensive operations
+- **MUST** ensure dashboard doesn't interfere with main recommendation flow
+- **MUST** provide clear navigation between dashboard and main interface
+
+### MUST NOT DO
+- **MUST NOT** modify existing Day 3 or Day 4 Morning session state keys
+- **MUST NOT** create new state management systems (use existing SessionManager)
+- **MUST NOT** break existing onboarding or recommendation functionality
+- **MUST NOT** implement real-time model training or optimization
+- **MUST NOT** create conflicts with onboarding session state keys
+- **MUST NOT** implement user authentication or account management
+- **MUST NOT** modify backend model implementations
+- **MUST NOT** use external APIs for metrics or data
+- **MUST NOT** create blocking operations that freeze the UI
+- **MUST NOT** hardcode evaluation metrics (load from metrics.py or files)
+- **MUST NOT** implement complex routing beyond view-based state management
+- **MUST NOT** sacrifice performance for visual effects
+- **MUST NOT** create dashboard components that require complex setup
+
+### ARCHITECTURAL CONSTRAINTS
+- Dashboard MUST be a toggleable module that doesn't interfere with main recommendation flow
+- All dashboard components MUST be in `ui/dashboard/` directory
+- Model comparison MUST use existing ModelManager.get_model() method
+- Metrics MUST be loaded from existing metrics.py framework or pre-computed files
+- Explanation enhancement MUST leverage existing model.explain() methods
+- Confidence indicators MUST use existing HybridRecommender.get_confidence() method
+- Performance optimization MUST use caching strategies (no new frameworks)
+- Accessibility MUST use ARIA labels and keyboard navigation (no external libraries)
 
 ---
 
@@ -70,14 +115,25 @@ The system shall implement comprehensive UI polish with:
 - Error message refinement and consistency
 - Professional styling and animations
 
+### FR-006: Input Validation and Security
+The system shall implement comprehensive input validation and security with:
+- Input validation for all dashboard parameters (K values, model selection, confidence thresholds)
+- K value validation (only allow 5, 10, 20)
+- Confidence threshold validation (0.0-1.0 range)
+- Model selection whitelist enforcement
+- XSS prevention for chart data rendering
+- Input sanitization for chart titles, labels, and tooltips
+- Session state security for sensitive model internals
+- Data sanitization before storing in session state
+
 ---
 
 ## Non-Functional Requirements
 
 ### NFR-001: Performance
-- Dashboard load time < 3 seconds
-- Chart rendering time < 2 seconds
-- Model comparison generation < 5 seconds
+- Dashboard load time < 5 seconds (adjusted for real-time computation)
+- Chart rendering time < 3 seconds
+- Model comparison generation < 8 seconds (adjusted for real-time computation)
 - UI response time < 500ms
 - Memory usage < 300MB
 
@@ -146,11 +202,11 @@ The system shall implement comprehensive UI polish with:
 - Confidence scores from HybridRecommender
 - Feature importance data
 
-### DR-003: User Interaction Data
-- User interaction patterns (for performance optimization)
-- Dashboard usage analytics
-- Model selection preferences
-- Feature usage statistics
+### DR-003: Dashboard Configuration Data
+- Dashboard state and view preferences
+- Selected K values and model filters
+- Accessibility configuration
+- Performance mode settings
 
 ---
 
@@ -229,6 +285,16 @@ The system shall implement comprehensive UI polish with:
 - [ ] Performance optimizations are effective
 - [ ] Error messages are consistent and helpful
 - [ ] Overall polish is production-ready
+
+### AC-006: Input Validation and Security
+- [ ] Dashboard parameter validation works correctly
+- [ ] K value validation restricts to 5, 10, 20 only
+- [ ] Confidence threshold validation enforces 0.0-1.0 range
+- [ ] Model selection whitelist enforcement works
+- [ ] XSS prevention works for chart data rendering
+- [ ] Input sanitization works for chart elements
+- [ ] Session state security is maintained
+- [ ] Data sanitization works before session storage
 
 ---
 

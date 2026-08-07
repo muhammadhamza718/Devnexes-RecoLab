@@ -13,6 +13,8 @@ from typing import Any
 import streamlit as st
 
 from ui.components.item_detail import render_item_detail
+from ui.dashboard.confidence_indicators import render_confidence_panel
+from ui.dashboard.enhanced_explanations import render_enhanced_explanation
 from ui.components.poster_display import render_poster
 from ui.components.similar_items import compute_similar_items
 from ui.data_provider import DataProvider
@@ -71,7 +73,10 @@ def _render_row(
     year = row.get("year")
     header = f"**{rank}. {title}**" if year is None else f"**{rank}. {title}** ({year})"
 
-    with st.container(border=True):
+    aria = f"Recommendation {rank}: {title}"
+    if year is not None:
+        aria += f" ({year})"
+    with st.container(border=True, aria_label=aria):
         poster_col, title_col, score_col = st.columns([1, 4, 1])
 
         with poster_col:
@@ -95,6 +100,22 @@ def _render_row(
         explanation = row.get("explanation")
         if explanation:
             st.markdown(f"*{explanation}*")
+
+        movie_id = row.get("movie_id")
+
+        # Task-014: confidence indicators panel
+        confidence = SessionManager.get_confidence_data().get(
+            int(movie_id) if movie_id is not None else None
+        )
+        if confidence is not None:
+            render_confidence_panel(confidence, int(movie_id))
+        enhanced = (
+            SessionManager.get_enhanced_explanations().get(int(movie_id))
+            if movie_id is not None
+            else None
+        )
+        if enhanced:
+            render_enhanced_explanation(enhanced, int(movie_id))
 
         _render_row_detail(provider, row)
 
@@ -130,6 +151,7 @@ def _render_more_like_this(
         key=f"similar-btn-{rank}",
         type="tertiary",
         help="Show similar movies for this title",
+        aria_label=f"Show similar movies for {row.get('title', 'this movie')}",
     ):
         compute_similar_items(
             similarity_provider,

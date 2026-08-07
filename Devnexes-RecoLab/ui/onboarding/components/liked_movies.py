@@ -19,7 +19,7 @@ def render_liked_movies(
     st.subheader("Step 2 of 3: Select Movies You Love 🍿")
     st.write("Search for movies you have enjoyed in the past. This helps us match your specific taste profile.")
 
-    current_liked: list[dict[str, Any]] = SessionManager.get_liked_movies()
+    current_liked: list[dict[str, Any]] = SessionManager.get_onboarding_liked_movies()
     current_liked_ids = {m.get("movieId") for m in current_liked if isinstance(m, dict)}
 
     # Search bar
@@ -63,13 +63,13 @@ def render_liked_movies(
                 if is_selected:
                     if st.button("Remove ❌", key=f"btn_rem_movie_{mid}", use_container_width=True):
                         updated = [m for m in current_liked if m.get("movieId") != mid]
-                        SessionManager.set_liked_movies(updated)
+                        SessionManager.set_onboarding_liked_movies(updated)
                         st.rerun()
                 else:
                     can_add = len(current_liked) < 20
                     if st.button("Add ➕", key=f"btn_add_movie_{mid}", use_container_width=True, disabled=not can_add):
                         current_liked.append(movie)
-                        SessionManager.set_liked_movies(current_liked)
+                        SessionManager.set_onboarding_liked_movies(current_liked)
                         st.rerun()
 
     st.markdown("---")
@@ -85,7 +85,7 @@ def render_liked_movies(
             with col_del:
                 if st.button("❌", key=f"btn_del_sel_{item.get('movieId')}_{idx}"):
                     updated = [m for i, m in enumerate(current_liked) if i != idx]
-                    SessionManager.set_liked_movies(updated)
+                    SessionManager.set_onboarding_liked_movies(updated)
                     st.rerun()
     else:
         st.info("No movies added yet. Use the search bar above or pick from suggestions.")

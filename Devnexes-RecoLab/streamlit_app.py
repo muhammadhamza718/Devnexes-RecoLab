@@ -40,7 +40,22 @@ from ui.onboarding.components.genre_selection import render_genre_selection  # n
 from ui.onboarding.components.liked_movies import render_liked_movies  # noqa: E402
 from ui.onboarding.components.confirmation import render_confirmation  # noqa: E402
 
+from ui.dashboard.explanation_enhancer import ExplanationEnhancer  # noqa: E402
+from ui.dashboard.metrics_provider import MetricsProvider  # noqa: E402
+from ui.dashboard.performance_dashboard import render_performance_dashboard  # noqa: E402
+from ui.dashboard.confidence_calculator import ConfidenceCalculator  # noqa: E402
+from ui.dashboard.accessibility import inject_accessibility_styles, render_accessibility_sidebar_controls  # noqa: E402
+from ui.dashboard.confidence_indicators import render_confidence_sidebar_controls  # noqa: E402
+from ui.dashboard.performance_controls import (  # noqa: E402
+    render_performance_sidebar_controls,
+    should_compute_confidence,
+    should_compute_enhanced_explanations,
+)
+from ui.dashboard.model_comparison_engine import ModelComparisonEngine  # noqa: E402
+from ui.dashboard.model_comparison_view import render_model_comparison_view  # noqa: E402
+
 SessionManager.ensure_initialized()
+inject_accessibility_styles()
 
 st.title("Devnexes RecoLab — Movie Recommendation System")
 st.caption(
@@ -116,6 +131,50 @@ def _generate(
             rows = _build_rows(model, model_name, rec_ids, user_id, provider, k)
             SessionManager.set_recommendations(rows)
 
+            # Task-016: skip expensive post-processing based on performance mode
+            if should_compute_enhanced_explanations():
+                enhancer = ExplanationEnhancer(model_manager, provider)
+                SessionManager.clear_enhanced_explanations()
+                for row in rows:
+                    movie_id = row.get("movie_id")
+                    if movie_id is None:
+                        continue
+                    SessionManager.set_enhanced_explanation(
+                        movie_id,
+                        enhancer.enhance_explanation(
+                            user_id,
+                            movie_id,
+                            model_name,
+                            detail_level=SessionManager.get_explanation_detail_level(),
+                        ),
+                    )
+            else:
+                SessionManager.clear_enhanced_explanations()
+
+            # Task-013/014/016: confidence scores (skipped in fast mode)
+            if should_compute_confidence():
+                conf_calc = ConfidenceCalculator(model_manager, provider)
+                all_models_agreement: dict[str, list[int]] = {}
+                from ui.model_manager import MODEL_NAMES
+                for mname in MODEL_NAMES:
+                    try:
+                        mobj, _ = model_manager.get_model(mname)
+                        all_models_agreement[mname] = list(mobj.recommend(user_id, k=k, exclude_items=None) or [])
+                    except Exception:
+                        pass
+                SessionManager.set_confidence_data({})
+                for row in rows:
+                    movie_id = row.get("movie_id")
+                    if movie_id is None:
+                        continue
+                    SessionManager.set_confidence_data(
+                        {**SessionManager.get_confidence_data(), int(movie_id): conf_calc.calculate_confidence(
+                            user_id, int(movie_id), model_name, all_models_agreement
+                        )}
+                    )
+            else:
+                SessionManager.set_confidence_data({})
+
         st.success(f"**{model_name}** — {provenance}.")
         if not rows:
             st.warning("No recommendations could be generated for this user.")
@@ -152,6 +211,8 @@ def main() -> None:
     model_manager = ModelManager()
     similarity_provider = SimilarityProvider(model_manager, provider)
     stats_aggregator = StatisticsAggregator(provider)
+    metrics_provider = MetricsProvider()
+    comparison_engine = ModelComparisonEngine(model_manager, metrics_provider)
 
     genre_provider = GenreProvider(provider)
     search_provider = MovieSearchProvider(provider)
@@ -168,6 +229,26 @@ def main() -> None:
         if st.button("✨ Start New User Onboarding", key="btn_start_onboarding_sidebar", use_container_width=True):
             SessionManager.reset_onboarding_state()
             st.rerun()
+
+        st.markdown("---")
+        st.subheader("Advanced Features")
+        show_dashboard = st.checkbox(
+            "Show Performance Dashboard",
+            value=SessionManager.is_dashboard_active(),
+            key="sidebar_show_dashboard",
+        )
+        SessionManager.set_dashboard_active(show_dashboard)
+
+        show_comparison = st.checkbox(
+            "Show Model Comparison",
+            value=SessionManager.is_model_comparison_active(),
+            key="sidebar_show_comparison",
+        )
+        SessionManager.set_model_comparison_active(show_comparison)
+
+        render_confidence_sidebar_controls()
+        render_accessibility_sidebar_controls()
+        render_performance_sidebar_controls()
 
     # If onboarding wizard is active, render the wizard instead of main recommendations dashboard
     if SessionManager.is_onboarding_active():
@@ -191,6 +272,19 @@ def main() -> None:
         elif current_step == 2:
             render_confirmation(wizard, onboarding_recommender)
 
+        return
+
+    if SessionManager.is_dashboard_active():
+        render_performance_dashboard(metrics_provider)
+        return
+
+    if SessionManager.is_model_comparison_active():
+        if user_id is None:
+            st.info("Select a user from the sidebar to compare model outputs side-by-side.")
+            return
+        render_model_comparison_view(
+            comparison_engine, metrics_provider, provider, user_id
+        )
         return
 
     if user_id is None:

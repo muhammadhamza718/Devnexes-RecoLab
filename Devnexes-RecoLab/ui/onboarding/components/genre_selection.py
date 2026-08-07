@@ -21,7 +21,7 @@ def render_genre_selection(
 
     all_genres = genre_provider.get_all_genres()
     popularity = genre_provider.get_genre_popularity()
-    current_selected = SessionManager.get_selected_genres()
+    current_selected = SessionManager.get_onboarding_selected_genres()
 
     # Quick preset selection section
     st.markdown("**Quick Presets:**")
@@ -31,7 +31,7 @@ def render_genre_selection(
         with preset_cols[idx % 5]:
             if st.button(combo["name"], key=f"preset_btn_{combo['id']}", use_container_width=True):
                 # Apply preset genres
-                SessionManager.set_selected_genres(list(combo["genres"]))
+                SessionManager.set_onboarding_selected_genres(list(combo["genres"]))
                 st.rerun()
 
     st.markdown("---")
@@ -60,7 +60,7 @@ def render_genre_selection(
 
     # Convert back to raw genre strings
     selected_raw = [formatted_options[fmt] for fmt in selected_formatted if fmt in formatted_options]
-    SessionManager.set_selected_genres(selected_raw)
+    SessionManager.set_onboarding_selected_genres(selected_raw)
 
     # Display selected genre pills
     if selected_raw:

@@ -3,25 +3,58 @@
 from __future__ import annotations
 
 import re
+import time
 from typing import Any
 import pandas as pd
 import streamlit as st
 
 from ui.data_provider import DataProvider, extract_year
+from ui.session_manager import SessionManager
 
 
 class MovieSearchProvider:
     """Provides movie search functionality for onboarding liked-movies input."""
 
+    # Rate limiting: max 10 searches per minute per session
+    MAX_SEARCHES_PER_MINUTE = 10
+    RATE_LIMIT_WINDOW = 60  # seconds
+
     def __init__(self, data_provider: DataProvider | None = None) -> None:
         self._dp = data_provider or DataProvider()
         self._movies_df = self._dp.movies
+
+    def _check_rate_limit(self) -> tuple[bool, str]:
+        """Check if search rate limit has been exceeded.
+
+        Returns:
+            Tuple of (allowed: bool, message: str)
+        """
+        search_history = SessionManager.get_onboarding_search_history() or []
+        current_time = time.time()
+
+        # Filter searches within the rate limit window
+        recent_searches = [t for t in search_history if current_time - t < self.RATE_LIMIT_WINDOW]
+
+        if len(recent_searches) >= self.MAX_SEARCHES_PER_MINUTE:
+            wait_time = int(self.RATE_LIMIT_WINDOW - (current_time - recent_searches[0]))
+            return False, f"Rate limit exceeded. Please wait {wait_time} seconds before searching again."
+
+        # Add current search to history
+        recent_searches.append(current_time)
+        SessionManager.set_onboarding_search_history(recent_searches)
+        return True, ""
 
     def search_movies(self, query: str, limit: int = 10) -> list[dict[str, Any]]:
         """Search movies by title substring matching, returning top `limit` results.
 
         Sanitizes search query for XSS and regex safety.
+        Enforces rate limiting (max 10 searches per minute).
         """
+        # Check rate limit before processing
+        allowed, message = self._check_rate_limit()
+        if not allowed:
+            st.warning(message)
+            return []
         query_str = (query or "").strip()
         if not query_str:
             # Default to top popular movies if no search query provided

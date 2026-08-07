@@ -3,7 +3,31 @@
 **Feature ID:** 008-day4-advanced  
 **Date:** 2026-08-03  
 **Status:** Draft  
-**Effort:** 4 hours (Day 4 Afternoon)
+**Effort**: 6 hours (Day 4 Afternoon) - *Adjusted from 4 hours based on IVP validation*
+
+---
+
+## Implementation Constraints (MUST DO / MUST NOT DO)
+
+### MUST DO
+- **MUST** extend existing SessionManager with dashboard-specific methods
+- **MUST** use `ui/dashboard/` directory for all dashboard components
+- **MUST** maintain Day 3 and Day 4 Morning backward compatibility
+- **MUST** leverage existing ModelManager for model access
+- **MUST** use existing Plotly integration from Day 3 Afternoon
+- **MUST** implement proper error handling with user-friendly messages
+- **MUST** ensure dashboard state persists across page refreshes
+- **MUST** provide toggle functionality to switch between dashboard and main interface
+
+### MUST NOT DO
+- **MUST NOT** modify existing Day 3 or Day 4 Morning session state keys
+- **MUST NOT** create new state management systems
+- **MUST NOT** break existing onboarding or recommendation functionality
+- **MUST NOT** implement real-time model training or optimization
+- **MUST NOT** create conflicts with onboarding session state
+- **MUST NOT** modify backend model implementations
+- **MUST NOT** use external APIs for metrics or data
+- **MUST NOT** create dashboard components that require complex setup
 
 ---
 

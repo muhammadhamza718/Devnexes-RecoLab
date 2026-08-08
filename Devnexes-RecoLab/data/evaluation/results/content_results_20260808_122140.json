@@ -1,0 +1,29 @@
+{
+  "model_name": "Content",
+  "timestamp": "2026-08-08T12:21:40.621290+00:00",
+  "results": {
+    "mean_precision@5": 0.01836065573770491,
+    "mean_precision@10": 0.013442622950819657,
+    "mean_precision@20": 0.010573770491803261,
+    "mean_recall@5": 0.005038769148870403,
+    "mean_recall@10": 0.008187694541183793,
+    "mean_recall@20": 0.012968579982896097,
+    "mean_ndcg@5": 0.019023698556502426,
+    "mean_ndcg@10": 0.016169367985979437,
+    "mean_ndcg@20": 0.015587009475579883,
+    "catalog_coverage": 0.047399124939231894,
+    "mean_popularity_decile": 3.3676229508196722,
+    "n_users": 610.0,
+    "evaluation_time_seconds": 23.800923585891724,
+    "model_provenance": "Cached instance"
+  },
+  "metadata": {
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "n_test_users": 610
+  }
+}

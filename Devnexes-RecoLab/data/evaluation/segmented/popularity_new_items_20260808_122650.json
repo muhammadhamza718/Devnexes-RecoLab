@@ -1,0 +1,22 @@
+{
+  "model_name": "Popularity",
+  "segment_name": "new_items",
+  "timestamp": "2026-08-08T12:26:50.642052+00:00",
+  "results": {
+    "mean_precision@5": 0.0,
+    "mean_precision@10": 0.0,
+    "mean_precision@20": 0.0,
+    "mean_recall@5": 0.0,
+    "mean_recall@10": 0.0,
+    "mean_recall@20": 0.0,
+    "mean_ndcg@5": 0.0,
+    "mean_ndcg@10": 0.0,
+    "mean_ndcg@20": 0.0,
+    "catalog_coverage": 0.01968886728245017,
+    "mean_popularity_decile": 1.0,
+    "n_users": 438.0,
+    "segment_name": "new_items",
+    "n_test_users": 438
+  },
+  "metadata": {}
+}

@@ -1,0 +1,10 @@
+{
+  "model_name": "User-Based CF",
+  "segment_name": "cold_start_users",
+  "timestamp": "2026-08-07T19:42:28.197330+00:00",
+  "results": {
+    "error": "No test data for segment",
+    "n_users": 0
+  },
+  "metadata": {}
+}

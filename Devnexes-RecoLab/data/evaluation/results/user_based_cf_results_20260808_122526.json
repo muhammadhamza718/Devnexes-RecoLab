@@ -1,0 +1,29 @@
+{
+  "model_name": "User-Based CF",
+  "timestamp": "2026-08-08T12:25:26.264531+00:00",
+  "results": {
+    "mean_precision@5": 0.006885245901639346,
+    "mean_precision@10": 0.00737704918032787,
+    "mean_precision@20": 0.008934426229508186,
+    "mean_recall@5": 0.002112369341370531,
+    "mean_recall@10": 0.004478761780312612,
+    "mean_recall@20": 0.013180169721659621,
+    "mean_ndcg@5": 0.008018404601137058,
+    "mean_ndcg@10": 0.008305670751793602,
+    "mean_ndcg@20": 0.011565368574219512,
+    "catalog_coverage": 0.16966456003889158,
+    "mean_popularity_decile": 2.947910656886178,
+    "n_users": 610.0,
+    "evaluation_time_seconds": 13.420179843902588,
+    "model_provenance": "Cached instance"
+  },
+  "metadata": {
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "n_test_users": 610
+  }
+}

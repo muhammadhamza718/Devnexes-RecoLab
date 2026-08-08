@@ -1,0 +1,29 @@
+{
+  "model_name": "Popularity",
+  "timestamp": "2026-08-07T19:18:05.926153+00:00",
+  "results": {
+    "mean_precision@5": 0.09278688524590173,
+    "mean_precision@10": 0.07557377049180347,
+    "mean_precision@20": 0.06713114754098362,
+    "mean_recall@5": 0.024538548015634026,
+    "mean_recall@10": 0.03903457432277743,
+    "mean_recall@20": 0.06898075862160513,
+    "mean_ndcg@5": 0.09886528248333183,
+    "mean_ndcg@10": 0.08961726366865912,
+    "mean_ndcg@20": 0.09294355042860326,
+    "catalog_coverage": 0.01968886728245017,
+    "mean_popularity_decile": 1.0,
+    "n_users": 610.0,
+    "evaluation_time_seconds": 0.6538105010986328,
+    "model_provenance": "Cached instance"
+  },
+  "metadata": {
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "n_test_users": 610
+  }
+}

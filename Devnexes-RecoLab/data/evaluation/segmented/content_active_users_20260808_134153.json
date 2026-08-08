@@ -1,0 +1,22 @@
+{
+  "model_name": "Content",
+  "segment_name": "active_users",
+  "timestamp": "2026-08-08T13:41:53.211307+00:00",
+  "results": {
+    "mean_precision@5": 0.019012797074954294,
+    "mean_precision@10": 0.013893967093235818,
+    "mean_precision@20": 0.010877513711151723,
+    "mean_recall@5": 0.004065172176985277,
+    "mean_recall@10": 0.0068455094517771735,
+    "mean_recall@20": 0.010714504185679376,
+    "mean_ndcg@5": 0.020111129048634442,
+    "mean_ndcg@10": 0.016527962254210538,
+    "mean_ndcg@20": 0.015278796586237797,
+    "catalog_coverage": 0.0374331550802139,
+    "mean_popularity_decile": 3.396800731261426,
+    "n_users": 547.0,
+    "segment_name": "active_users",
+    "n_test_users": 547
+  },
+  "metadata": {}
+}

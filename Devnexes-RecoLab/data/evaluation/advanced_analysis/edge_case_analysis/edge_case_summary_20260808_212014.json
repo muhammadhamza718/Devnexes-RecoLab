@@ -1,0 +1,229 @@
+{
+  "metadata": {
+    "timestamp": "2026-08-08T21:20:14.400167",
+    "category": "edge_case_analysis",
+    "name": "edge_case_summary"
+  },
+  "data": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    }
+  }
+}

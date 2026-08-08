@@ -1,0 +1,22 @@
+{
+  "model_name": "Popularity",
+  "segment_name": "established_items",
+  "timestamp": "2026-08-07T19:27:02.106754+00:00",
+  "results": {
+    "mean_precision@5": 0.09355371900826456,
+    "mean_precision@10": 0.07619834710743821,
+    "mean_precision@20": 0.06768595041322316,
+    "mean_recall@5": 0.029073887409091465,
+    "mean_recall@10": 0.04547129249699805,
+    "mean_recall@20": 0.08015855282194707,
+    "mean_ndcg@5": 0.10021002478355233,
+    "mean_ndcg@10": 0.09155368658398698,
+    "mean_ndcg@20": 0.0966542114565302,
+    "catalog_coverage": 0.01968886728245017,
+    "mean_popularity_decile": 1.0,
+    "n_users": 605.0,
+    "segment_name": "established_items",
+    "n_test_users": 605
+  },
+  "metadata": {}
+}

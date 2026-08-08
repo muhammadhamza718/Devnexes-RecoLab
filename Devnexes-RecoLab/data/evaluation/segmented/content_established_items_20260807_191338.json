@@ -1,0 +1,22 @@
+{
+  "model_name": "Content",
+  "segment_name": "established_items",
+  "timestamp": "2026-08-07T19:13:38.743970+00:00",
+  "results": {
+    "mean_precision@5": 0.016528925619834708,
+    "mean_precision@10": 0.012231404958677672,
+    "mean_precision@20": 0.009504132231404946,
+    "mean_recall@5": 0.0051543196548406904,
+    "mean_recall@10": 0.009014780419407625,
+    "mean_recall@20": 0.014060333076510747,
+    "mean_ndcg@5": 0.017213192739712488,
+    "mean_ndcg@10": 0.014967816853122203,
+    "mean_ndcg@20": 0.014893846537850523,
+    "catalog_coverage": 0.047399124939231894,
+    "mean_popularity_decile": 3.3688429752066114,
+    "n_users": 605.0,
+    "segment_name": "established_items",
+    "n_test_users": 605
+  },
+  "metadata": {}
+}

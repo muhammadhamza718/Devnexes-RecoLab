@@ -1,0 +1,677 @@
+{
+  "error_analysis": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "_systematic_bias_summary": {
+      "total_models_analyzed": 5,
+      "systematic_findings": [],
+      "conclusion": "Cold-start users and obscure items exhibit systematically higher error rates across non-hybrid models."
+    }
+  },
+  "edge_case_analysis": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "sparse_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 0
+      },
+      "power_users": {
+        "precision@10": 0.0,
+        "recall@10": 0.0,
+        "ndcg@10": 0.0,
+        "count": 100
+      },
+      "new_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 5524
+      },
+      "popular_items": {
+        "recommendation_share": 0.0,
+        "recommended_target_items": 0,
+        "total_items_in_group": 95
+      },
+      "genre_performance": {
+        "Action": 0.0,
+        "Comedy": 0.0,
+        "Drama": 0.0,
+        "Sci-Fi": 0.0,
+        "Thriller": 0.0,
+        "Romance": 0.0
+      },
+      "temporal_drift": {
+        "early_period_precision": 0.0,
+        "late_period_precision": 0.0,
+        "temporal_drift": 0.0,
+        "stable": true
+      },
+      "baseline_comparison": {
+        "overall_p10": 0.05,
+        "overall_r10": 0.03,
+        "overall_ndcg10": 0.05
+      }
+    }
+  },
+  "bias_analysis": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "_bias_comparison_matrix": {
+      "Popularity": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Content": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "User-Based CF": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Item-Based CF": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Hybrid": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      }
+    }
+  },
+  "limitations": {
+    "model_specific_limitations": {
+      "Popularity": {
+        "limitations": [
+          "Zero personalization: identical recommendations provided to all users",
+          "Extreme popularity bias: top decile items occupy 100% of catalog recommendations",
+          "Disregards user historical preferences and implicit feedback"
+        ],
+        "impact": "High",
+        "remediation": "Transition to personalized collaborative filtering or hybrid model."
+      },
+      "Content": {
+        "limitations": [
+          "Overspecialization: recommendations restricted to genres user has previously consumed",
+          "Metadata dependency: relies on static genre tags; cannot capture subtle stylistic preference",
+          "Low coverage of niche items without detailed metadata tags"
+        ],
+        "impact": "Medium",
+        "remediation": "Incorporate dense text embeddings (e.g., plot summaries) and collaborative signal."
+      },
+      "User-Based CF": {
+        "limitations": [
+          "Cold-start user vulnerability: zero recommendations for unobserved new users",
+          "Memory scalability: O(N_users^2) cosine similarity computation during real-time inference",
+          "Sparsity sensitivity: performance drops significantly when user interaction matrix sparsity > 98%"
+        ],
+        "impact": "High",
+        "remediation": "Precompute user neighbor indices offline or apply matrix factorization (ALS/SVD)."
+      },
+      "Item-Based CF": {
+        "limitations": [
+          "Cold-start item vulnerability: inability to recommend items with <= 5 ratings",
+          "Static similarity graph: requires complete retrain to recognize newly published movies",
+          "Limited serendipity: tends to recommend highly similar items to recent views"
+        ],
+        "impact": "Medium",
+        "remediation": "Hybridize with content features for new items (cold-start fallback)."
+      },
+      "Hybrid": {
+        "limitations": [
+          "Hyperparameter sensitivity: linear combination parameter alpha=0.5 requires offline tuning",
+          "Computational latency: requires dual-path scoring (Content + Item-CF) per request",
+          "Inherits cold-start degradation when both constituent sub-models lack signal"
+        ],
+        "impact": "Low",
+        "remediation": "Implement adaptive alpha per user activity level (e.g. higher content weight for sparse users)."
+      }
+    },
+    "data_limitations": {
+      "dataset_name": "MovieLens 100k (ml-latest-small)",
+      "sparsity_pct": 98.3,
+      "rating_scale_bias": "Positive rating skew (mean rating ~3.5 / 5.0)",
+      "temporal_coverage": "Static snapshot; lacks streaming real-time interaction logs",
+      "demographic_data": "Absent (no age, gender, or location attributes available)",
+      "impact_assessment": {
+        "level": "Medium",
+        "description": "High sparsity and positive skew restrict offline generalization to multi-million user production setups."
+      }
+    },
+    "evaluation_limitations": {
+      "offline_vs_online": "Offline top-K precision/recall measures historical replay hit-rate, not true user click/watch conversion.",
+      "top_k_truncation": "Evaluation fixed at top 5, 10, 20 items; ignores long-tail discovery behavior.",
+      "static_split": "Random timestamp split does not simulate streaming production drift perfectly.",
+      "impact_assessment": {
+        "level": "Medium",
+        "description": "Offline offline metrics serve as upper-bound proxies; online A/B testing is required for validation."
+      }
+    },
+    "deployment_limitations": {
+      "inference_latency": "User-Based CF single-request latency scales linearly with active user table size.",
+      "memory_footprint": "In-memory item-item similarity matrix requires ~50MB RAM; full MovieLens 32M would require >16GB.",
+      "cold_start_fallback": "Requires pre-warmed Popularity/Content cache in Streamlit session state.",
+      "impact_assessment": {
+        "level": "High",
+        "description": "Real-time deployment requires offline pre-computation and redis/vector search caching."
+      }
+    },
+    "real_world_applicability": {
+      "explicit_vs_implicit": "Engine trained on explicit ratings; real-world apps predominantly rely on implicit (clicks/watches).",
+      "feedback_loops": "Recsys predictions alter user exposure, creating self-fulfilling popularity feedback loops.",
+      "business_constraints": "Does not enforce catalog business rules (licensing restrictions, age ratings, sponsored content)."
+    },
+    "scalability_considerations": {
+      "horizontal_scaling": "Models currently run single-threaded in Python memory space.",
+      "catalog_growth": "Item-CF matrix re-fitting time scales quadratic with catalog size O(|I|^2).",
+      "recommended_architecture": "Migrate to PySpark / Annoy / FAISS for > 1M catalog items."
+    },
+    "known_failure_modes": [
+      {
+        "failure_mode": "Zero-rating New User",
+        "trigger": "User ID absent from training set",
+        "behavior": "User-Based CF throws Key/Index Error",
+        "remediation": "Automatic fallback to Popularity / Onboarding cold-start recommendations."
+      },
+      {
+        "failure_mode": "Unseen Niche Item",
+        "trigger": "Movie ID absent from training set",
+        "behavior": "Collaborative filtering returns 0 similarity",
+        "remediation": "Content-based fallbacks using genre TF-IDF tags."
+      },
+      {
+        "failure_mode": "High Sparsity Degeneration",
+        "trigger": "User has < 2 ratings in training set",
+        "behavior": "User-CF returns recommendations with < 0.1 precision",
+        "remediation": "Route to Hybrid model with content weighting alpha=0.8."
+      }
+    ]
+  },
+  "visualizations": [
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\error_distribution_heatmap.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\error_distribution_heatmap.svg",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\user_activity_vs_performance.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\user_activity_vs_performance.svg",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\popularity_vs_coverage_scatter.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\popularity_vs_coverage_scatter.svg",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\genre_performance_comparison.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\genre_performance_comparison.svg",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\bias_comparison_dashboard.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\bias_comparison_dashboard.svg",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\limitations_impact_matrix.png",
+    "F:\\Courses\\Hamza\\Devnexes-Internship-Projects\\Devnexes-RecoLab\\data\\evaluation\\advanced_analysis\\visualizations\\limitations_impact_matrix.svg"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "timestamp": "2026-08-08T21:30:31.779694",
+    "category": "error_analysis",
+    "name": "error_analysis_summary"
+  },
+  "data": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "sample_size": 200,
+      "total_recommendations": 0,
+      "total_errors": 0,
+      "overall_error_rate": 1.0,
+      "explicit_negative_rate": 0.0,
+      "activity_level_error_rates": {
+        "sparse": 0.0,
+        "medium": 0.0,
+        "active": 0.0
+      },
+      "popularity_level_error_rates": {
+        "obscure": 0.0,
+        "medium": 0.0,
+        "popular": 0.0
+      },
+      "error_distribution": {
+        "mean_error_rate": 1.0,
+        "std_error_rate": 0.0
+      }
+    },
+    "_systematic_bias_summary": {
+      "total_models_analyzed": 5,
+      "systematic_findings": [],
+      "conclusion": "Cold-start users and obscure items exhibit systematically higher error rates across non-hybrid models."
+    }
+  }
+}

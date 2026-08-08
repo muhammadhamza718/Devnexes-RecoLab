@@ -1,0 +1,22 @@
+{
+  "model_name": "Popularity",
+  "segment_name": "active_users",
+  "timestamp": "2026-08-08T13:41:38.365886+00:00",
+  "results": {
+    "mean_precision@5": 0.0976234003656308,
+    "mean_precision@10": 0.08025594149908609,
+    "mean_precision@20": 0.07084095063985382,
+    "mean_recall@5": 0.021423243673741793,
+    "mean_recall@10": 0.03539504631973355,
+    "mean_recall@20": 0.06038073630562913,
+    "mean_ndcg@5": 0.10341801882868822,
+    "mean_ndcg@10": 0.09186966986852552,
+    "mean_ndcg@20": 0.09203253321225151,
+    "catalog_coverage": 0.01968886728245017,
+    "mean_popularity_decile": 1.0,
+    "n_users": 547.0,
+    "segment_name": "active_users",
+    "n_test_users": 547
+  },
+  "metadata": {}
+}

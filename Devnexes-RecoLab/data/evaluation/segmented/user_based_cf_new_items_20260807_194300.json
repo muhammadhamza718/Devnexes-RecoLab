@@ -1,0 +1,22 @@
+{
+  "model_name": "User-Based CF",
+  "segment_name": "new_items",
+  "timestamp": "2026-08-07T19:43:00.673726+00:00",
+  "results": {
+    "mean_precision@5": 0.00319634703196347,
+    "mean_precision@10": 0.0038812785388127858,
+    "mean_precision@20": 0.003196347031963471,
+    "mean_recall@5": 0.0009826594005174498,
+    "mean_recall@10": 0.0034113810957478318,
+    "mean_recall@20": 0.007308231687876656,
+    "mean_ndcg@5": 0.003116451787585234,
+    "mean_ndcg@10": 0.004182805455025019,
+    "mean_ndcg@20": 0.005087421686094423,
+    "catalog_coverage": 0.1447496353913466,
+    "mean_popularity_decile": 3.231378400091817,
+    "n_users": 438.0,
+    "segment_name": "new_items",
+    "n_test_users": 438
+  },
+  "metadata": {}
+}

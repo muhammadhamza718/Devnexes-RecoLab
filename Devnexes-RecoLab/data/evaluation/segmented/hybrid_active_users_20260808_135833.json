@@ -1,0 +1,22 @@
+{
+  "model_name": "Hybrid",
+  "segment_name": "active_users",
+  "timestamp": "2026-08-08T13:58:33.253998+00:00",
+  "results": {
+    "mean_precision@5": 0.007312614259597808,
+    "mean_precision@10": 0.007861060329067644,
+    "mean_precision@20": 0.009414990859232164,
+    "mean_recall@5": 0.0018986202892797516,
+    "mean_recall@10": 0.004171928127953737,
+    "mean_recall@20": 0.012412986344081113,
+    "mean_ndcg@5": 0.008665826669955759,
+    "mean_ndcg@10": 0.008779499339320694,
+    "mean_ndcg@20": 0.011815456748502758,
+    "catalog_coverage": 0.15690325717063686,
+    "mean_popularity_decile": 3.0419561243144426,
+    "n_users": 547.0,
+    "segment_name": "active_users",
+    "n_test_users": 547
+  },
+  "metadata": {}
+}

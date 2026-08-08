@@ -1,0 +1,726 @@
+{
+  "timestamp": "2026-08-08T13:59:09.038249+00:00",
+  "results": {
+    "performance_table": {
+      "rows": [
+        {
+          "model": "Popularity",
+          "mean_precision@5": 0.09278688524590173,
+          "mean_precision@10": 0.07557377049180347,
+          "mean_precision@20": 0.06713114754098362,
+          "mean_recall@5": 0.024538548015634026,
+          "mean_recall@10": 0.03903457432277743,
+          "mean_recall@20": 0.06898075862160513,
+          "mean_ndcg@5": 0.09886528248333183,
+          "mean_ndcg@10": 0.08961726366865912,
+          "mean_ndcg@20": 0.09294355042860326,
+          "catalog_coverage": 0.01968886728245017,
+          "mean_popularity_decile": 1.0
+        },
+        {
+          "model": "Content",
+          "mean_precision@5": 0.01836065573770491,
+          "mean_precision@10": 0.013442622950819657,
+          "mean_precision@20": 0.010573770491803261,
+          "mean_recall@5": 0.005038769148870403,
+          "mean_recall@10": 0.008187694541183793,
+          "mean_recall@20": 0.012968579982896097,
+          "mean_ndcg@5": 0.019023698556502426,
+          "mean_ndcg@10": 0.016169367985979437,
+          "mean_ndcg@20": 0.015587009475579883,
+          "catalog_coverage": 0.047399124939231894,
+          "mean_popularity_decile": 3.3676229508196722
+        },
+        {
+          "model": "User-Based CF",
+          "mean_precision@5": 0.006885245901639346,
+          "mean_precision@10": 0.00737704918032787,
+          "mean_precision@20": 0.008934426229508186,
+          "mean_recall@5": 0.002112369341370531,
+          "mean_recall@10": 0.004478761780312612,
+          "mean_recall@20": 0.013180169721659621,
+          "mean_ndcg@5": 0.008018404601137058,
+          "mean_ndcg@10": 0.008305670751793602,
+          "mean_ndcg@20": 0.011565368574219512,
+          "catalog_coverage": 0.16966456003889158,
+          "mean_popularity_decile": 2.947910656886178
+        },
+        {
+          "model": "Item-Based CF",
+          "mean_precision@5": 0.016721311475409832,
+          "mean_precision@10": 0.015245901639344243,
+          "mean_precision@20": 0.013524590163934404,
+          "mean_recall@5": 0.006027291697311655,
+          "mean_recall@10": 0.009852203781047597,
+          "mean_recall@20": 0.01655796170740813,
+          "mean_ndcg@5": 0.017322009348759312,
+          "mean_ndcg@10": 0.017195186984472303,
+          "mean_ndcg@20": 0.01909404483222793,
+          "catalog_coverage": 0.37639766650461837,
+          "mean_popularity_decile": 2.5804098360655736
+        },
+        {
+          "model": "Hybrid",
+          "mean_precision@5": 0.006885245901639346,
+          "mean_precision@10": 0.007704918032786886,
+          "mean_precision@20": 0.009098360655737693,
+          "mean_recall@5": 0.002112369341370531,
+          "mean_recall@10": 0.005216466698345399,
+          "mean_recall@20": 0.013917874639692407,
+          "mean_ndcg@5": 0.008018404601137058,
+          "mean_ndcg@10": 0.008659040244560462,
+          "mean_ndcg@20": 0.011966312291651052,
+          "catalog_coverage": 0.17221682061254254,
+          "mean_popularity_decile": 2.9895081967213115
+        }
+      ],
+      "columns": [
+        "model",
+        "mean_precision@5",
+        "mean_precision@10",
+        "mean_precision@20",
+        "mean_recall@5",
+        "mean_recall@10",
+        "mean_recall@20",
+        "mean_ndcg@5",
+        "mean_ndcg@10",
+        "mean_ndcg@20",
+        "catalog_coverage",
+        "mean_popularity_decile"
+      ]
+    },
+    "rankings": {
+      "mean_precision@5": [
+        [
+          "Popularity",
+          0.09278688524590173
+        ],
+        [
+          "Content",
+          0.01836065573770491
+        ],
+        [
+          "Item-Based CF",
+          0.016721311475409832
+        ],
+        [
+          "User-Based CF",
+          0.006885245901639346
+        ],
+        [
+          "Hybrid",
+          0.006885245901639346
+        ]
+      ],
+      "mean_precision@10": [
+        [
+          "Popularity",
+          0.07557377049180347
+        ],
+        [
+          "Item-Based CF",
+          0.015245901639344243
+        ],
+        [
+          "Content",
+          0.013442622950819657
+        ],
+        [
+          "Hybrid",
+          0.007704918032786886
+        ],
+        [
+          "User-Based CF",
+          0.00737704918032787
+        ]
+      ],
+      "mean_precision@20": [
+        [
+          "Popularity",
+          0.06713114754098362
+        ],
+        [
+          "Item-Based CF",
+          0.013524590163934404
+        ],
+        [
+          "Content",
+          0.010573770491803261
+        ],
+        [
+          "Hybrid",
+          0.009098360655737693
+        ],
+        [
+          "User-Based CF",
+          0.008934426229508186
+        ]
+      ],
+      "mean_recall@5": [
+        [
+          "Popularity",
+          0.024538548015634026
+        ],
+        [
+          "Item-Based CF",
+          0.006027291697311655
+        ],
+        [
+          "Content",
+          0.005038769148870403
+        ],
+        [
+          "User-Based CF",
+          0.002112369341370531
+        ],
+        [
+          "Hybrid",
+          0.002112369341370531
+        ]
+      ],
+      "mean_recall@10": [
+        [
+          "Popularity",
+          0.03903457432277743
+        ],
+        [
+          "Item-Based CF",
+          0.009852203781047597
+        ],
+        [
+          "Content",
+          0.008187694541183793
+        ],
+        [
+          "Hybrid",
+          0.005216466698345399
+        ],
+        [
+          "User-Based CF",
+          0.004478761780312612
+        ]
+      ],
+      "mean_recall@20": [
+        [
+          "Popularity",
+          0.06898075862160513
+        ],
+        [
+          "Item-Based CF",
+          0.01655796170740813
+        ],
+        [
+          "Hybrid",
+          0.013917874639692407
+        ],
+        [
+          "User-Based CF",
+          0.013180169721659621
+        ],
+        [
+          "Content",
+          0.012968579982896097
+        ]
+      ],
+      "mean_ndcg@5": [
+        [
+          "Popularity",
+          0.09886528248333183
+        ],
+        [
+          "Content",
+          0.019023698556502426
+        ],
+        [
+          "Item-Based CF",
+          0.017322009348759312
+        ],
+        [
+          "User-Based CF",
+          0.008018404601137058
+        ],
+        [
+          "Hybrid",
+          0.008018404601137058
+        ]
+      ],
+      "mean_ndcg@10": [
+        [
+          "Popularity",
+          0.08961726366865912
+        ],
+        [
+          "Item-Based CF",
+          0.017195186984472303
+        ],
+        [
+          "Content",
+          0.016169367985979437
+        ],
+        [
+          "Hybrid",
+          0.008659040244560462
+        ],
+        [
+          "User-Based CF",
+          0.008305670751793602
+        ]
+      ],
+      "mean_ndcg@20": [
+        [
+          "Popularity",
+          0.09294355042860326
+        ],
+        [
+          "Item-Based CF",
+          0.01909404483222793
+        ],
+        [
+          "Content",
+          0.015587009475579883
+        ],
+        [
+          "Hybrid",
+          0.011966312291651052
+        ],
+        [
+          "User-Based CF",
+          0.011565368574219512
+        ]
+      ],
+      "catalog_coverage": [
+        [
+          "Item-Based CF",
+          0.37639766650461837
+        ],
+        [
+          "Hybrid",
+          0.17221682061254254
+        ],
+        [
+          "User-Based CF",
+          0.16966456003889158
+        ],
+        [
+          "Content",
+          0.047399124939231894
+        ],
+        [
+          "Popularity",
+          0.01968886728245017
+        ]
+      ],
+      "mean_popularity_decile": [
+        [
+          "Popularity",
+          1.0
+        ],
+        [
+          "Item-Based CF",
+          2.5804098360655736
+        ],
+        [
+          "User-Based CF",
+          2.947910656886178
+        ],
+        [
+          "Hybrid",
+          2.9895081967213115
+        ],
+        [
+          "Content",
+          3.3676229508196722
+        ]
+      ]
+    },
+    "significance_tests": {
+      "method": "paired_t_test",
+      "significance_level": 0.05,
+      "comparisons": [
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Popularity",
+          "model_b": "Content",
+          "score_a": 0.07557377049180347,
+          "score_b": 0.013442622950819657,
+          "difference": 0.06213114754098381,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Popularity",
+          "model_b": "User-Based CF",
+          "score_a": 0.07557377049180347,
+          "score_b": 0.00737704918032787,
+          "difference": 0.0681967213114756,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Popularity",
+          "model_b": "Item-Based CF",
+          "score_a": 0.07557377049180347,
+          "score_b": 0.015245901639344243,
+          "difference": 0.06032786885245923,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Popularity",
+          "model_b": "Hybrid",
+          "score_a": 0.07557377049180347,
+          "score_b": 0.007704918032786886,
+          "difference": 0.06786885245901658,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Content",
+          "model_b": "User-Based CF",
+          "score_a": 0.013442622950819657,
+          "score_b": 0.00737704918032787,
+          "difference": 0.006065573770491787,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Content",
+          "model_b": "Item-Based CF",
+          "score_a": 0.013442622950819657,
+          "score_b": 0.015245901639344243,
+          "difference": -0.0018032786885245865,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Content",
+          "model_b": "Hybrid",
+          "score_a": 0.013442622950819657,
+          "score_b": 0.007704918032786886,
+          "difference": 0.005737704918032771,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "User-Based CF",
+          "model_b": "Item-Based CF",
+          "score_a": 0.00737704918032787,
+          "score_b": 0.015245901639344243,
+          "difference": -0.007868852459016373,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "User-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.00737704918032787,
+          "score_b": 0.007704918032786886,
+          "difference": -0.00032786885245901596,
+          "winner": "Hybrid",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_precision@10",
+          "model_a": "Item-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.015245901639344243,
+          "score_b": 0.007704918032786886,
+          "difference": 0.0075409836065573575,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Popularity",
+          "model_b": "Content",
+          "score_a": 0.03903457432277743,
+          "score_b": 0.008187694541183793,
+          "difference": 0.030846879781593638,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Popularity",
+          "model_b": "User-Based CF",
+          "score_a": 0.03903457432277743,
+          "score_b": 0.004478761780312612,
+          "difference": 0.03455581254246482,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Popularity",
+          "model_b": "Item-Based CF",
+          "score_a": 0.03903457432277743,
+          "score_b": 0.009852203781047597,
+          "difference": 0.029182370541729834,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Popularity",
+          "model_b": "Hybrid",
+          "score_a": 0.03903457432277743,
+          "score_b": 0.005216466698345399,
+          "difference": 0.033818107624432034,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Content",
+          "model_b": "User-Based CF",
+          "score_a": 0.008187694541183793,
+          "score_b": 0.004478761780312612,
+          "difference": 0.003708932760871181,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Content",
+          "model_b": "Item-Based CF",
+          "score_a": 0.008187694541183793,
+          "score_b": 0.009852203781047597,
+          "difference": -0.001664509239863804,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Content",
+          "model_b": "Hybrid",
+          "score_a": 0.008187694541183793,
+          "score_b": 0.005216466698345399,
+          "difference": 0.0029712278428383936,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "User-Based CF",
+          "model_b": "Item-Based CF",
+          "score_a": 0.004478761780312612,
+          "score_b": 0.009852203781047597,
+          "difference": -0.005373442000734985,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "User-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.004478761780312612,
+          "score_b": 0.005216466698345399,
+          "difference": -0.0007377049180327874,
+          "winner": "Hybrid",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_recall@10",
+          "model_a": "Item-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.009852203781047597,
+          "score_b": 0.005216466698345399,
+          "difference": 0.0046357370827021975,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Popularity",
+          "model_b": "Content",
+          "score_a": 0.08961726366865912,
+          "score_b": 0.016169367985979437,
+          "difference": 0.07344789568267968,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Popularity",
+          "model_b": "User-Based CF",
+          "score_a": 0.08961726366865912,
+          "score_b": 0.008305670751793602,
+          "difference": 0.08131159291686552,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Popularity",
+          "model_b": "Item-Based CF",
+          "score_a": 0.08961726366865912,
+          "score_b": 0.017195186984472303,
+          "difference": 0.07242207668418682,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Popularity",
+          "model_b": "Hybrid",
+          "score_a": 0.08961726366865912,
+          "score_b": 0.008659040244560462,
+          "difference": 0.08095822342409865,
+          "winner": "Popularity",
+          "significant": true,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Content",
+          "model_b": "User-Based CF",
+          "score_a": 0.016169367985979437,
+          "score_b": 0.008305670751793602,
+          "difference": 0.007863697234185835,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Content",
+          "model_b": "Item-Based CF",
+          "score_a": 0.016169367985979437,
+          "score_b": 0.017195186984472303,
+          "difference": -0.001025818998492866,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Content",
+          "model_b": "Hybrid",
+          "score_a": 0.016169367985979437,
+          "score_b": 0.008659040244560462,
+          "difference": 0.0075103277414189755,
+          "winner": "Content",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "User-Based CF",
+          "model_b": "Item-Based CF",
+          "score_a": 0.008305670751793602,
+          "score_b": 0.017195186984472303,
+          "difference": -0.008889516232678701,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "User-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.008305670751793602,
+          "score_b": 0.008659040244560462,
+          "difference": -0.0003533694927668595,
+          "winner": "Hybrid",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        },
+        {
+          "metric": "mean_ndcg@10",
+          "model_a": "Item-Based CF",
+          "model_b": "Hybrid",
+          "score_a": 0.017195186984472303,
+          "score_b": 0.008659040244560462,
+          "difference": 0.008536146739911842,
+          "winner": "Item-Based CF",
+          "significant": false,
+          "note": "Full significance testing requires per-user metrics"
+        }
+      ]
+    },
+    "model_summary": {
+      "Popularity": {
+        "status": "success",
+        "best_metric": "mean_popularity_decile",
+        "best_value": 1.0,
+        "worst_metric": "mean_recall@5",
+        "worst_value": 0.024538548015634026,
+        "coverage": 0.01968886728245017,
+        "popularity_bias": 1.0,
+        "evaluation_time": 0.8704142570495605
+      },
+      "Content": {
+        "status": "success",
+        "best_metric": "mean_popularity_decile",
+        "best_value": 3.3676229508196722,
+        "worst_metric": "mean_recall@5",
+        "worst_value": 0.005038769148870403,
+        "coverage": 0.047399124939231894,
+        "popularity_bias": 3.3676229508196722,
+        "evaluation_time": 20.051677227020264
+      },
+      "User-Based CF": {
+        "status": "success",
+        "best_metric": "mean_popularity_decile",
+        "best_value": 2.947910656886178,
+        "worst_metric": "mean_recall@5",
+        "worst_value": 0.002112369341370531,
+        "coverage": 0.16966456003889158,
+        "popularity_bias": 2.947910656886178,
+        "evaluation_time": 18.339978218078613
+      },
+      "Item-Based CF": {
+        "status": "success",
+        "best_metric": "mean_popularity_decile",
+        "best_value": 2.5804098360655736,
+        "worst_metric": "mean_recall@5",
+        "worst_value": 0.006027291697311655,
+        "coverage": 0.37639766650461837,
+        "popularity_bias": 2.5804098360655736,
+        "evaluation_time": 248.47205662727356
+      },
+      "Hybrid": {
+        "status": "success",
+        "best_metric": "mean_popularity_decile",
+        "best_value": 2.9895081967213115,
+        "worst_metric": "mean_recall@5",
+        "worst_value": 0.002112369341370531,
+        "coverage": 0.17221682061254254,
+        "popularity_bias": 2.9895081967213115,
+        "evaluation_time": 17.35572338104248
+      }
+    }
+  },
+  "metadata": {}
+}

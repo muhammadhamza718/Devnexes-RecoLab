@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "timestamp": "2026-08-08T21:59:31.194534",
+    "category": "bias_analysis",
+    "name": "bias_analysis_summary"
+  },
+  "data": {
+    "Popularity": {
+      "model_name": "Popularity",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Content": {
+      "model_name": "Content",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "User-Based CF": {
+      "model_name": "User-Based CF",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Item-Based CF": {
+      "model_name": "Item-Based CF",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "Hybrid": {
+      "model_name": "Hybrid",
+      "popularity_bias": {
+        "mean_popularity_decile": 0.0,
+        "pop_decile_10_share": 0.0
+      },
+      "catalog_coverage": {
+        "unique_items_recommended": 0,
+        "total_catalog_items": 9742,
+        "catalog_coverage_pct": 0.0
+      },
+      "diversity": {
+        "intra_list_diversity": 0.0,
+        "inter_list_diversity": 1.0
+      },
+      "novelty_score": {
+        "mean_novelty_score": 0.0,
+        "novelty_std": 0.0
+      },
+      "serendipity": {
+        "mean_serendipity_score": 0.0
+      },
+      "fairness": {
+        "quintile_precisions": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "performance_gini_coefficient": 0.0,
+        "fairness_rating": "High"
+      }
+    },
+    "_bias_comparison_matrix": {
+      "Popularity": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Content": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "User-Based CF": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Item-Based CF": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      },
+      "Hybrid": {
+        "popularity_decile": 0.0,
+        "catalog_coverage_pct": 0.0,
+        "intra_list_diversity": 0.0,
+        "novelty_score": 0.0,
+        "serendipity": 0.0,
+        "fairness_gini": 0.0
+      }
+    }
+  }
+}

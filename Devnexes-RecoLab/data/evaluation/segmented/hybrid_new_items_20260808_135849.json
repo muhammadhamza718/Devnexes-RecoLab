@@ -1,0 +1,22 @@
+{
+  "model_name": "Hybrid",
+  "segment_name": "new_items",
+  "timestamp": "2026-08-08T13:58:49.607075+00:00",
+  "results": {
+    "mean_precision@5": 0.00319634703196347,
+    "mean_precision@10": 0.0036529680365296807,
+    "mean_precision@20": 0.003196347031963471,
+    "mean_recall@5": 0.0009826594005174498,
+    "mean_recall@10": 0.0022698285843323067,
+    "mean_recall@20": 0.007308231687876656,
+    "mean_ndcg@5": 0.003116451787585234,
+    "mean_ndcg@10": 0.003716178976512493,
+    "mean_ndcg@20": 0.004988472890433971,
+    "catalog_coverage": 0.14280505590666018,
+    "mean_popularity_decile": 3.2501141552511417,
+    "n_users": 438.0,
+    "segment_name": "new_items",
+    "n_test_users": 438
+  },
+  "metadata": {}
+}

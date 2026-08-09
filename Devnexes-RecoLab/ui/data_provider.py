@@ -12,12 +12,15 @@ hybrid model's adaptive selection.
 
 from __future__ import annotations
 
+import logging
 import re
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
 import streamlit as st
+
+logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -78,19 +81,41 @@ class DataProvider:
     """Cached facade over the MovieLens catalog and the train split."""
 
     def __init__(self) -> None:
-        self._movies = load_movies()
-        self._train = load_train()
+        try:
+            self._movies = load_movies()
+        except FileNotFoundError as e:
+            logger.error(f"Failed to load movies: {e}")
+            self._movies = pd.DataFrame(columns=["movieId", "title", "genres"])
+        
+        try:
+            self._train = load_train()
+        except FileNotFoundError as e:
+            logger.error(f"Failed to load train split: {e}")
+            self._train = pd.DataFrame(columns=["userId", "movieId", "rating"])
+        
         # Per-user rating counts come from the train split (what the models see).
-        self._counts = self._train["userId"].value_counts().sort_index()
-        self._movie_index: dict[int, dict[str, Any]] = {
-            int(row.movieId): {
-                "movieId": int(row.movieId),
-                "title": str(row.title),
-                "genres": str(row.genres),
-                "year": extract_year(row.title),
+        if not self._train.empty:
+            self._counts = self._train["userId"].value_counts().sort_index()
+        else:
+            self._counts = pd.Series(dtype=int)
+        
+        self._movie_index: dict[int, dict[str, Any]] = {}
+        for row in self._movies.itertuples():
+            movie_id = None
+            if hasattr(row, 'movieId'):
+                try:
+                    movie_id = int(row.movieId)  # type: ignore[arg-type]
+                except (ValueError, TypeError):
+                    continue
+            if movie_id is None:
+                continue
+            title_str = str(row.title) if hasattr(row, 'title') else f"Movie {movie_id}"
+            self._movie_index[movie_id] = {
+                "movieId": movie_id,
+                "title": title_str,
+                "genres": str(row.genres) if hasattr(row, 'genres') else "Unknown",
+                "year": extract_year(title_str),
             }
-            for row in self._movies.itertuples()
-        }
 
     # --- raw data --------------------------------------------------------
 

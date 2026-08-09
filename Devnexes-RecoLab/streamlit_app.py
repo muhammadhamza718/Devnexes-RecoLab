@@ -4,6 +4,7 @@
 # selection) to the five recommendation models and renders results in the
 # main area. Recommendations survive reruns via session state.
 
+import logging
 import sys
 from pathlib import Path
 from typing import Any
@@ -14,6 +15,8 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 import streamlit as st  # noqa: E402
+
+logger = logging.getLogger(__name__)
 
 st.set_page_config(
     page_title="Devnexes RecoLab",
@@ -137,6 +140,22 @@ def _generate(
     model_manager.apply_params(model, model_name, params)
     k = int(params.get("n", 10))
     rec_ids = list(model.recommend(user_id, k=k, exclude_items=None) or [])
+    
+    # CRITICAL-2: Handle empty recommendation list with fallback
+    if not rec_ids:
+        logger.warning(f"Model {model_name} returned no recommendations for user {user_id}")
+        # Fallback to popularity model
+        try:
+            popularity_model, _ = model_manager.get_model("Popularity")
+            rec_ids = list(popularity_model.recommend(user_id, k=k, exclude_items=None) or [])
+            if not rec_ids:
+                st.error(f"No recommendations available for user {user_id}")
+                return
+        except Exception as e:
+            logger.error(f"Fallback to popularity model failed: {e}")
+            st.error(f"Unable to generate recommendations for user {user_id}")
+            return
+    
     rows = _build_rows(model, model_name, rec_ids, user_id, provider, k)
     SessionManager.set_recommendations(rows)
 
@@ -231,7 +250,7 @@ def main() -> None:
 
         st.markdown("---")
         st.subheader("Cold-Start Onboarding")
-        if st.button("✨ Start New User Onboarding", key="btn_start_onboarding_sidebar", use_container_width=True):
+        if st.button("✨ Start New User Onboarding", key="btn_start_onboarding_sidebar", width="stretch"):
             SessionManager.reset_onboarding_state()
             st.rerun()
 
@@ -261,22 +280,23 @@ def main() -> None:
         st.subheader("Diagnostics & Community")
         show_feedback_hist = st.checkbox(
             "Show Feedback History",
-            value=st.session_state.get("show_feedback_history", False),
-            key="show_feedback_history",
+            value=SessionManager.get_show_feedback_history(),
+            key="widget_show_feedback_history",
         )
-        if st.button("Run System Health Check", key="btn_health_check", use_container_width=True):
+        SessionManager.set_show_feedback_history(show_feedback_hist)
+        if st.button("Run System Health Check", key="btn_health_check", type="primary"):
             health = perform_health_check()
-            st.session_state["last_health_check_result"] = health
+            SessionManager.set_last_health_check_result(health)
             if health["status"] == "healthy":
                 st.toast(f"System Healthy ({health['checks']['environment']} env)", icon="✅")
             else:
                 st.toast(f"System Status: {health['status'].upper()}", icon="⚠️")
 
-    if st.session_state.get("show_feedback_history"):
+    if SessionManager.get_show_feedback_history():
         render_feedback_history_view()
-        if st.session_state.get("last_health_check_result"):
+        if SessionManager.get_last_health_check_result():
             with st.expander("🔍 System Health Check Results", expanded=True):
-                st.json(st.session_state["last_health_check_result"])
+                st.json(SessionManager.get_last_health_check_result())
         return
 
     # If onboarding wizard is active, render the wizard instead of main recommendations dashboard

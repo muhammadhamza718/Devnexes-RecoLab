@@ -36,7 +36,7 @@ def render_user_selector(provider: DataProvider) -> int | None:
         "Search user ID",
         placeholder="e.g. 1",
         help=_SEARCH_HELP,
-        key="user_search",
+        key="widget_user_search",
     )
     user_ids = provider.search_users(query, limit=100)
 

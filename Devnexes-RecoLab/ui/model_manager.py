@@ -109,17 +109,17 @@ def _fit_model(name: str, train: Any, movies: Any) -> Any:
     # Note: the CF and Hybrid fit() methods return None (not self), so the
     # model instance must be returned explicitly rather than chaining.
     if name == "User-Based CF":
-        model = UserBasedCF()
-        model.fit(train)
-        return model
+        user_cf_model: Any = UserBasedCF()
+        user_cf_model.fit(train)
+        return user_cf_model
     if name == "Item-Based CF":
-        model = ItemBasedCF()
-        model.fit(train)
-        return model
+        item_cf_model: Any = ItemBasedCF()
+        item_cf_model.fit(train)
+        return item_cf_model
     if name == "Hybrid":
-        model = HybridRecommender(alpha=0.5)
-        model.fit(train, movies)
-        return model
+        hybrid_model: Any = HybridRecommender(alpha=0.5)
+        hybrid_model.fit(train, movies)
+        return hybrid_model
     raise ValueError(f"Unknown model name: {name}")
 
 

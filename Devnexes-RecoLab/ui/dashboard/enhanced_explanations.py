@@ -77,7 +77,8 @@ def _render_detail_control(movie_id: int) -> None:
         help="How much of the explanation to reveal: base text, feature "
         "importance, or the full contribution breakdown.",
     )
-    SessionManager.set_explanation_detail_level(level)
+    if level is not None:
+        SessionManager.set_explanation_detail_level(level)
 
 
 def _render_feature_importance(importance: dict[str, float], movie_id: int) -> None:
@@ -100,7 +101,7 @@ def _render_feature_importance(importance: dict[str, float], movie_id: int) -> N
         height=max(180, 34 * len(df)),
     )
     fig.update_layout(margin=dict(l=0, r=0, t=10, b=0), showlegend=False)
-    st.plotly_chart(fig, use_container_width=True, key=f"feature_importance_{movie_id}")
+    st.plotly_chart(fig, width="stretch", key=f"feature_importance_{movie_id}")
     st.caption("Weights are normalised to sum to 1: genres are IDF-weighted, "
                "CF contributions combine similarity and rating strength.")
 
@@ -132,6 +133,6 @@ def _render_contribution_breakdown(breakdown: dict[str, float], movie_id: int) -
         hovertemplate="%{label}: %{value:.2f} (%{percent})",
     )
     fig.update_layout(margin=dict(l=0, r=0, t=10, b=0), legend_title_text="Signal")
-    st.plotly_chart(fig, use_container_width=True, key=f"contribution_breakdown_{movie_id}")
+    st.plotly_chart(fig, width="stretch", key=f"contribution_breakdown_{movie_id}")
     st.caption("How much each signal contributed to this recommendation. "
                "Click legend entries to toggle slices.")

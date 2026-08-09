@@ -118,6 +118,23 @@ class StatisticalAnalysis:
         Returns:
             Dict mapping metric name to ranked list of (model, score).
         """
+        return self._rank_models(results)
+
+    def _rank_models(
+        self,
+        results: dict[str, dict[str, Any]],
+    ) -> dict[str, list[tuple[str, float]]]:
+        """Rank models by metric.
+
+        Args:
+            results: Evaluation results per model.
+
+        Returns:
+            Dict mapping metric name to ranked list of (model, score).
+        """
+        # Use provided model names if available, fall back to config
+        model_names = list(results.keys()) if results else MODEL_NAMES
+
         rankings: dict[str, list[tuple[str, float]]] = {}
 
         # Ranking metrics (higher is better)
@@ -126,7 +143,7 @@ class StatisticalAnalysis:
                 key = f"mean_{metric}@{k}"
                 scores = [
                     (name, results[name].get(key, 0.0))
-                    for name in MODEL_NAMES
+                    for name in model_names
                     if name in results and "error" not in results[name]
                 ]
                 # Sort descending (higher is better)
@@ -135,7 +152,7 @@ class StatisticalAnalysis:
         # Coverage (higher is better)
         scores = [
             (name, results[name].get("catalog_coverage", 0.0))
-            for name in MODEL_NAMES
+            for name in model_names
             if name in results and "error" not in results[name]
         ]
         rankings["catalog_coverage"] = sorted(scores, key=lambda x: x[1], reverse=True)
@@ -143,7 +160,7 @@ class StatisticalAnalysis:
         # Popularity decile (lower is better - less bias)
         scores = [
             (name, results[name].get("mean_popularity_decile", 10.0))
-            for name in MODEL_NAMES
+            for name in model_names
             if name in results and "error" not in results[name]
         ]
         rankings["mean_popularity_decile"] = sorted(scores, key=lambda x: x[1])
@@ -171,15 +188,16 @@ class StatisticalAnalysis:
             "comparisons": [],
         }
 
+        # Use actual model names from results, fall back to config
+        active_models = [
+            n for n in (list(results.keys()) if results else MODEL_NAMES)
+            if n in results and "error" not in results[n]
+        ]
+
         # For each metric, compare all model pairs
         for metric in ["mean_precision@10", "mean_recall@10", "mean_ndcg@10"]:
-            for i, model_a in enumerate(MODEL_NAMES):
-                for model_b in MODEL_NAMES[i + 1 :]:
-                    if model_a not in results or model_b not in results:
-                        continue
-                    if "error" in results[model_a] or "error" in results[model_b]:
-                        continue
-
+            for i, model_a in enumerate(active_models):
+                for model_b in active_models[i + 1 :]:
                     score_a = results[model_a].get(metric, 0.0)
                     score_b = results[model_b].get(metric, 0.0)
 
@@ -187,19 +205,19 @@ class StatisticalAnalysis:
                     # Since we don't have per-user metrics, we use a simplified approach
                     # Calculate t-statistic based on single value comparison
                     n_users = results[model_a].get("n_users", 100)
-                    
+
                     # For proper paired t-test, we would need per-user scores
                     # Using difference-based approach for now
                     diff = score_a - score_b
                     std_diff = abs(diff) / np.sqrt(n_users)  # Standard error approximation
-                    
+
                     t_stat = diff / std_diff if std_diff > 0 else 0.0
                     p_value = 2 * (1 - stats.t.cdf(abs(t_stat), df=n_users - 1))
-                    
+
                     # Apply Bonferroni correction for multiple comparisons
-                    n_comparisons = len(MODEL_NAMES) * (len(MODEL_NAMES) - 1) // 2
+                    n_comparisons = len(active_models) * (len(active_models) - 1) // 2
                     adjusted_significance = self.significance_level / n_comparisons
-                    
+
                     tests["comparisons"].append(
                         {
                             "metric": metric,

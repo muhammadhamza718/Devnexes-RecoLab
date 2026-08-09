@@ -22,21 +22,18 @@ class TestAnalysisStorage:
     def test_init_creates_directories(self, tmp_path):
         """Test that AnalysisStorage creates required directories."""
         from analysis_storage import AnalysisStorage
-        
+
         storage = AnalysisStorage(base_dir=tmp_path)
-        
-        assert storage.error_analysis_dir.exists()
-        assert storage.edge_case_analysis_dir.exists()
-        assert storage.bias_analysis_dir.exists()
-        assert storage.limitations_dir.exists()
-        assert storage.visualizations_dir.exists()
+
+        for category in ["error_analysis", "edge_case_analysis", "bias_analysis", "limitations", "visualizations"]:
+            assert storage.get_category_dir(category).exists()
 
     def test_save_error_analysis(self, tmp_path):
         """Test saving error analysis results."""
         from analysis_storage import AnalysisStorage
-        
+
         storage = AnalysisStorage(base_dir=tmp_path)
-        
+
         test_data = {
             "Popularity": {
                 "sample_size": 200,
@@ -45,21 +42,21 @@ class TestAnalysisStorage:
                 "overall_error_rate": 0.25,
             }
         }
-        
-        path = storage.save_error_analysis(test_data)
-        
+
+        path = storage.save_result(category="error_analysis", name="error_analysis_summary", data=test_data)
+
         assert path.exists()
         with open(path, "r") as f:
             loaded = json.load(f)
-        
-        assert loaded["Popularity"]["sample_size"] == 200
+
+        assert loaded["data"]["Popularity"]["sample_size"] == 200
 
     def test_save_bias_analysis(self, tmp_path):
         """Test saving bias analysis results."""
         from analysis_storage import AnalysisStorage
-        
+
         storage = AnalysisStorage(base_dir=tmp_path)
-        
+
         test_data = {
             "Popularity": {
                 "mean_popularity_decile": 5.0,
@@ -67,14 +64,14 @@ class TestAnalysisStorage:
                 "intra_list_diversity": 0.8,
             }
         }
-        
-        path = storage.save_bias_analysis(test_data)
-        
+
+        path = storage.save_result(category="bias_analysis", name="bias_analysis_summary", data=test_data)
+
         assert path.exists()
         with open(path, "r") as f:
             loaded = json.load(f)
-        
-        assert loaded["Popularity"]["mean_popularity_decile"] == 5.0
+
+        assert loaded["data"]["Popularity"]["mean_popularity_decile"] == 5.0
 
 
 class TestEvaluationResultLoader:
@@ -161,18 +158,20 @@ class TestErrorAnalysis:
     def test_analyze_errors_empty_data(self):
         """Test error analysis with empty test data."""
         from error_analysis import ErrorAnalyzer
-        
+
         # Mock components
         loader = Mock()
         storage = Mock()
-        
+        loader.validate_models_ready.return_value = {"Popularity": True}
+        loader.load_model_results.return_value = {"Popularity": {"mean_precision@10": 0.1}}
+
         analyzer = ErrorAnalyzer(loader=loader, storage=storage)
-        
+
         # Mock empty test data
         analyzer.test_df = pd.DataFrame(columns=["userId", "movieId", "rating"])
-        
+
         results = analyzer.analyze_errors(["Popularity"])
-        
+
         # Should handle gracefully
         assert "Popularity" in results
 
@@ -204,39 +203,39 @@ class TestBiasAnalysis:
     def test_calculate_popularity_bias(self):
         """Test popularity bias calculation."""
         from bias_analysis import BiasAnalyzer
-        
+
         loader = Mock()
         storage = Mock()
-        
+
         analyzer = BiasAnalyzer(loader=loader, storage=storage)
-        
-        # Mock item popularity
-        analyzer.item_counts = pd.Series({1: 100, 2: 50, 3: 10})
-        
-        # Test with recommended items
-        recommended_items = [1, 2]  # Popular items
-        bias_score = analyzer._calculate_popularity_bias(recommended_items)
-        
-        # Should return mean popularity decile
-        assert 0 <= bias_score <= 10
+
+        # Mock item popularity deciles
+        analyzer.item_pop_deciles = {1: 5, 2: 8}
+
+        # Test with recommended items as dict (user_recs: dict[int, list[int]])
+        result = analyzer._calculate_popularity_bias({1: [1, 2]})
+
+        # Should return dict with mean_popularity_decile
+        assert "mean_popularity_decile" in result
+        assert 0 <= result["mean_popularity_decile"] <= 10
 
     def test_calculate_catalog_coverage(self):
         """Test catalog coverage calculation."""
         from bias_analysis import BiasAnalyzer
-        
+
         loader = Mock()
         storage = Mock()
-        
+
         analyzer = BiasAnalyzer(loader=loader, storage=storage)
-        
-        # Mock catalog size
-        analyzer.total_items = 1000
-        
-        # Test with recommended items
-        recommended_items = [1, 2, 3, 4, 5]  # 5 unique items
+
+        # Mock catalog size (implementation uses total_catalog_size)
+        analyzer.total_catalog_size = 1000
+
+        # Test with recommended items as set (implementation expects set[int])
+        recommended_items = {1, 2, 3, 4, 5}
         coverage = analyzer._calculate_catalog_coverage(recommended_items)
-        
-        assert coverage == 5 / 1000
+
+        assert coverage["catalog_coverage_pct"] == 5 / 1000
 
 
 class TestPathValidation:

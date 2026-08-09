@@ -1,0 +1,11 @@
+{
+  "model_name": "TestModel",
+  "segment_name": "cold_start_users",
+  "timestamp": "2026-08-09T15:41:56.023060+00:00",
+  "results": {
+    "mean_precision@10": 0.15,
+    "mean_recall@10": 0.1,
+    "n_test_users": 100
+  },
+  "metadata": {}
+}

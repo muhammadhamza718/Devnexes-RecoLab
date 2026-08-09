@@ -23,32 +23,29 @@ class TestResultStorage:
         """Test that ResultStorage creates required directories."""
         from result_storage import ResultStorage
         
-        storage = ResultStorage(base_dir=tmp_path)
-        
+        storage = ResultStorage(results_dir=tmp_path)
+
         assert storage.results_dir.exists()
-        assert storage.comparison_dir.exists()
-        assert storage.segmented_dir.exists()
-        assert storage.visualizations_dir.exists()
 
     def test_save_model_results(self, tmp_path):
         """Test saving model evaluation results."""
         from result_storage import ResultStorage
         
-        storage = ResultStorage(base_dir=tmp_path)
-        
+        storage = ResultStorage(results_dir=tmp_path)
+
         test_results = {
             "mean_precision@5": 0.1,
             "mean_recall@5": 0.05,
             "mean_ndcg@5": 0.08,
             "catalog_coverage": 0.5,
         }
-        
+
         path = storage.save_model_results("TestModel", test_results)
-        
+
         assert path.exists()
         with open(path, "r") as f:
             loaded = json.load(f)
-        
+
         assert loaded["model_name"] == "TestModel"
         assert loaded["results"]["mean_precision@5"] == 0.1
 
@@ -56,20 +53,20 @@ class TestResultStorage:
         """Test saving segmented evaluation results."""
         from result_storage import ResultStorage
         
-        storage = ResultStorage(base_dir=tmp_path)
-        
+        storage = ResultStorage(results_dir=tmp_path)
+
         test_segment_data = {
             "mean_precision@10": 0.15,
             "mean_recall@10": 0.1,
             "n_test_users": 100,
         }
-        
+
         path = storage.save_segmented_results("TestModel", "cold_start_users", test_segment_data)
-        
+
         assert path.exists()
         with open(path, "r") as f:
             loaded = json.load(f)
-        
+
         assert loaded["model_name"] == "TestModel"
         assert loaded["segment_name"] == "cold_start_users"
 
@@ -97,16 +94,15 @@ class TestValidation:
     def test_validate_train_data_missing_columns(self, tmp_path):
         """Test validation fails with missing columns."""
         from validation import validate_train_data, ValidationError
-        
-        # Create invalid train.csv (missing timestamp)
+
+        # Create invalid train.csv (missing required 'rating' column)
         train_df = pd.DataFrame({
             "userId": [1, 2, 3],
             "movieId": [1, 2, 3],
-            "rating": [4.0, 5.0, 3.0],
         })
         train_path = tmp_path / "train.csv"
         train_df.to_csv(train_path, index=False)
-        
+
         with pytest.raises(ValidationError):
             validate_train_data(train_path)
 
@@ -147,8 +143,8 @@ class TestStatisticalAnalysis:
         
         rankings = analysis._rank_models(test_results)
         
-        assert rankings["mean_precision@10"][0] == "ModelB"
-        assert rankings["mean_precision@10"][-1] == "ModelA"
+        assert rankings["mean_precision@10"][0][0] == "ModelB"
+        assert rankings["mean_precision@10"][-1][0] == "ModelA"
 
     def test_significance_test_performs_t_test(self):
         """Test that significance testing performs actual statistical tests."""

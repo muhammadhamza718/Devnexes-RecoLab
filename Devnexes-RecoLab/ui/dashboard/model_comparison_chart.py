@@ -64,4 +64,4 @@ def render_model_comparison_chart(
     )
     fig.update_layout(legend_title_text="Metric", height=420)
     fig.update_yaxes(range=[0, 1])
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

@@ -199,7 +199,7 @@ class MetricsProvider:
             {"model": name, "value": self.get_model_metrics(name, k).get(key, 0.0)}
             for name in MODEL_NAMES
         ]
-        rows.sort(key=lambda row: row["value"], reverse=True)
+        rows.sort(key=lambda row: float(row["value"]) if isinstance(row["value"], (int, float)) else 0.0, reverse=True)
         return rows
 
     # ------------------------------------------------------------------

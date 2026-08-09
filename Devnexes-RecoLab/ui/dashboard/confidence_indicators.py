@@ -111,7 +111,6 @@ def _render_score_badge(score: float, category: str, movie_id: int) -> None:
         f"{icon} Confidence: {category.upper()} ({score:.2f})"
         f"</div>",
         unsafe_allow_html=True,
-        key=f"conf-badge-{movie_id}",
     )
 
 
@@ -125,10 +124,7 @@ def _render_uncertainty_message(uncertainty: float, movie_id: int) -> None:
         msg = None
 
     if msg:
-        st.caption(
-            f"*{msg}*",
-            key=f"conf-uncert-{movie_id}",
-        )
+        st.caption(f"*{msg}*")
 
 
 def _render_reliability_indicator(reliability: float, movie_id: int) -> None:
@@ -138,9 +134,8 @@ def _render_reliability_indicator(reliability: float, movie_id: int) -> None:
         f'<div style="font-size:11px; color:#888; margin-bottom:2px;">'
         f"Reliability: {reliability:.0%}</div>",
         unsafe_allow_html=True,
-        key=f"conf-rel-label-{movie_id}",
     )
-    st.progress(min(max(reliability, 0.0), 1.0), key=f"conf-rel-bar-{movie_id}")
+    st.progress(min(max(reliability, 0.0), 1.0))
 
 
 def _render_factor_breakdown(factors: dict[str, float], movie_id: int) -> None:
@@ -165,13 +160,9 @@ def _render_factor_breakdown(factors: dict[str, float], movie_id: int) -> None:
                 f'<span style="font-size:12px; color:#333; width:40px; text-align:right;">'
                 f"{value:.2f}</span></div>",
                 unsafe_allow_html=True,
-                key=f"conf-factor-{movie_id}-{key}",
             )
 
 
 def _render_below_threshold(movie_id: int, score: float, threshold: float) -> None:
     """Render a muted indicator when confidence is below the threshold."""
-    st.caption(
-        f"Confidence {score:.2f} is below threshold ({threshold:.2f})",
-        key=f"conf-below-{movie_id}",
-    )
+    st.caption(f"Confidence {score:.2f} is below threshold ({threshold:.2f})")

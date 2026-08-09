@@ -140,7 +140,7 @@ def _render_side_by_side(
 
     st.dataframe(
         df.style.apply(_style_rows, axis=None),
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
     st.caption(
@@ -168,7 +168,7 @@ def _render_agreement_table(
         for pair in agreements.values()
     ]
     rows.sort(key=lambda r: r["Jaccard"], reverse=True)
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.dataframe(rows, width="stretch", hide_index=True)
 
 
 def _render_performance_table(
@@ -206,7 +206,7 @@ def _render_performance_table(
         df.style.apply(_style_perf, axis=None).format(
             {"Precision": "{:.3f}", "Recall": "{:.3f}", "NDCG": "{:.3f}", "Coverage": "{:.1%}"}
         ),
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
     st.caption(f"Bold blue values mark the best model for each metric at K={k}.")

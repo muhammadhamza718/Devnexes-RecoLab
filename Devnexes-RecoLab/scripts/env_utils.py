@@ -2,18 +2,19 @@
 
 import os
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_ENVIRONMENT = {
+DEFAULT_ENVIRONMENT: dict[str, Any] = {
     "RECOLAB_MODEL_PATH": "models",
     "RECOLAB_DATA_PATH": "data",
     "RECOLAB_LOG_LEVEL": "INFO",
-    "RECOLAB_CACHE_TTL": "3600",
-    "STREAMLIT_RUNTIME": "false",
-    "PRODUCTION": "false",
-    "RECOLAB_MAX_MEMORY": "1024",
-    "RECOLAB_TIMEOUT": "300",
+    "RECOLAB_CACHE_TTL": 3600,
+    "STREAMLIT_RUNTIME": False,
+    "PRODUCTION": False,
+    "RECOLAB_MAX_MEMORY": 1024,
+    "RECOLAB_TIMEOUT": 300,
 }
 
 def _detect_deployment_environment() -> str:
@@ -45,7 +46,7 @@ def validate_environment() -> dict:
         else:
             env_config[key] = val
 
-    # Validate specific types
+    # Validate specific types - convert to proper types
     try:
         env_config["RECOLAB_CACHE_TTL"] = int(env_config["RECOLAB_CACHE_TTL"])
     except ValueError:
@@ -64,7 +65,7 @@ def validate_environment() -> dict:
         logger.warning(f"Invalid RECOLAB_TIMEOUT. Using default: {DEFAULT_ENVIRONMENT['RECOLAB_TIMEOUT']}")
         env_config["RECOLAB_TIMEOUT"] = int(DEFAULT_ENVIRONMENT["RECOLAB_TIMEOUT"])
 
-    # Convert booleans
+    # Convert booleans - keep as bool for internal use
     env_config["STREAMLIT_RUNTIME"] = str(env_config["STREAMLIT_RUNTIME"]).lower() in ("true", "1", "yes")
     env_config["PRODUCTION"] = str(env_config["PRODUCTION"]).lower() in ("true", "1", "yes")
 

@@ -77,15 +77,23 @@ class MovieSearchProvider:
 
         results = []
         for row in matches.itertuples():
-            mid = int(row.movieId)
-            stats = self._dp.get_movie_stats(mid)
+            movie_id: int | None = None
+            if hasattr(row, 'movieId'):
+                try:
+                    movie_id = int(row.movieId)  # type: ignore[arg-type]
+                except (ValueError, TypeError):
+                    continue
+            if movie_id is None:
+                continue
+            stats = self._dp.get_movie_stats(movie_id)
             genres_list = [g.strip() for g in str(row.genres).split("|") if g.strip()]
+            title_str = str(row.title) if hasattr(row, 'title') else f"Movie {movie_id}"
             results.append({
-                "movieId": mid,
-                "title": str(row.title),
-                "genres": str(row.genres),
+                "movieId": movie_id,
+                "title": title_str,
+                "genres": str(row.genres) if hasattr(row, 'genres') else "Unknown",
                 "genres_list": genres_list,
-                "year": extract_year(row.title),
+                "year": extract_year(title_str),
                 "popularity": stats.get("rating_count", 0),
                 "mean_rating": stats.get("mean_rating"),
             })

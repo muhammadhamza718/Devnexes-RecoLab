@@ -114,11 +114,16 @@ class OnboardingRecommender:
             candidate_df = movies_df
 
         # Exclude already liked movies
-        candidate_ids = [
-            int(row.movieId)
-            for row in candidate_df.itertuples()
-            if int(row.movieId) not in liked_set
-        ]
+        candidate_ids = []
+        for row in candidate_df.itertuples():
+            movie_id = None
+            if hasattr(row, 'movieId'):
+                try:
+                    movie_id = int(row.movieId)  # type: ignore[arg-type]
+                except (ValueError, TypeError):
+                    continue
+            if movie_id is not None and movie_id not in liked_set:
+                candidate_ids.append(movie_id)
 
         # Top popular from candidates
         stats = [

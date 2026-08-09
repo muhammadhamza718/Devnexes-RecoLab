@@ -88,9 +88,9 @@ class ModelComparisonEngine:
                 "more stable recommendations from sparse history."
             )
         else:
-            primary = best["model"]
+            primary = str(best.get("model", "Hybrid"))
             rationale = (
-                f"Best offline NDCG@{k} ({best['value']:.3f}) on the held-out "
+                f"Best offline NDCG@{k} ({best.get('value', 0.0):.3f}) on the held-out "
                 "test split, so it is the most likely to surface relevant titles."
             )
 

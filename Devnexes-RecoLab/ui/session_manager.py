@@ -74,6 +74,9 @@ DEFAULT_SESSION_STATE: dict[str, Any] = {
     "deployment_active_operations": {},  # operation_id -> status dict
     "deployment_error_count": 0,  # Count of logged user-facing errors
     "deployment_last_health_check": None,  # Timestamp of last health check
+    # UI state keys
+    "show_feedback_history": False,  # Whether to show feedback history view
+    "last_health_check_result": None,  # Last health check result dict
 }
 
 
@@ -474,4 +477,30 @@ class SessionManager:
     @staticmethod
     def set_deployment_last_health_check(timestamp: str | None) -> None:
         st.session_state["deployment_last_health_check"] = timestamp
+
+    # --- UI state accessors ------------------------------------------------
+
+    @staticmethod
+    def get_show_feedback_history() -> bool:
+        return bool(st.session_state.get("show_feedback_history"))
+
+    @staticmethod
+    def set_show_feedback_history(show: bool) -> None:
+        st.session_state["show_feedback_history"] = show
+
+    @staticmethod
+    def get_last_health_check_result() -> dict[str, Any] | None:
+        return st.session_state.get("last_health_check_result")
+
+    @staticmethod
+    def set_last_health_check_result(result: dict[str, Any] | None) -> None:
+        st.session_state["last_health_check_result"] = result
+
+    @staticmethod
+    def get_onboarding_preferences() -> dict[str, Any]:
+        return st.session_state.get("onboarding_preferences") or {}
+
+    @staticmethod
+    def set_onboarding_preferences(prefs: dict[str, Any]) -> None:
+        st.session_state["onboarding_preferences"] = prefs
 

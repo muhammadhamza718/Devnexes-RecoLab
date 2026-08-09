@@ -89,7 +89,12 @@ def _render_item_card(item: dict[str, Any]) -> None:
         return
     title = item.get("title") or f"Movie {movie_id}"
     poster = _image_manager.get_poster(int(movie_id), title=str(title))
-    render_poster(item, poster, key=f"similar-poster-{movie_id}")
+    movie_dict = {
+        "movieId": movie_id,
+        "title": title,
+        "year": item.get("year")
+    }
+    render_poster(movie_dict, poster, key=f"widget_similar_poster_{movie_id}")
 
     similarity = item.get("similarity")
     if similarity is not None:

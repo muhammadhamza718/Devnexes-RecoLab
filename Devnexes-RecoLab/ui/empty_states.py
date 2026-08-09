@@ -7,18 +7,18 @@ dashboard metrics, and user feedback views.
 
 from __future__ import annotations
 
-from typing import Callable, Optional
+from typing import Callable
 import streamlit as st
 
 
-def render_empty_user_selection(on_action: Optional[Callable[[], None]] = None) -> None:
+def render_empty_user_selection(on_action: Callable[[], None] | None = None) -> None:
     """Render empty state when no user is selected."""
     st.info("👈 **Select a user from the sidebar to begin.**\n\nChoose any User ID to view personalized movie recommendations, user profile statistics, and model explanations.")
     if on_action and st.button("🚀 Start Onboarding Wizard"):
         on_action()
 
 
-def render_empty_recommendations(user_id: Optional[int] = None) -> None:
+def render_empty_recommendations(user_id: int | None = None) -> None:
     """Render empty state when recommendations list is empty."""
     st.warning("🎬 **No recommendations available.**")
     st.write(
@@ -34,7 +34,7 @@ def render_empty_recommendations(user_id: Optional[int] = None) -> None:
     )
 
 
-def render_empty_similar_items(movie_title: Optional[str] = None) -> None:
+def render_empty_similar_items(movie_title: str | None = None) -> None:
     """Render empty state when no similar items are found."""
     st.info(f"🔍 **No similar items found for '{movie_title or 'selected item'}'.**")
     st.write(

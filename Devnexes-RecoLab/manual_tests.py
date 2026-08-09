@@ -48,7 +48,7 @@ def test_interactive_content_model():
     print(f"Similar to item 10: {similar}")
     
     # Test explanation
-    explanation = model.get_explanation(user_id=1, item_id=10)
+    explanation = model.explain(user_id=1, item_id=10)
     print(f"Explanation for item 10: {explanation}")
     
     print("[PASS] Test 1 passed")

@@ -13,6 +13,12 @@ from typing import Any
 
 import streamlit as st
 
+try:
+    import bleach
+    BLEACH_AVAILABLE = True
+except ImportError:
+    BLEACH_AVAILABLE = False
+
 from ui.data_provider import DataProvider
 
 #: Deterministic genre -> color palette (falls back to a hash-based pick).
@@ -51,11 +57,22 @@ def render_genre_tags(genres: str) -> str:
         return ""
     spans: list[str] = []
     for genre in tags:
-        color = _GENRE_COLORS.get(genre, _FALLBACK_COLORS[hash(genre) % len(_FALLBACK_COLORS)])
+        color = _GENRE_COLORS.get(
+            genre,
+            _FALLBACK_COLORS[hash(genre) % len(_FALLBACK_COLORS)]
+        )
+        # CRITICAL-4: Use bleach for stricter HTML sanitization if available
+        if BLEACH_AVAILABLE:
+            clean_genre = bleach.clean(
+                genre, tags=[], attributes={}, strip=True
+            )
+        else:
+            clean_genre = html.escape(genre)
+        
         spans.append(
             f'<span style="background:{color}; color:#fff; font-size:10px; '
             f'padding:2px 8px; border-radius:10px; margin-right:4px;">'
-            f"{html.escape(genre)}</span>"
+            f"{clean_genre}</span>"
         )
     return " ".join(spans)
 
@@ -77,7 +94,7 @@ def render_item_detail(provider: DataProvider, movie_id: int) -> None:
     year = movie.get("year")
     header = f"**{title}**" if year is None else f"**{title}** ({year})"
 
-    with st.container(border=True):
+    with st.container():
         st.markdown(header)
         tags_html = render_genre_tags(str(movie.get("genres") or ""))
         if tags_html:

@@ -35,7 +35,7 @@ def render_visualizations_panel(
     panel_open = st.checkbox(
         "Show visualizations",
         value=SessionManager.is_visualization_panel_open(),
-        key="visualization_panel_open",
+        key="widget_visualization_panel_open",
         help="Compute and display charts for the selected user",
     )
     if not panel_open:

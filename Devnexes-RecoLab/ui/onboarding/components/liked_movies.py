@@ -61,13 +61,13 @@ def render_liked_movies(
             with col_btn:
                 is_selected = mid in current_liked_ids
                 if is_selected:
-                    if st.button("Remove ❌", key=f"btn_rem_movie_{mid}", use_container_width=True):
+                    if st.button("Remove ❌", key=f"btn_rem_movie_{mid}", width="stretch"):
                         updated = [m for m in current_liked if m.get("movieId") != mid]
                         SessionManager.set_onboarding_liked_movies(updated)
                         st.rerun()
                 else:
                     can_add = len(current_liked) < 20
-                    if st.button("Add ➕", key=f"btn_add_movie_{mid}", use_container_width=True, disabled=not can_add):
+                    if st.button("Add ➕", key=f"btn_add_movie_{mid}", width="stretch", disabled=not can_add):
                         current_liked.append(movie)
                         SessionManager.set_onboarding_liked_movies(current_liked)
                         st.rerun()
@@ -96,16 +96,16 @@ def render_liked_movies(
     col_back, col_skip, col_next = st.columns([1, 1, 1])
 
     with col_back:
-        if st.button("⬅️ Back: Genres", key="btn_back_step2", use_container_width=True):
+        if st.button("⬅️ Back: Genres", key="btn_back_step2", width="stretch"):
             wizard.previous_step()
             st.rerun()
 
     with col_skip:
-        if st.button("⏭️ Skip with Defaults", key="btn_skip_step2", use_container_width=True):
+        if st.button("⏭️ Skip with Defaults", key="btn_skip_step2", width="stretch"):
             wizard.skip_onboarding()
             st.rerun()
 
     with col_next:
-        if st.button("Next: Confirmation ➡️", key="btn_next_step2", use_container_width=True):
+        if st.button("Next: Confirmation ➡️", key="btn_next_step2", width="stretch"):
             wizard.next_step()
             st.rerun()

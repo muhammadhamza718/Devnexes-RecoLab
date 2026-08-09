@@ -29,7 +29,7 @@ def render_genre_selection(
     combinations = genre_provider.get_suggested_combinations()
     for idx, combo in enumerate(combinations):
         with preset_cols[idx % 5]:
-            if st.button(combo["name"], key=f"preset_btn_{combo['id']}", use_container_width=True):
+            if st.button(combo["name"], key=f"preset_btn_{combo['id']}", width="stretch"):
                 # Apply preset genres
                 SessionManager.set_onboarding_selected_genres(list(combo["genres"]))
                 st.rerun()
@@ -81,12 +81,12 @@ def render_genre_selection(
     col_skip, col_space, col_next = st.columns([1, 2, 1])
 
     with col_skip:
-        if st.button("⏭️ Skip with Defaults", key="btn_skip_step1", use_container_width=True):
+        if st.button("⏭️ Skip with Defaults", key="btn_skip_step1", width="stretch"):
             wizard.skip_onboarding()
             st.rerun()
 
     with col_next:
         next_disabled = False
-        if st.button("Next: Liked Movies ➡️", key="btn_next_step1", use_container_width=True, disabled=next_disabled):
+        if st.button("Next: Liked Movies ➡️", key="btn_next_step1", width="stretch", disabled=next_disabled):
             wizard.next_step()
             st.rerun()

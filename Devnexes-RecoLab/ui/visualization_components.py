@@ -31,7 +31,7 @@ def render_rating_timeline(
         title="Rating History Timeline",
         labels={"timestamp": "Date", "rating": "Rating"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_rating_distribution(
@@ -49,7 +49,7 @@ def render_rating_distribution(
         title="Rating Distribution",
         labels={"x": "Rating", "y": "Count"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_genre_preferences(
@@ -68,7 +68,7 @@ def render_genre_preferences(
         title="Genre Preferences",
         labels={"x": "Genre", "y": "Preference %"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_activity_heatmap(
@@ -90,4 +90,4 @@ def render_activity_heatmap(
         labels=dict(x="Hour of Day", y="Day of Week", color="Rating Count"),
         color_continuous_scale="Viridis",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

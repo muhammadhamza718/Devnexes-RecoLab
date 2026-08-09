@@ -95,11 +95,17 @@ class SimilarityProvider:
         """Popularity-based fill when no similarity backend can serve the movie."""
         popularity = self.data_provider._train["movieId"].value_counts()
         exclude = {movie_id}
-        return [
-            (int(mid), float(score))
-            for mid, score in popularity.items()
-            if int(mid) not in exclude
-        ][:k]
+        result = []
+        for mid, score in popularity.items():
+            try:
+                if not isinstance(mid, (int, str)):
+                    continue
+                mid_int = int(mid)
+                if mid_int not in exclude:
+                    result.append((mid_int, float(score)))
+            except (ValueError, TypeError):
+                continue
+        return result[:k]
 
     # --- enrichment ------------------------------------------------------
 

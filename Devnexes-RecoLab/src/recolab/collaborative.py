@@ -7,8 +7,7 @@ cold-start fallback.
 
 from __future__ import annotations
 
-import pathlib
-import time
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
@@ -173,7 +172,8 @@ class UserBasedCF:
         sim_scores = self.similarity_matrix[user_idx]
 
         # Candidate user indices (excluding target user self-similarity)
-        candidate_indices = np.where(sim_scores >= self.min_similarity)[0]
+        candidate_indices_array = np.where(sim_scores >= self.min_similarity)[0]
+        candidate_indices: list[int] = candidate_indices_array.tolist()
         candidate_indices = [idx for idx in candidate_indices if idx != user_idx]
 
         if not candidate_indices:
@@ -389,7 +389,7 @@ class UserBasedCF:
         model.is_fitted = bundle.get("is_fitted", False)
         return model
 
-    def save(self, path: str | pathlib.Path) -> pathlib.Path:
+    def save(self, path: str | Path) -> Path:
         """Save fitted model artifact to disk.
 
         Args:
@@ -402,7 +402,7 @@ class UserBasedCF:
 
     @classmethod
     def load(
-        cls, path: str | pathlib.Path, content_model: Optional[ContentModel] = None
+        cls, path: str | Path, content_model: Optional[ContentModel] = None
     ) -> UserBasedCF:
         """Load model artifact from disk.
 
@@ -534,7 +534,8 @@ class ItemBasedCF:
         sim_scores = self.item_item_matrix[item_idx]
 
         # Candidate item indices (excluding target item self-similarity)
-        candidate_indices = np.where(sim_scores >= self.min_similarity)[0]
+        candidate_indices_array = np.where(sim_scores >= self.min_similarity)[0]
+        candidate_indices: list[int] = candidate_indices_array.tolist()
         candidate_indices = [idx for idx in candidate_indices if idx != item_idx]
 
         if not candidate_indices:
@@ -740,7 +741,7 @@ class ItemBasedCF:
         model.is_fitted = bundle.get("is_fitted", False)
         return model
 
-    def save(self, path: str | pathlib.Path) -> pathlib.Path:
+    def save(self, path: str | Path) -> Path:
         """Save fitted model artifact to disk.
 
         Args:
@@ -753,7 +754,7 @@ class ItemBasedCF:
 
     @classmethod
     def load(
-        cls, path: str | pathlib.Path, content_model: Optional[ContentModel] = None
+        cls, path: str | Path, content_model: Optional[ContentModel] = None
     ) -> ItemBasedCF:
         """Load model artifact from disk.
 

@@ -9,6 +9,8 @@ and would be trivially "hit".
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 ITEM_ID = "movieId"
@@ -121,7 +123,7 @@ class PopularityModel:
         candidates = [mid for mid in self._global_top if mid not in exclude]
         return candidates[:k]
 
-    def save(self, path) -> None:
+    def save(self, path: str | Path) -> None:
         """Persist the fitted model via pickle.
 
         Provided as a hook for the persistence agent. Raises if not fitted.
@@ -134,7 +136,7 @@ class PopularityModel:
             pickle.dump(self, fh)
 
     @classmethod
-    def load(cls, path) -> "PopularityModel":
+    def load(cls, path: str | Path) -> "PopularityModel":
         """Load a pickled ``PopularityModel`` (persistence hook)."""
         import pickle
 

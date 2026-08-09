@@ -44,7 +44,10 @@ class StatisticsAggregator:
                     }
                 ).sort_values("timestamp")
             SessionManager.set_rating_statistics(self.cache)
-        return self.cache[cache_key]
+        result = self.cache[cache_key]
+        if not isinstance(result, pd.DataFrame):
+            return pd.DataFrame(columns=["timestamp", "rating"])
+        return result
 
     def get_rating_distribution(self, user_id: int) -> dict[float, int]:
         """Return a mapping of rating value -> number of ratings."""
@@ -56,7 +59,11 @@ class StatisticsAggregator:
                 user_ratings["rating"].value_counts().sort_index().to_dict()
             )
             SessionManager.set_rating_statistics(self.cache)
-        return self.cache[cache_key]
+        result = self.cache[cache_key]
+        if not isinstance(result, dict):
+            return {}
+        # Ensure keys are floats
+        return {float(k): int(v) for k, v in result.items()}
 
     def get_genre_preferences(self, user_id: int) -> dict[str, float]:
         """Return normalized genre preferences for the user (fractions of 1.0)."""
@@ -77,7 +84,11 @@ class StatisticsAggregator:
                 {g: c / total for g, c in genre_counts.items()} if total > 0 else {}
             )
             SessionManager.set_rating_statistics(self.cache)
-        return self.cache[cache_key]
+        result = self.cache[cache_key]
+        if not isinstance(result, dict):
+            return {}
+        # Ensure values are floats
+        return {str(k): float(v) for k, v in result.items()}
 
     def get_activity_heatmap(self, user_id: int) -> pd.DataFrame:
         """Return a day-of-week x hour-of-day rating-count matrix.
@@ -97,8 +108,13 @@ class StatisticsAggregator:
                     .dt.dayofweek.map({i: name for i, name in enumerate(_DAY_ORDER)})
                 )
                 counts = pd.DataFrame({"day": days, "hour": hours}).value_counts()
-                for (day, hour), count in counts.items():
+                for idx, count in counts.items():
+                    day = idx[0] if isinstance(idx, tuple) else idx
+                    hour = idx[1] if isinstance(idx, tuple) else 0
                     matrix.loc[day, hour] = count
             self.cache[cache_key] = matrix
             SessionManager.set_rating_statistics(self.cache)
-        return self.cache[cache_key]
+        result = self.cache[cache_key]
+        if not isinstance(result, pd.DataFrame):
+            return pd.DataFrame(0, index=_DAY_ORDER, columns=list(range(24)))
+        return result

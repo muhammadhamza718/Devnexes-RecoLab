@@ -43,7 +43,7 @@ def render_poster(
     """
     if not poster.startswith(PLACEHOLDER_PREFIX):
         # Real image URL path (reserved for a future TMDB-backed pipeline).
-        st.image(poster, use_container_width=True)
+        st.image(poster, width="stretch")
         return
 
     title = movie.get("title") or poster[len(PLACEHOLDER_PREFIX):] or "Unknown title"

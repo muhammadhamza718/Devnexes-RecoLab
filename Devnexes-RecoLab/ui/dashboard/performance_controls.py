@@ -54,7 +54,8 @@ def render_performance_sidebar_controls() -> None:
             "Rich: full detail including confidence and explanations."
         ),
     )
-    SessionManager.set_performance_mode(selected)
+    if selected is not None:
+        SessionManager.set_performance_mode(selected)
 
 
 # ------------------------------------------------------------------

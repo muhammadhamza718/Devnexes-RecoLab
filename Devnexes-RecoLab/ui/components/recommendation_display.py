@@ -73,29 +73,25 @@ def _render_row(
     year = row.get("year")
     header = f"**{rank}. {title}**" if year is None else f"**{rank}. {title}** ({year})"
 
-    aria = f"Recommendation {rank}: {title}"
-    if year is not None:
-        aria += f" ({year})"
-    with st.container(border=True, aria_label=aria):
-        poster_col, title_col, score_col = st.columns([1, 4, 1])
+    poster_col, title_col, score_col = st.columns([1, 4, 1])
 
-        with poster_col:
-            _render_poster_thumbnail(row)
+    with poster_col:
+        _render_poster_thumbnail(row)
 
-        with title_col:
-            st.markdown(header)
-            genres = row.get("genres")
-            if genres:
-                st.caption(f"Genres: {genres}")
-            _render_more_like_this(rank, row, similarity_provider)
+    with title_col:
+        st.markdown(header)
+        genres = row.get("genres")
+        if genres:
+            st.caption(f"Genres: {genres}")
+        _render_more_like_this(rank, row, similarity_provider)
 
-        with score_col:
-            score = row.get("score")
-            if score is not None:
-                _render_relevance(score)
-            confidence = row.get("confidence")
-            if confidence is not None:
-                st.caption(f"Confidence: {confidence:.2f}")
+    with score_col:
+        score = row.get("score")
+        if score is not None:
+            _render_relevance(score)
+        confidence = row.get("confidence")
+        if confidence is not None:
+            st.caption(f"Confidence: {confidence:.2f}")
 
         explanation = row.get("explanation")
         if explanation:
@@ -104,18 +100,14 @@ def _render_row(
         movie_id = row.get("movie_id")
 
         # Task-014: confidence indicators panel
-        confidence = SessionManager.get_confidence_data().get(
-            int(movie_id) if movie_id is not None else None
-        )
-        if confidence is not None:
-            render_confidence_panel(confidence, int(movie_id))
-        enhanced = (
-            SessionManager.get_enhanced_explanations().get(int(movie_id))
-            if movie_id is not None
-            else None
-        )
-        if enhanced:
-            render_enhanced_explanation(enhanced, int(movie_id))
+        confidence_data = SessionManager.get_confidence_data()
+        if movie_id is not None:
+            confidence = confidence_data.get(int(movie_id))
+            if confidence is not None:
+                render_confidence_panel(confidence, int(movie_id))
+            enhanced = SessionManager.get_enhanced_explanations().get(int(movie_id))
+            if enhanced:
+                render_enhanced_explanation(enhanced, int(movie_id))
 
         _render_row_detail(provider, row)
 
@@ -148,10 +140,9 @@ def _render_more_like_this(
         return
     if st.button(
         "More like this",
-        key=f"similar-btn-{rank}",
+        key=f"widget_similar_btn_{rank}",
         type="tertiary",
         help="Show similar movies for this title",
-        aria_label=f"Show similar movies for {row.get('title', 'this movie')}",
     ):
         compute_similar_items(
             similarity_provider,
@@ -171,7 +162,13 @@ def _render_poster_thumbnail(row: dict[str, Any]) -> None:
         int(movie_id),
         title=str(row.get("title") or ""),
     )
-    render_poster(row, poster, key=f"rec-poster-{movie_id}-{row.get('_idx', id(row))}")
+    # Convert row to movie dict format expected by render_poster
+    movie_dict = {
+        "movieId": movie_id,
+        "title": row.get("title", ""),
+        "year": row.get("year")
+    }
+    render_poster(movie_dict, poster, key=f"widget_rec_poster_{movie_id}")
 
 
 def _render_row_detail(provider: DataProvider, row: dict[str, Any]) -> None:
@@ -184,5 +181,5 @@ def _render_row_detail(provider: DataProvider, row: dict[str, Any]) -> None:
     movie_id = row.get("movie_id")
     if movie_id is None:
         return
-    with st.expander("Movie details", key=f"rec-detail-{movie_id}-{row.get('_idx', id(row))}"):
+    with st.expander("Movie details", key=f"widget_rec_detail_{movie_id}"):
         render_item_detail(provider, int(movie_id))

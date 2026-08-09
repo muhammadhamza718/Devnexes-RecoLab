@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "developing-with-streamlit": {
+      "source": "streamlit/agent-skills",
+      "sourceType": "github",
+      "skillPath": "developing-with-streamlit/SKILL.md",
+      "computedHash": "128c0acf5db60266b0fb0440c4064fccb7adba0a90d07259b4adddf0e4f39c78"
+    },
+    "streamlit": {
+      "source": "silvainfm/claude-skills",
+      "sourceType": "github",
+      "skillPath": "streamlit/SKILL.md",
+      "computedHash": "949f2a78daaee124512332a11b736fbbe76845a73fb1e7253d45cd81b5caf115"
+    },
+    "streamlit-to-marimo": {
+      "source": "marimo-team/skills",
+      "sourceType": "github",
+      "skillPath": "skills/streamlit-to-marimo/SKILL.md",
+      "computedHash": "3d89782b2e4a79cd50b4eff04d3706bb1603b2ecfc7f015622892bb8bce33807"
+    }
+  }
+}

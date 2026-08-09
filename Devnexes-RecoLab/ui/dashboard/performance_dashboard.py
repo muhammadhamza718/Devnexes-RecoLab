@@ -90,6 +90,6 @@ def _render_metric_breakdown(metrics_provider: MetricsProvider, k: int) -> None:
 
     st.dataframe(
         rows,
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )

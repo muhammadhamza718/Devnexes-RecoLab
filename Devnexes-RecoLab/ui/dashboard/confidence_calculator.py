@@ -135,10 +135,10 @@ class ConfidenceCalculator:
 
     def _item_popularity_factor(self, movie_id: int) -> float:
         """More community ratings for the item → higher confidence."""
+        import math
         stats = self._provider.get_movie_stats(movie_id)
         rc = stats.get("rating_count", 0)
         # Log-ish scaling: 1 rating ≈ 0.1, 10 ≈ 0.5, 100+ ≈ 1.0
-        import math
         return _clamp(math.log1p(rc) / math.log1p(100))
 
     def _model_specific_factor(

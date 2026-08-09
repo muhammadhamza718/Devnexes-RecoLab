@@ -103,12 +103,12 @@ def render_confirmation(
     col_back, col_space, col_finish = st.columns([1, 1, 2])
 
     with col_back:
-        if st.button("⬅️ Back: Liked Movies", key="btn_back_step3", use_container_width=True):
+        if st.button("⬅️ Back: Liked Movies", key="btn_back_step3", width="stretch"):
             wizard.previous_step()
             st.rerun()
 
     with col_finish:
-        if st.button("🚀 Complete Onboarding & See Full Recommendations", key="btn_complete_onboarding", use_container_width=True, type="primary"):
+        if st.button("🚀 Complete Onboarding & See Full Recommendations", key="btn_complete_onboarding", width="stretch", type="primary"):
             wizard.complete_onboarding()
             st.success("Onboarding complete! Loading your personalized recommendations...")
             st.rerun()

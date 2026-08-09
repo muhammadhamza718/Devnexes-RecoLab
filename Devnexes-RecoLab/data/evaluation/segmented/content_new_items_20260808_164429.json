@@ -1,0 +1,22 @@
+{
+  "model_name": "Content",
+  "segment_name": "new_items",
+  "timestamp": "2026-08-08T16:44:29.801411+00:00",
+  "results": {
+    "mean_precision@5": 0.00228310502283105,
+    "mean_precision@10": 0.001598173515981735,
+    "mean_precision@20": 0.0013698630136986301,
+    "mean_recall@5": 0.0008064435721669998,
+    "mean_recall@10": 0.0010684544081204415,
+    "mean_recall@20": 0.002659513206068845,
+    "mean_ndcg@5": 0.002418423366274165,
+    "mean_ndcg@10": 0.0019250452953832227,
+    "mean_ndcg@20": 0.002478370662997618,
+    "catalog_coverage": 0.030991735537190084,
+    "mean_popularity_decile": 3.48972602739726,
+    "n_users": 438.0,
+    "segment_name": "new_items",
+    "n_test_users": 438
+  },
+  "metadata": {}
+}

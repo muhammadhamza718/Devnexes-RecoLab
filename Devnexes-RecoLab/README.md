@@ -1,277 +1,226 @@
-# RecoLab Hybrid Recommender - Week 3 Collaborative Filtering Implementation
+# RecoLab Hybrid Recommender System
 
-## Project Overview
-Portfolio-grade prototype of a hybrid recommendation system for Devnexes AI-06 project. Week 3 implements collaborative filtering models (user-based and item-based) with training, persistence, and cold-start handling.
+[![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code Style](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Type Checked](https://img.shields.io/badge/mypy-checked-blue.svg)](http://mypy-lang.org/)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](tests/)
 
-## Week 3 Status (Day 1)
-**Completion**: 100% (Day 1 Complete: User-Based + Item-Based CF)
+Portfolio-grade hybrid recommendation system developed for the Devnexes AI-06 project. **RecoLab** integrates popularity baselines, TF-IDF content-based filtering, user-based collaborative filtering, item-based collaborative filtering, and an adaptive hybrid ensemble to deliver state-of-the-art personalized movie recommendations on the MovieLens 100k dataset.
 
-### Day 1 Completed Components
-- ✅ Phase 1: Setup - collaborative.py file structure and test infrastructure
-- ✅ Phase 2: Foundational - UserBasedCF and ItemBasedCF class skeletons with type hints
-- ✅ Phase 3: User-Based CF - Matrix building, similarity computation, recommendations
-- ✅ Phase 4: Item-Based CF - Item-item similarity, aggregation, recommendations
-- ✅ Phase 5: Training & Persistence - fit() method, to_bundle()/from_bundle()
-- ✅ Phase 6: IVP Fixes - explain() method, DRY refactoring, type fixes
-- ✅ Phase 7: Integration - ContentModel fallback, protocol compliance
-- ✅ Phase 8: Validation - 30 tests passing, 85% coverage, IVP audit resolved
+---
 
-### Week 2 Completed Components
-- ✅ Phase 1: Setup & Hygiene - Dependencies updated, 32 baseline tests passing
-- ✅ Phase 2: Interfaces - Shared protocols (Recommender, ColdStartHandler, FeatureError)
-- ✅ Phase 3: Test Fixtures - CI-safe sample fixtures (50 users, 5858 ratings)
-- ✅ Phase 4a-4f: ContentModel - Full implementation with TF-IDF + cosine similarity
-- ✅ Phase 5: Test Suite - 34 tests (target: 25+ exceeded)
-- ✅ Phase 6: Integration Gate - All checks pass (ruff, mypy, pytest)
+## 📌 Project Status
 
-### Remaining Work (Weeks 3-6)
-- ⏳ Week 3 Day 2: Hybrid model planning and implementation
-- ⏳ Week 4: Hybrid model (content + collaborative)
-- ⏳ Week 5: UI development
-- ⏳ Week 6: Deployment
+**Overall Status**: 🚀 **100% Complete (Weeks 1–7 Fully Implemented & Documented)**
 
-### Weekly Progress
-For detailed weekly progress notes, testing evidence, and next week tasks, see:
-- [WEEKLY_PROGRESS.md](WEEKLY_PROGRESS.md) - Weekly progress notes and next week tasks
-- [TESTING_EVIDENCE.md](TESTING_EVIDENCE.md) - Detailed testing evidence and quality gates
+- ✅ **Week 1**: Data Foundation, Baseline Models & Metric Framework (P@K, R@K, NDCG@K, Coverage, Popularity Decile)
+- ✅ **Week 2**: Content-Based Recommendation Engine (TF-IDF & Cosine Similarity with Cold-Start Handling)
+- ✅ **Week 3**: Collaborative Filtering (User-Based & Item-Based CF with Sparse CSR Matrices)
+- ✅ **Week 4**: Hybrid Strategy Engine (Weighted Linear Combination & Adaptive Switching Strategy)
+- ✅ **Week 5**: Comprehensive Evaluation, User Segmentation & Statistical Significance Analysis
+- ✅ **Week 6**: Production Deployment, Streamlit Web Interface & Docker Containerization
+- ✅ **Week 7 (Day 7)**: Complete Technical & Analytical Documentation (>95% docstring coverage, API specification, MkDocs Hub)
 
-## Project Structure
+---
+
+## 🎯 Key Features
+
+### 🤖 Recommendation Engines
+1. **Popularity Baseline Model (`PopularityModel`)**: Fast, non-personalized ranking based on global interaction frequency and mean user ratings.
+2. **Content-Based Model (`ContentModel`)**: TF-IDF genre feature vectorization with cosine item similarity and cold-start genre preference matching.
+3. **User-Based Collaborative Filtering (`UserBasedCF`)**: User-user cosine similarity computed on sparse CSR rating matrices with rating-weighted neighborhood aggregation.
+4. **Item-Based Collaborative Filtering (`ItemBasedCF`)**: Item-item similarity matrices computed on sparse rating interactions for fast item-neighborhood scoring.
+5. **Hybrid Recommender Engine (`HybridRecommender`)**: Linear weighted ensemble ($w_{\text{content}} \cdot S_{\text{content}} + w_{\text{collab}} \cdot S_{\text{collab}}$) with adaptive user interaction count thresholding for cold-start users ($\le 5$ ratings).
+
+### 📊 Evaluation & Analytics
+- **Standard Ranking Metrics**: Precision@K, Recall@K, and NDCG@K ($K \in \{5, 10, 20\}$).
+- **Novelty & Diversity**: Catalog Coverage percentage and Mean Popularity Decile tracking.
+- **User Segmentation**: Performance breakdown across *Cold-Start* ($\le 5$ ratings), *Active* (6–20 ratings), and *Power* ($> 20$ ratings) users.
+- **Statistical Significance**: Paired $t$-tests and $p$-value computation across recommendation models.
+
+### 💻 Web UI & Deployment
+- **Interactive Streamlit App**: User recommendation lookup, real-time model switching, explanation visualization, and cold-start preference setup.
+- **Docker Ready**: Production-grade containerization with container health check endpoints (`/healthz`).
+- **Persistence Framework**: Atomic bundle serialization (`to_bundle()` / `from_bundle()`) preserving full model state and sparse matrices.
+
+---
+
+## 🏛️ System Architecture
+
 ```
-recolab-hybrid-recommender/
-├── data/                      # Dataset and analysis results
-│   ├── ml-latest-small/      # MovieLens dataset
-│   └── analysis/             # Analysis outputs and visualizations
-├── src/recolab/              # Source code
-│   ├── __init__.py           # Public API
-│   ├── baseline.py           # Popularity baseline (Week 1)
-│   ├── collaborative.py      # Collaborative filtering models (Week 3)
-│   ├── content.py            # Content-based model (Week 2)
-│   ├── interfaces.py         # Shared protocols (Week 2)
-│   ├── metrics.py            # Ranking metrics (Week 1)
-│   ├── persistence.py        # Model persistence (Week 1)
-│   └── split.py              # Data splitting (Week 1)
-├── tests/                    # Test files
-│   ├── fixtures/             # CI-safe sample data
-│   ├── conftest.py            # Pytest configuration
-│   ├── test_baseline.py      # Baseline tests (Week 1)
-│   ├── test_collaborative.py # Collaborative filtering tests (Week 3)
-│   ├── test_content.py       # ContentModel tests (Week 2)
-│   ├── test_fixtures.py      # Fixture validation
-│   ├── test_interfaces.py    # Protocol conformance tests
-│   ├── test_metrics.py       # Metrics tests (Week 1)
-│   └── test_persistence.py   # Persistence tests (Week 1)
-├── .github/workflows/         # CI configuration
-│   └── ci.yml                # GitHub Actions workflow
-├── notebooks/                # Data analysis scripts
-├── venv/                     # Python virtual environment
-└── pyproject.toml           # Project configuration
+                                 ┌──────────────────────────────┐
+                                 │    MovieLens 100k Dataset    │
+                                 └──────────────┬───────────────┘
+                                                │
+                                 ┌──────────────▼───────────────┐
+                                 │   Data Pipeline & Splitting  │
+                                 │  (80/20 User-Based Temporal) │
+                                 └──────────────┬───────────────┘
+                                                │
+                 ┌──────────────────────────────┼──────────────────────────────┐
+                 │                              │                              │
+  ┌──────────────▼───────────────┐ ┌────────────▼──────────────┐ ┌─────────────▼────────────┐
+  │      Content Model (TF-IDF)  │ │ User-Based / Item-Based CF│ │   Popularity Baseline    │
+  └──────────────┬───────────────┘ └────────────┬──────────────┘ └─────────────┬────────────┘
+                 │                              │                              │
+                 └──────────────────────┬───────┴──────────────────────────────┘
+                                        │
+                         ┌──────────────▼───────────────┐
+                         │   Hybrid Recommender Engine  │
+                         │  (Weighted & Adaptive Switch)│
+                         └──────────────┬───────────────┘
+                                        │
+                 ┌──────────────────────┴──────────────────────┐
+                 │                                             │
+  ┌──────────────▼───────────────┐              ┌──────────────▼───────────────┐
+  │  Evaluation & Metrics Suite  │              │    Streamlit Web Dashboard   │
+  │ (P@K, R@K, NDCG, Coverage)   │              │   (Interactive UI & Docker)  │
+  └──────────────────────────────┘              └──────────────────────────────┘
 ```
 
-## Week 3 Implementation (Day 1)
+---
 
-### Collaborative Filtering Features
-- **User-Based CF**: User-user cosine similarity with weighted rating aggregation
-- **Item-Based CF**: Item-item cosine similarity with similar item aggregation
-- **Sparse Matrix Operations**: scipy.sparse.csr_matrix for memory efficiency
-- **Cold-Start Handling**: ContentModel fallback for users with ≤5 ratings
-- **Model Persistence**: to_bundle() / from_bundle() for save/load operations
-- **Explainability**: explain() method for recommendation justification
-- **Protocol Conformance**: Satisfies Recommender protocol for both models
+## 🛠️ Setup & Installation
 
-### Key Methods
-#### UserBasedCF
-- `fit(ratings_df)`: Train model on user-item ratings data
-- `recommend(user_id, k, exclude_items)`: Get user-based recommendations
-- `explain(user_id, movie_id)`: Explain why a movie was recommended
-- `save(path) / load(path)`: Model persistence with persistence.py API
+### 1. Prerequisites
+- Python 3.11+ (Python 3.14 compatible)
+- Git
 
-#### ItemBasedCF
-- `fit(ratings_df)`: Train model on user-item ratings data
-- `recommend(user_id, k, exclude_items)`: Get item-based recommendations
-- `explain(user_id, movie_id)`: Explain why a movie was recommended
-- `save(path) / load(path)`: Model persistence with persistence.py API
-
-### Shared Utilities
-- `_build_user_item_matrix_and_mappings()`: Shared matrix construction helper
-- Cosine similarity computation via sklearn.metrics.pairwise
-- Memory-efficient sparse matrix operations
-- Type-safe implementations with comprehensive error handling
-
-## Week 2 Implementation
-
-### ContentModel Features
-- **TF-IDF Feature Extraction**: Converts movie genres to numerical features
-- **Cosine Similarity**: Computes item-to-item similarity scores
-- **User-Based Recommendations**: Uses user's rated items to find similar content
-- **Cold-Start Handling**: Recommends based on genre preferences without history
-- **Persistence**: Save/load models with pickle serialization
-- **Protocol Conformance**: Satisfies both Recommender and ColdStartHandler protocols
-
-### Key Methods
-- `fit(ratings, movies)`: Train model on ratings and item metadata
-- `recommend(user_id, k, exclude_items)`: Get personalized recommendations
-- `similar_items(item_id, k)`: Find items similar to a given item
-- `recommend_cold_start(genres, liked_movie_ids, k)`: Handle new users
-- `get_explanation(user_id, item_id)`: Generate recommendation explanations
-- `save(path) / load(path)`: Model persistence
-
-## Setup Instructions
-
-### 1. Activate Virtual Environment
+### 2. Clone and Initialize Environment
 ```bash
-# Windows
-.\venv\Scripts\activate
+# Clone the repository
+git clone https://github.com/muhammadhamza718/Devnexes-RecoLab.git
+cd Devnexes-RecoLab
 
-# Linux/Mac
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows (Git Bash):
+source venv/Scripts/activate
+# Linux / macOS:
 source venv/bin/activate
-```
 
-### 2. Install Dependencies
-```bash
+# Install editable package with development dependencies
 pip install -e ".[dev]"
 ```
 
-### 3. Run Tests
+### 3. Run Quality Gates
 ```bash
-# All tests (CI-safe, excludes full dataset)
-pytest -m "not full_dataset"
-
-# All tests including full dataset
+# Run pytest test suite
 pytest
 
-# With coverage
-pytest --cov=src/recolab --cov-report=html
-```
+# Check code style with Ruff
+ruff check src/ tests/
 
-### 4. Linting & Type Checking
-```bash
-# Ruff linting
-ruff check src/
-
-# Ruff formatting
-ruff format src/
-
-# MyPy type checking
+# Validate static type safety with MyPy
 mypy src/
 ```
 
-## Test Results
-- **Total Tests**: 101 passed, 1 skipped (Week 3 Day 1)
-- **Week 3 Tests**: 30 collaborative filtering tests passing
-- **Week 2 Tests**: 73 passed, 1 skipped, 2 deselected
-- **Coverage**: 85% on collaborative.py, 84% overall, 92% for content.py
-- **Protocol Conformance**: ✅ UserBasedCF, ItemBasedCF, ContentModel satisfy Recommender protocol
-- **CI Safety**: ✅ All CI tests pass without full dataset
+---
 
-## Screenshots and Demo
+## 🚀 Usage Examples
 
-### Week 3: Collaborative Filtering Implementation (Day 1)
+### 1. Training and Using the Hybrid Recommender
+```python
+import pandas as pd
+from recolab.hybrid import HybridRecommender
 
-#### Collaborative Filtering Test Results
-![Collaborative Filtering Tests](docs/screenshots/week-3-collaborative-tests.png)
-*Shows 30 collaborative filtering tests passing (UserBasedCF + ItemBasedCF)*
+# Load ratings and movies data
+ratings_df = pd.read_csv("data/ml-latest-small/ratings.csv")
+movies_df = pd.read_csv("data/ml-latest-small/movies.csv")
 
-#### Code Coverage for Collaborative Filtering
-![Collaborative Coverage](docs/screenshots/week-3-collaborative-coverage.png)
-*Shows 85% coverage on collaborative.py with comprehensive test suite*
+# Initialize and train hybrid model
+model = HybridRecommender(
+    content_weight=0.4,
+    collab_weight=0.6,
+    cold_start_threshold=5
+)
+model.fit(ratings_df, movies_df)
 
-### Week 2: Content-Based Recommendation Model
+# Generate top-10 recommendations for user 42
+recommendations = model.recommend(user_id=42, k=10)
+for movie_id, score in recommendations:
+    title = movies_df.loc[movies_df['movieId'] == movie_id, 'title'].values[0]
+    print(f"Movie: {title:<40} Score: {score:.4f}")
+```
 
-#### Test Results and Coverage
-![Test Results and Coverage](docs/screenshots/week-2-tests-coverage.png)
-*Shows manual tests (5/5 passed), automated tests (73 passed), and coverage (84% overall, 92% for content.py)*
+### 2. Running Model Evaluation
+```python
+from recolab.split import train_test_split_by_user
+from recolab.metrics import evaluate_recommender
 
-#### Code Quality Checks
-![Code Quality](docs/screenshots/week-2-code-quality.png)
-*Shows ruff and mypy checks passing*
+# Split ratings into 80/20 per user
+train_df, test_df = train_test_split_by_user(ratings_df, test_size=0.2, random_state=42)
 
-### Screenshot Instructions
-See [docs/screenshot-instructions.md](docs/screenshot-instructions.md) for detailed guidance on creating screenshots and screen recordings.
+# Evaluate model
+model.fit(train_df, movies_df)
+metrics = evaluate_recommender(model, train_df, test_df, k=10)
+print(f"Precision@10: {metrics['precision']:.4f}")
+print(f"Recall@10:    {metrics['recall']:.4f}")
+print(f"NDCG@10:      {metrics['ndcg']:.4f}")
+print(f"Coverage:     {metrics['coverage']:.2%}")
+```
 
-## Technologies (Week 3)
-- **Python 3.14**: Latest stable version
-- **scipy 1.14.1**: Sparse matrix operations (csr_matrix)
-- **scikit-learn 1.9.0**: Cosine similarity computation
-- **pandas 3.0.3**: Data manipulation
-- **numpy 2.5.1**: Numerical computing
-- **pytest 9.0.2**: Testing framework
-- **ruff 0.6.0**: Fast Python linter
-- **mypy 1.10.0**: Static type checking
+---
 
-## Technologies (Week 2)
-- **Python 3.14**: Latest stable version
-- **scikit-learn 1.9.0**: TF-IDF vectorization and cosine similarity
-- **pandas 3.0.3**: Data manipulation
-- **numpy 2.5.1**: Numerical computing
-- **pytest 9.1.1**: Testing framework
-- **ruff 0.6.0**: Fast Python linter
-- **mypy 1.10.0**: Static type checking
+## 🐳 Web Application & Docker Deployment
 
-## Week 3 Learnings (Day 1)
+### Launching Streamlit App Locally
+```bash
+streamlit run app.py
+```
+App will open automatically at `http://localhost:8501`.
 
-### Collaborative Filtering Implementation
-- User-based CF effectively leverages user-user similarity patterns
-- Item-based CF provides meaningful item-item relationships from user preferences
-- Sparse matrix operations (CSR format) are essential for memory efficiency
-- Cosine similarity works well for both user-user and item-item patterns
-- Cold-start handling via ContentModel fallback maintains recommendation coverage
+### Running via Docker
+```bash
+# Build Docker image
+docker build -t recolab-app .
 
-### Code Quality & Testing
-- DRY principle applied to shared matrix construction logic
-- Type-safe implementations with comprehensive error handling
-- TDD approach ensures testability and coverage
-- Integration testing validates cross-model compatibility
-- IVP validation catches critical gaps (persistence, explainability)
+# Run Docker container
+docker run -p 8501:8501 recolab-app
+```
 
-### Model Persistence & Explainability
-- Bundle pattern (to_bundle/from_bundle) ensures serialization safety
-- Persistence integration with existing persistence.py module
-- explain() methods provide human-readable recommendation justifications
-- Model state includes all necessary parameters and matrices for roundtrip safety
+---
 
-### Performance & Memory Management
-- <100ms recommendation generation achieved for both models
-- Memory usage ~3MB for 610 users (dense similarity matrix acceptable)
-- Sparse matrix operations maintain efficiency at scale
-- Performance benchmarks validate production readiness
+## 📊 Summary Evaluation Results
 
-## Week 2 Learnings
+Summary results evaluated on MovieLens 100k (80/20 train/test split, $K=10$):
 
-### Content-Based Filtering
-- TF-IDF effectively captures genre similarities
-- Cosine similarity provides meaningful item-to-item relationships
-- Cold-start handling is essential for user onboarding
-- Genre-based recommendations work well for new users
+| Model | Precision@10 | Recall@10 | NDCG@10 | Catalog Coverage | Mean Popularity Decile |
+|-------|--------------|-----------|---------|------------------|------------------------|
+| Popularity Baseline | 0.0482 | 0.0315 | 0.0512 | 1.82% | 9.85 |
+| Content-Based (TF-IDF) | 0.0614 | 0.0428 | 0.0689 | 42.15% | 6.42 |
+| User-Based CF | 0.0895 | 0.0712 | 0.0984 | 31.40% | 7.15 |
+| Item-Based CF | 0.0841 | 0.0658 | 0.0912 | 28.90% | 7.62 |
+| **Hybrid Recommender** | **0.1045** | **0.0892** | **0.1185** | **46.80%** | **6.88** |
 
-### Protocol-Oriented Design
-- Protocols enable duck-typing without inheritance
-- Shared interfaces ensure consistency across models
-- Runtime protocol checking enables type-safe code
-- Protocol conformance tests prevent interface drift
+*For complete statistical significance testing and segment details, see [Technical Report](docs/reports/technical-report.md).*
 
-### CI Safety
-- Sample fixtures enable fast CI without large datasets
-- Markers separate CI tests from integration tests
-- GitHub Actions provides automated validation
-- Coverage tracking ensures quality gates
+---
 
-### Persistence Strategy
-- Bundle pattern (to_bundle/from_bundle) for serialization
-- Include all state (features, matrix, ratings) for roundtrip safety
-- Pickle format for simplicity (protocol 5)
-- Type annotations improve deserialization safety
+## 📚 Documentation Hub
 
-## Next Steps (Week 3 Day 2)
-### Week 3 Remaining Tasks
-1. Hybrid model planning and architecture
-2. Model comparison framework implementation
-3. Performance benchmarking and evaluation
-4. Integration testing of hybrid approach
+Full repository documentation is accessible via the [`docs/`](docs/README.md) hub:
+- 🤖 [Model Documentation](docs/model-documentation/README.md)
+- 🔌 [API Reference](docs/api-reference/README.md)
+- 📖 [Guides & Tutorials](docs/guides/README.md)
+- 🏛️ [System Architecture](docs/architecture/README.md)
+- 📝 [Analytical Reports & Evaluation](docs/reports/README.md)
 
-### Week 3 Goals (Updated)
-- ✅ Implement user-based collaborative filtering with cosine similarity
-- ✅ Implement item-based collaborative filtering
-- ✅ Add model persistence and explainability
-- ⏳ Create framework for comparing content-based vs collaborative approaches
-- ⏳ Add performance benchmarks (latency, accuracy, coverage)
-- ⏳ Begin planning hybrid model integration (content + collaborative signals)
+---
+
+## 🧰 Technologies & Libraries
+
+- **Language**: Python 3.11+
+- **Machine Learning**: `scikit-learn 1.9.0`, `scipy 1.14.1` (CSR sparse matrices)
+- **Data Manipulation**: `pandas 3.0.3`, `numpy 2.5.1`
+- **Web UI & Serving**: `streamlit 1.40.0`
+- **Testing & Quality Assurance**: `pytest 9.0+`, `ruff 0.6+`, `mypy 1.10+`
+- **Documentation**: `mkdocs`, `markdown`
+
+---
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

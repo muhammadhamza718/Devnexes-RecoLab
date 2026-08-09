@@ -1,0 +1,10 @@
+{
+  "model_name": "Hybrid",
+  "segment_name": "cold_start_users",
+  "timestamp": "2026-08-08T16:19:44.215071+00:00",
+  "results": {
+    "error": "No test data for segment",
+    "n_users": 0
+  },
+  "metadata": {}
+}

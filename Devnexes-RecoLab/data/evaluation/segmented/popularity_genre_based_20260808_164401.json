@@ -1,0 +1,124 @@
+{
+  "model_name": "Popularity",
+  "segment_name": "genre_based",
+  "timestamp": "2026-08-08T16:44:01.948610+00:00",
+  "results": {
+    "mean_precision@5": 0.09278688524590173,
+    "mean_precision@10": 0.07557377049180347,
+    "mean_precision@20": 0.06713114754098362,
+    "mean_recall@5": 0.024538548015634026,
+    "mean_recall@10": 0.03903457432277743,
+    "mean_recall@20": 0.06898075862160513,
+    "mean_ndcg@5": 0.09886528248333183,
+    "mean_ndcg@10": 0.08961726366865912,
+    "mean_ndcg@20": 0.09294355042860326,
+    "catalog_coverage": 0.01968886728245017,
+    "mean_popularity_decile": 1.0,
+    "n_users": 610.0,
+    "segment_name": "genre_based",
+    "n_test_users": 610,
+    "genre_metrics": {
+      "Adventure": {
+        "genre_coverage": 3.8638163103721297,
+        "precision": 0.4,
+        "recommended_count": 4880
+      },
+      "Animation": {
+        "genre_coverage": 0.9983633387888707,
+        "precision": 0.05,
+        "recommended_count": 610
+      },
+      "Children": {
+        "genre_coverage": 0.9186746987951807,
+        "precision": 0.05,
+        "recommended_count": 610
+      },
+      "Comedy": {
+        "genre_coverage": 0.48722044728434505,
+        "precision": 0.15,
+        "recommended_count": 1830
+      },
+      "Fantasy": {
+        "genre_coverage": 2.349165596919127,
+        "precision": 0.15,
+        "recommended_count": 1830
+      },
+      "Romance": {
+        "genre_coverage": 0.7644110275689223,
+        "precision": 0.1,
+        "recommended_count": 1220
+      },
+      "Drama": {
+        "genre_coverage": 1.258885576702591,
+        "precision": 0.45,
+        "recommended_count": 5490
+      },
+      "Action": {
+        "genre_coverage": 3.336980306345733,
+        "precision": 0.5,
+        "recommended_count": 6100
+      },
+      "Crime": {
+        "genre_coverage": 3.052543786488741,
+        "precision": 0.3,
+        "recommended_count": 3660
+      },
+      "Thriller": {
+        "genre_coverage": 1.9324181626187962,
+        "precision": 0.3,
+        "recommended_count": 3660
+      },
+      "Horror": {
+        "genre_coverage": 0.623721881390593,
+        "precision": 0.05,
+        "recommended_count": 610
+      },
+      "Mystery": {
+        "genre_coverage": 1.0645724258289704,
+        "precision": 0.05,
+        "recommended_count": 610
+      },
+      "Sci-Fi": {
+        "genre_coverage": 3.7346938775510203,
+        "precision": 0.3,
+        "recommended_count": 3660
+      },
+      "War": {
+        "genre_coverage": 4.790575916230367,
+        "precision": 0.15,
+        "recommended_count": 1830
+      },
+      "Musical": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      },
+      "Documentary": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      },
+      "IMAX": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      },
+      "Western": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      },
+      "Film-Noir": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      },
+      "(no genres listed)": {
+        "genre_coverage": 0.0,
+        "precision": 0.0,
+        "recommended_count": 0
+      }
+    }
+  },
+  "metadata": {}
+}

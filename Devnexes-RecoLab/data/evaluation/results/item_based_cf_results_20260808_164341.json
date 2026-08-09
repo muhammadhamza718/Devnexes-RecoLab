@@ -1,0 +1,29 @@
+{
+  "model_name": "Item-Based CF",
+  "timestamp": "2026-08-08T16:43:41.386266+00:00",
+  "results": {
+    "mean_precision@5": 0.016721311475409832,
+    "mean_precision@10": 0.015245901639344243,
+    "mean_precision@20": 0.013524590163934404,
+    "mean_recall@5": 0.006027291697311655,
+    "mean_recall@10": 0.009852203781047597,
+    "mean_recall@20": 0.01655796170740813,
+    "mean_ndcg@5": 0.017322009348759312,
+    "mean_ndcg@10": 0.017195186984472303,
+    "mean_ndcg@20": 0.01909404483222793,
+    "catalog_coverage": 0.37639766650461837,
+    "mean_popularity_decile": 2.5804098360655736,
+    "n_users": 610.0,
+    "evaluation_time_seconds": 266.17291164398193,
+    "model_provenance": "Cached instance"
+  },
+  "metadata": {
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "n_test_users": 610
+  }
+}

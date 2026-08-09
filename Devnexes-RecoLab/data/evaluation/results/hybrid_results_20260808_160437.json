@@ -1,0 +1,29 @@
+{
+  "model_name": "Hybrid",
+  "timestamp": "2026-08-08T16:04:37.214608+00:00",
+  "results": {
+    "mean_precision@5": 0.006885245901639346,
+    "mean_precision@10": 0.007704918032786886,
+    "mean_precision@20": 0.009098360655737693,
+    "mean_recall@5": 0.002112369341370531,
+    "mean_recall@10": 0.005216466698345399,
+    "mean_recall@20": 0.013917874639692407,
+    "mean_ndcg@5": 0.008018404601137058,
+    "mean_ndcg@10": 0.008659040244560462,
+    "mean_ndcg@20": 0.011966312291651052,
+    "catalog_coverage": 0.17221682061254254,
+    "mean_popularity_decile": 2.9895081967213115,
+    "n_users": 610.0,
+    "evaluation_time_seconds": 12.3036949634552,
+    "model_provenance": "Cached instance"
+  },
+  "metadata": {
+    "random_seed": 42,
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "n_test_users": 610
+  }
+}

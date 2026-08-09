@@ -1,0 +1,63 @@
+site_name: RecoLab Hybrid Recommender System
+site_description: Documentation for RecoLab Hybrid Recommendation Engine
+site_author: Devnexes AI-06 Team
+repo_url: https://github.com/muhammadhamza718/Devnexes-RecoLab
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+docs_dir: docs
+
+nav:
+  - Overview: README.md
+  - Models:
+      - Overview: model-documentation/README.md
+      - Popularity Baseline: model-documentation/popularity-baseline.md
+      - Content-Based: model-documentation/content-based-model.md
+      - User-Based CF: model-documentation/user-based-cf.md
+      - Item-Based CF: model-documentation/item-based-cf.md
+      - Hybrid Model: model-documentation/hybrid-model.md
+  - API Reference:
+      - Overview: api-reference/README.md
+      - Interfaces: api-reference/interfaces.md
+      - Models: api-reference/models.md
+      - Metrics: api-reference/metrics.md
+      - Persistence: api-reference/persistence.md
+  - Guides:
+      - Overview: guides/README.md
+      - Development Setup: guides/development-setup.md
+      - Deployment Guide: guides/deployment-guide.md
+      - Evaluation Workflow: guides/evaluation-workflow.md
+      - Troubleshooting: guides/troubleshooting-faq.md
+  - Architecture:
+      - Overview: architecture/README.md
+      - System Overview: architecture/system-overview.md
+      - Data Pipeline: architecture/data-pipeline.md
+      - Cold-Start Strategy: architecture/cold-start-strategy.md
+  - Reports & Analysis:
+      - Overview: reports/README.md
+      - Technical Report: reports/technical-report.md
+      - Model Comparison: reports/model-comparison-summary.md
+      - Evaluation Methodology: reports/evaluation-methodology.md
+      - Limitations & Future Work: reports/limitations-and-future-work.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

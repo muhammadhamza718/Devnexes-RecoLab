@@ -15,8 +15,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-# Add project to path
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from path_utils import get_validated_project_root
+
+# Add project to path with validation
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))

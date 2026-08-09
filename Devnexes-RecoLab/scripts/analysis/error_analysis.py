@@ -13,8 +13,12 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-# Add project root to sys.path
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
+# Add project root to sys.path with path validation
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 EVAL_SCRIPTS = PROJECT_ROOT / "scripts" / "evaluation"
 ANALYSIS_SCRIPTS = PROJECT_ROOT / "scripts" / "analysis"
@@ -68,6 +72,12 @@ class ErrorAnalyzer:
         if model_names is None:
             model_names = self.model_manager.get_available_models()
 
+        # Validate models are ready before analysis
+        model_ready_status = self.loader.validate_models_ready(model_names)
+        not_ready = [name for name, ready in model_ready_status.items() if not ready]
+        if not_ready:
+            print(f"WARNING: Some models may not be ready for analysis: {not_ready}")
+        
         morning_results = self.loader.load_model_results(model_names)
         error_results: dict[str, Any] = {}
 
@@ -148,13 +158,29 @@ class ErrorAnalyzer:
             neg_items = test_neg_by_user.get(user_id, set())
 
             try:
-                recs = model.recommend(user_id, top_n=10)
-                rec_ids = recs["movieId"].tolist() if isinstance(recs, pd.DataFrame) and "movieId" in recs else recs
-            except Exception:
+                # Check if model is fitted/ready
+                is_fitted = hasattr(model, 'is_fitted') and model.is_fitted
+                is_ready = hasattr(model, 'is_ready') and model.is_ready
+                has_recommend = hasattr(model, 'recommend') and callable(model.recommend)
+                
+                if not (is_fitted or is_ready):
+                    print(f"  WARNING: Model {model_name} not fitted/ready for user {user_id}")
+                    rec_ids = []
+                elif not has_recommend:
+                    print(f"  WARNING: Model {model_name} has no recommend method for user {user_id}")
+                    rec_ids = []
+                else:
+                    recs = model.recommend(user_id, top_n=10)
+                    rec_ids = recs["movieId"].tolist() if isinstance(recs, pd.DataFrame) and "movieId" in recs else recs
+                    if not rec_ids or (isinstance(rec_ids, list) and len(rec_ids) == 0):
+                        print(f"  WARNING: Model {model_name} returned empty recommendations for user {user_id}")
+            except Exception as e:
+                print(f"  ERROR: Model {model_name} failed to recommend for user {user_id}: {e}")
                 rec_ids = []
 
             k = len(rec_ids)
             if k == 0:
+                print(f"  WARNING: Zero recommendations for user {user_id} with model {model_name}")
                 continue
 
             # Hits and errors

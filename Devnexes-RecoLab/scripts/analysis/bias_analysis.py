@@ -19,7 +19,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 EVAL_SCRIPTS = PROJECT_ROOT / "scripts" / "evaluation"
 ANALYSIS_SCRIPTS = PROJECT_ROOT / "scripts" / "analysis"

@@ -15,8 +15,12 @@ import sys
 import time
 from pathlib import Path
 
+# Add scripts directory to path for path_utils import
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
 # Add project to path
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 EVAL_SCRIPTS = PROJECT_ROOT / "scripts" / "evaluation"
 ANALYSIS_SCRIPTS = PROJECT_ROOT / "scripts" / "analysis"
@@ -69,6 +73,20 @@ def run_advanced_analysis(
     # Initialize components
     storage = AnalysisStorage()
     loader = EvaluationResultLoader()
+    
+    # Validate input parameters
+    if model_names is not None:
+        valid_models = loader.MODEL_KEY_MAP.keys()
+        invalid_models = [m for m in model_names if m not in valid_models]
+        if invalid_models:
+            raise ValueError(f"Invalid model names: {invalid_models}. Valid models: {list(valid_models)}")
+    
+    # Validate that Day 5 Morning results exist
+    model_ready_status = loader.validate_models_ready(model_names or list(loader.MODEL_KEY_MAP.keys()))
+    not_ready = [name for name, ready in model_ready_status.items() if not ready]
+    if not_ready:
+        print(f"WARNING: Some models may not be ready for analysis: {not_ready}")
+        print("Continuing with available models...")
 
     analysis_results: dict = {
         "error_analysis": {},

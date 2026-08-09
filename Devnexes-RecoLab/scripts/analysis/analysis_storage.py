@@ -11,8 +11,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+# Add scripts directory to path for path_utils import
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
 # Base path definitions
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = get_validated_project_root()
 ANALYSIS_DIR = PROJECT_ROOT / "data" / "evaluation" / "advanced_analysis"
 
 

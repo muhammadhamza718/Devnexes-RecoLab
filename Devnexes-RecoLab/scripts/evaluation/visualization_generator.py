@@ -133,11 +133,13 @@ class VisualizationGenerator:
         ax.grid(axis="y", alpha=0.3)
 
         plt.tight_layout()
-        path = self.output_dir / "comparison_precision_at_10.png"
-        plt.savefig(path, dpi=150, bbox_inches="tight")
+        path_png = self.output_dir / "comparison_precision_at_10.png"
+        path_svg = self.output_dir / "comparison_precision_at_10.svg"
+        plt.savefig(path_png, dpi=150, bbox_inches="tight")
+        plt.savefig(path_svg, format='svg', bbox_inches='tight')
         plt.close()
 
-        return path
+        return path_png
 
     def _generate_metric_trends(self) -> Path:
         """Generate line chart showing metrics across K values.
@@ -179,11 +181,13 @@ class VisualizationGenerator:
         fig.suptitle("Metric Trends Across K Values", fontsize=14, fontweight="bold", y=1.02)
 
         plt.tight_layout()
-        path = self.output_dir / "metric_trends.png"
-        plt.savefig(path, dpi=150, bbox_inches="tight")
+        path_png = self.output_dir / "metric_trends.png"
+        path_svg = self.output_dir / "metric_trends.svg"
+        plt.savefig(path_png, dpi=150, bbox_inches="tight")
+        plt.savefig(path_svg, format='svg', bbox_inches='tight')
         plt.close()
 
-        return path
+        return path_png
 
     def _generate_coverage_chart(self) -> Path:
         """Generate bar chart for catalog coverage.
@@ -229,11 +233,13 @@ class VisualizationGenerator:
         ax.grid(axis="y", alpha=0.3)
 
         plt.tight_layout()
-        path = self.output_dir / "catalog_coverage.png"
-        plt.savefig(path, dpi=150, bbox_inches="tight")
+        path_png = self.output_dir / "catalog_coverage.png"
+        path_svg = self.output_dir / "catalog_coverage.svg"
+        plt.savefig(path_png, dpi=150, bbox_inches="tight")
+        plt.savefig(path_svg, format='svg', bbox_inches='tight')
         plt.close()
 
-        return path
+        return path_png
 
     def _generate_radar_chart(self) -> Path:
         """Generate radar chart for multi-metric comparison.
@@ -282,11 +288,13 @@ class VisualizationGenerator:
         plt.title("Multi-Metric Model Comparison", fontsize=14, fontweight="bold", y=1.08)
 
         plt.tight_layout()
-        path = self.output_dir / "radar_comparison.png"
-        plt.savefig(path, dpi=150, bbox_inches="tight")
+        path_png = self.output_dir / "radar_comparison.png"
+        path_svg = self.output_dir / "radar_comparison.svg"
+        plt.savefig(path_png, dpi=150, bbox_inches="tight")
+        plt.savefig(path_svg, format='svg', bbox_inches='tight')
         plt.close()
 
-        return path
+        return path_png
 
 
 __all__ = ["VisualizationGenerator"]

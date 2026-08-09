@@ -16,8 +16,12 @@ from typing import Any
 
 import pandas as pd
 
-# Add project to path
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add project to path with validation
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
@@ -28,18 +32,18 @@ from statistical_analysis import StatisticalAnalysis
 from visualization_generator import VisualizationGenerator
 from result_storage import ResultStorage
 
-# Import model classes directly
-from recolab import (
-    ContentModel,
-    HybridRecommender,
-    ItemBasedCF,
-    PopularityModel,
-    UserBasedCF,
-)
+# Import existing ModelManager from UI
+import sys
+sys.path.insert(0, str(PROJECT_ROOT / "ui"))
+from model_manager import ModelManager, _fit_model, _discover_bundle_files, _try_load_bundle
 
 
 class OfflineModelManager:
-    """Model manager for offline evaluation (no Streamlit dependency)."""
+    """Wrapper around existing ModelManager for offline evaluation.
+    
+    Uses the same model loading logic as the UI ModelManager but 
+    without Streamlit dependencies.
+    """
 
     MODEL_NAMES = [
         "Popularity",
@@ -51,9 +55,12 @@ class OfflineModelManager:
 
     def __init__(self) -> None:
         """Initialize with train data and movies catalog."""
-        self.train_df = pd.read_csv(PROJECT_ROOT / "data" / "split_datasets" / "train.csv")
-        self.movies_df = pd.read_csv(PROJECT_ROOT / "data" / "ml-latest-small" / "movies.csv")
+        from ui.data_provider import load_train, load_movies
+        
+        self.train_df = load_train()
+        self.movies_df = load_movies()
         self._models: dict[str, Any] = {}
+        self._bundle_files = _discover_bundle_files()
 
     def get_model(self, name: str) -> tuple[Any, str]:
         """Get or fit a model, returning (model, provenance)."""
@@ -63,30 +70,17 @@ class OfflineModelManager:
         if name in self._models:
             return self._models[name], "Cached instance"
 
-        # Fit model
-        if name == "Popularity":
-            model = PopularityModel().fit(self.train_df)
-            provenance = "Fitted on train split"
-        elif name == "Content":
-            model = ContentModel().fit(self.train_df, self.movies_df)
-            provenance = "Fitted on train split"
-        elif name == "User-Based CF":
-            model = UserBasedCF()
-            model.fit(self.train_df)
-            provenance = "Fitted on train split"
-        elif name == "Item-Based CF":
-            model = ItemBasedCF()
-            model.fit(self.train_df)
-            provenance = "Fitted on train split"
-        elif name == "Hybrid":
-            model = HybridRecommender(alpha=0.5)
-            model.fit(self.train_df, self.movies_df)
-            provenance = "Fitted on train split"
-        else:
-            raise ValueError(f"Unknown model name: {name}")
+        # Try to load from bundle first
+        if name in self._bundle_files:
+            model = _try_load_bundle(self._bundle_files[name])
+            if model is not None:
+                self._models[name] = model
+                return model, f"Loaded from {self._bundle_files[name].name}"
 
+        # Fallback to fitting
+        model = _fit_model(name, self.train_df, self.movies_df)
         self._models[name] = model
-        return model, provenance
+        return model, "Fitted at evaluation time on the train split"
 
     def get_available_models(self) -> list[str]:
         """Return list of available model names."""

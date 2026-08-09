@@ -16,7 +16,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from path_utils import get_validated_project_root
+
+PROJECT_ROOT = get_validated_project_root()
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
@@ -143,6 +147,7 @@ class SegmentedEvaluation:
             "active_users",
             "new_items",
             "established_items",
+            "genre_based",  # Added genre-based segmentation
         ]
 
         print(f"\n{'='*60}")
@@ -220,6 +225,9 @@ class SegmentedEvaluation:
             target_users = set(self.test_df["userId"].unique())  # All users
         elif segment_name == "established_items":
             target_users = set(self.test_df["userId"].unique())  # All users
+        elif segment_name == "genre_based":
+            # For genre-based, we evaluate all users but analyze by genre of recommended items
+            target_users = set(self.test_df["userId"].unique())
         else:
             target_users = set(self.test_df["userId"].unique())
 
@@ -236,6 +244,9 @@ class SegmentedEvaluation:
             segment_test_df = self.test_df[
                 self.test_df["movieId"].astype(int).isin(self.established_items)
             ]
+        elif segment_name == "genre_based":
+            # For genre-based, we use all test data but will analyze genre-specific performance
+            segment_test_df = self.test_df
         else:
             segment_test_df = self.test_df
 
@@ -260,8 +271,57 @@ class SegmentedEvaluation:
 
         results["segment_name"] = segment_name
         results["n_test_users"] = int(segment_test_df["userId"].nunique())
+        
+        # For genre-based analysis, calculate genre-specific metrics
+        if segment_name == "genre_based":
+            results["genre_metrics"] = self._calculate_genre_metrics(model, results, segment_test_df)
 
         return results
+    
+    def _calculate_genre_metrics(self, model: Any, evaluation_results: dict, test_df: pd.DataFrame) -> dict[str, dict]:
+        """Calculate genre-specific performance metrics.
+        
+        Args:
+            model: Model instance.
+            evaluation_results: Base evaluation results.
+            test_df: Test data for this segment.
+            
+        Returns:
+            Dictionary mapping genre to performance metrics.
+        """
+        genre_metrics: dict[str, dict] = {}
+        
+        # Collect recommendations for all users
+        all_recommendations = []
+        for user_id in test_df["userId"].unique():
+            try:
+                recs = list(model.recommend(user_id, k=20, exclude_items=set()))
+                all_recommendations.extend(recs)
+            except Exception:
+                continue
+        
+        # Calculate metrics per genre
+        for genre, genre_items in self.genre_items.items():
+            genre_rec_items = [item for item in all_recommendations if item in genre_items]
+            
+            if genre_rec_items:
+                # Calculate genre-specific precision/recall
+                genre_precision = len(genre_rec_items) / len(all_recommendations) if all_recommendations else 0.0
+                
+                # Simple genre metric for now
+                genre_metrics[genre] = {
+                    "genre_coverage": len(genre_rec_items) / len(genre_items) if genre_items else 0.0,
+                    "precision": genre_precision,
+                    "recommended_count": len(genre_rec_items),
+                }
+            else:
+                genre_metrics[genre] = {
+                    "genre_coverage": 0.0,
+                    "precision": 0.0,
+                    "recommended_count": 0,
+                }
+        
+        return genre_metrics
 
 
 __all__ = ["SegmentedEvaluation"]

@@ -9,8 +9,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Final
 
-# Project root (2 levels up from this file: config.py -> evaluation -> Devnexes-RecoLab)
-PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from path_utils import get_validated_project_root
+
+# Project root with validation
+PROJECT_ROOT: Final[Path] = get_validated_project_root()
 
 # Evaluation parameters
 K_VALUES: Final[list[int]] = [5, 10, 20]

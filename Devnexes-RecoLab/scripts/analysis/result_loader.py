@@ -10,7 +10,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+# Add scripts directory to path for path_utils import
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from path_utils import get_validated_project_root
+
+PROJECT_ROOT = get_validated_project_root()
 EVAL_DIR = PROJECT_ROOT / "data" / "evaluation"
 
 
@@ -143,6 +148,47 @@ class EvaluationResultLoader:
 
         return segmented_results
 
+    def validate_models_ready(self, model_names: list[str]) -> dict[str, bool]:
+        """Validate that models are ready for analysis.
+        
+        Args:
+            model_names: List of model names to validate.
+            
+        Returns:
+            Dictionary mapping model name to ready status.
+        """
+        ready_status: dict[str, bool] = {}
+        
+        for model_name in model_names:
+            try:
+                file_key = self.MODEL_KEY_MAP.get(model_name, model_name.lower().replace(" ", "_").replace("-", "_"))
+                matches = sorted(self.results_dir.glob(f"{file_key}_results_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+                
+                if not matches:
+                    direct = self.results_dir / f"{file_key}_results.json"
+                    if direct.exists():
+                        matches = [direct]
+                
+                if matches:
+                    with open(matches[0], "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    
+                    # Check if model evaluation succeeded
+                    if isinstance(data, dict) and "error" not in data:
+                        ready_status[model_name] = True
+                    else:
+                        ready_status[model_name] = False
+                        print(f"WARNING: Model {model_name} evaluation had errors")
+                else:
+                    ready_status[model_name] = False
+                    print(f"WARNING: No evaluation results found for model {model_name}")
+                    
+            except Exception as e:
+                ready_status[model_name] = False
+                print(f"ERROR: Failed to validate model {model_name}: {e}")
+        
+        return ready_status
+
     def _validate_model_result(self, model_name: str, data: dict[str, Any]) -> None:
         """Validate structure and metrics completeness of model result."""
         if not isinstance(data, dict):
@@ -154,3 +200,67 @@ class EvaluationResultLoader:
 
         if not found_metrics and "error" not in data:
             print(f"Notice: Model result for '{model_name}' has keys: {list(data.keys())}")
+        
+        # Validate metric ranges if present
+        for key in data.keys():
+            if any(metric in key.lower() for metric in expected_metrics):
+                value = data[key]
+                if isinstance(value, (int, float)):
+                    if not (0 <= value <= 1):
+                        print(f"WARNING: Metric {key} for {model_name} is out of range [0,1]: {value}")
+        
+        Args:
+            model_names: List of model names to validate.
+            
+        Returns:
+            Dictionary mapping model name to ready status.
+        """
+        ready_status: dict[str, bool] = {}
+        
+        for model_name in model_names:
+            try:
+                file_key = self.MODEL_KEY_MAP.get(model_name, model_name.lower().replace(" ", "_").replace("-", "_"))
+                matches = sorted(self.results_dir.glob(f"{file_key}_results_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+                
+                if not matches:
+                    direct = self.results_dir / f"{file_key}_results.json"
+                    if direct.exists():
+                        matches = [direct]
+                
+                if matches:
+                    with open(matches[0], "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    
+                    # Check if model evaluation succeeded
+                    if isinstance(data, dict) and "error" not in data:
+                        ready_status[model_name] = True
+                    else:
+                        ready_status[model_name] = False
+                        print(f"WARNING: Model {model_name} evaluation had errors")
+                else:
+                    ready_status[model_name] = False
+                    print(f"WARNING: No evaluation results found for model {model_name}")
+                    
+            except Exception as e:
+                ready_status[model_name] = False
+                print(f"ERROR: Failed to validate model {model_name}: {e}")
+        
+        return ready_status
+        """Validate structure and metrics completeness of model result."""
+        if not isinstance(data, dict):
+            raise ValueError(f"Result for {model_name} must be a dict, got {type(data)}")
+
+        # Check expected metric keys if present
+        expected_metrics = ["precision", "recall", "ndcg"]
+        found_metrics = [k for k in expected_metrics if any(k in key.lower() for key in data.keys())]
+
+        if not found_metrics and "error" not in data:
+            print(f"Notice: Model result for '{model_name}' has keys: {list(data.keys())}")
+        
+        # Validate metric ranges if present
+        for key in data.keys():
+            if any(metric in key.lower() for metric in expected_metrics):
+                value = data[key]
+                if isinstance(value, (int, float)):
+                    if not (0 <= value <= 1):
+                        print(f"WARNING: Metric {key} for {model_name} is out of range [0,1]: {value}")

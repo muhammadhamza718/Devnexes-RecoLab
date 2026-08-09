@@ -16,7 +16,6 @@ from scipy.sparse import csr_matrix
 from sklearn.metrics.pairwise import cosine_similarity
 
 from recolab.content import ContentModel
-from recolab.interfaces import Recommender
 from recolab.persistence import load_artifact, save_artifact
 
 

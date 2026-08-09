@@ -1,8 +1,8 @@
 """Tests for StatisticsAggregator (Day 3 Afternoon, Task-007)."""
 
+from unittest.mock import Mock
+
 import pandas as pd
-import pytest
-from unittest.mock import Mock, MagicMock
 
 from ui.statistics_aggregator import StatisticsAggregator
 
@@ -76,7 +76,7 @@ class TestStatisticsAggregator:
 
         assert timeline1.equals(timeline2)
         # Verify cache was populated
-        cache_key = f"rating_timeline_1"
+        cache_key = "rating_timeline_1"
         assert cache_key in aggregator.cache
 
     def test_get_rating_distribution_empty_user(self):
@@ -128,7 +128,7 @@ class TestStatisticsAggregator:
         dist2 = aggregator.get_rating_distribution(1)
 
         assert dist1 == dist2
-        cache_key = f"rating_distribution_1"
+        cache_key = "rating_distribution_1"
         assert cache_key in aggregator.cache
 
     def test_get_genre_preferences_empty_user(self):
@@ -251,7 +251,7 @@ class TestStatisticsAggregator:
         heatmap2 = aggregator.get_activity_heatmap(1)
 
         assert heatmap1.equals(heatmap2)
-        cache_key = f"activity_heatmap_1"
+        cache_key = "activity_heatmap_1"
         assert cache_key in aggregator.cache
 
     def test_cache_persistence_across_methods(self):

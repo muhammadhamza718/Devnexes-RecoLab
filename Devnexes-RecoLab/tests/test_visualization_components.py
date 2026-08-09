@@ -1,8 +1,7 @@
 """Tests for visualization components (Day 3 Afternoon, Tasks 008-011)."""
 
+
 import pandas as pd
-import pytest
-from unittest.mock import Mock, patch
 
 # Note: Full visualization rendering requires Streamlit runtime
 # These tests focus on data preparation and logic that can be tested independently
@@ -116,7 +115,7 @@ class TestVisualizationConstants:
 
     def test_genre_color_palette_exists(self):
         """Verify genre color palette is defined."""
-        from ui.components.item_detail import _GENRE_COLORS, _FALLBACK_COLORS
+        from ui.components.item_detail import _FALLBACK_COLORS, _GENRE_COLORS
 
         assert isinstance(_GENRE_COLORS, dict)
         assert len(_GENRE_COLORS) > 0
@@ -152,10 +151,10 @@ class TestVisualizationComponentsIntegration:
     def test_visualization_components_import(self):
         """Verify visualization components can be imported."""
         from ui.visualization_components import (
-            render_rating_timeline,
-            render_rating_distribution,
+            render_activity_heatmap,
             render_genre_preferences,
-            render_activity_heatmap
+            render_rating_distribution,
+            render_rating_timeline,
         )
 
         assert render_rating_timeline is not None
@@ -183,8 +182,8 @@ class TestVisualizationComponentsIntegration:
 
     def test_genre_tag_html_escaping(self):
         """Verify genre tags properly escape HTML."""
+
         from ui.components.item_detail import render_genre_tags
-        import html
 
         # Test with potentially dangerous input
         dangerous_genres = "<script>alert('xss')</script>|Action"

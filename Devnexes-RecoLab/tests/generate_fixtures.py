@@ -5,8 +5,8 @@ to the repository so CI can run tests without requiring the full MovieLens
 dataset to be present.
 """
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # Set random seed for reproducibility
 rng = np.random.default_rng(42)
@@ -26,7 +26,7 @@ sub_movies = movies[movies["movieId"].isin(sub_ratings["movieId"].unique())]
 sub_ratings.to_csv("tests/fixtures/ratings_sample.csv", index=False)
 sub_movies.to_csv("tests/fixtures/movies_sample.csv", index=False)
 
-print(f"Generated fixtures:")
+print("Generated fixtures:")
 print(f"  - ratings_sample.csv: {len(sub_ratings)} ratings for {len(uids)} users")
 print(f"  - movies_sample.csv: {len(sub_movies)} movies")
 print(f"  - Users: {sorted(uids)}")

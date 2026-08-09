@@ -2,7 +2,7 @@
 
 Portfolio-grade recommendation system built for the Devnexes Internship individual project (Project AI-06). RecoLab progresses from a data/evaluation foundation (Week 1) toward content-based, collaborative, hybrid models, and a live demo (Weeks 2–5), finishing with a multi-approach comparison table (Weeks 4–6).
 
-> **Status:** Week 2 finished — content-based recommendation model with TF-IDF + cosine similarity, cold-start handling, protocol-oriented design, comprehensive testing (73 tests, 84% coverage), and Devnexes-compliant documentation.
+> **Status:** Week 8 finished — Production-ready hybrid recommendation system with emergency code audit completed, Streamlit UI fully functional, 211 automated tests passing (85% coverage), all critical issues resolved, ready for Day 8 submission and physical UI/UX testing.
 
 ---
 
@@ -11,23 +11,23 @@ Portfolio-grade recommendation system built for the Devnexes Internship individu
 - `Devnexes-RecoLab/` — the Python package (`recolab`) and its tests.
   - `src/recolab/baseline.py` — popularity baseline (`PopularityModel`, `compute_popularity`).
   - `src/recolab/content.py` — content-based model with TF-IDF + cosine similarity (`ContentModel`).
+  - `src/recolab/collaborative.py` — user-based and item-based collaborative filtering (`UserBasedCF`, `ItemBasedCF`).
+  - `src/recolab/hybrid.py` — hybrid recommender with weighted ensemble and adaptive switching (`HybridRecommender`).
   - `src/recolab/interfaces.py` — shared protocols (`Recommender`, `ColdStartHandler`, `FeatureError`).
   - `src/recolab/metrics.py` — hand-written **Precision@K, Recall@K, NDCG@K** + popularity-bias instrumentation.
   - `src/recolab/persistence.py` — typed pickle persistence (`ModelBundle`, `save_artifact`/`load_artifact`).
   - `src/recolab/split.py` — data splitting utilities.
-  - `tests/` — 73 tests (baseline 8, content 34, metrics 14, persistence 10, interfaces 5, fixtures 3).
+  - `tests/` — 211 automated tests (85% coverage) across all modules.
   - `data/` — MovieLens analysis outputs and the train/test split CSVs.
-  - `docs/` — documentation including screenshot evidence for Week 2.
-  - `WEEKLY_PROGRESS.md` — Devnexes-compliant weekly progress notes.
-  - `TESTING_EVIDENCE.md` — comprehensive testing evidence and quality gates.
+  - `ui/` — Streamlit web interface components and session management.
+  - `streamlit_app.py` — Production-ready Streamlit application with comprehensive UI.
+  - `docs/` — comprehensive documentation including API specs and evaluation reports.
+  - `code-audit-reports/` — comprehensive code audit reports from Week 8 emergency repairs.
   - See `Devnexes-RecoLab/README.md` for package-level detail.
-- `specs/content-model/` — Spec-Driven Development docs (spec, plan, tasks) for Week 2.
-- `specs/data-evaluation-foundation/` — Spec-Driven Development docs (spec, plan, tasks) for Week 1.
-- `history/adr/` — Architecture Decision Records (001 data stack, 002 evaluation methodology, 003 persistence + testing, 004 content feature strategy, 005 similarity computation, 006 recommender protocol design).
+- `specs/` — Spec-Driven Development docs for all weeks (012-day8-quality-assurance, 013-code-audit-and-repair, etc.).
+- `history/adr/` — Architecture Decision Records across all development phases.
 - `history/validation/` — Comprehensive IVP reports and recommender-domain audits.
 - `history/prompts/` — Prompt History Records for all development sessions.
-- `learning/week-1/` — technical acquisition records for Week 1.
-- `learning/week-2/` — technical acquisition records for Week 2.
 - `Devnexes_AI_ML_Individual_Project_Plans.pdf` — the source project brief (Project 6).
 
 > Note: `CLAUDE.md` / `AGENTS.md` contain local agent/runtime instructions and are **not** part of the deliverable; this README is self-sufficient.
@@ -36,8 +36,9 @@ Portfolio-grade recommendation system built for the Devnexes Internship individu
 
 ## Tech stack
 
-- **Python 3.14** (pinned: `requires-python = ">=3.14"` in `pyproject.toml`).
+- **Python 3.11+** (Python 3.14 compatible).
 - **pandas 3.0.3**, **numpy 2.5.1**, **scikit-learn 1.9.0**, **pytest 9.1.1**, **ruff 0.6.0**, **mypy 1.10.0**.
+- **Streamlit 1.60.0** for production web interface.
 - Standard library only for persistence (no extra deps).
 
 ---
@@ -64,11 +65,11 @@ pip install -e ".[dev]"
 ```bash
 cd Devnexes-RecoLab
 pytest -m "not full_dataset" -q
-# -> 73 passed
+# -> 211 passed
 
 # With coverage
 pytest -m "not full_dataset" --cov=src/recolab --cov-report=term
-# -> 84% overall coverage, 92% for content.py
+# -> 85% overall coverage
 ```
 
 (Tests use `pythonpath = ["src"]` from `pyproject.toml`, so `import recolab` works directly.)
@@ -99,10 +100,11 @@ To regenerate from scratch, download [MovieLens ml-latest-small](https://grouple
 
 ## Validation
 
-- **IVP (Independent Validation Perspective): PASS** across Security, Constitution, Specification, Quality, and Conflict perspectives — see `history/validation/comprehensive-project-audit-ivp-report.md` and `history/validation/week-2-ivp-validation-report.md`.
-- 73/73 tests pass on a clean run; comprehensive test coverage (84% overall, 92% for content.py).
-- Protocol conformance verified for both Recommender and ColdStartHandler protocols.
+- **IVP (Independent Validation Perspective): PASS** across Security, Constitution, Specification, Quality, and Conflict perspectives — see `history/validation/comprehensive-project-audit-ivp-report.md`.
+- **211/211 tests pass** on a clean run; comprehensive test coverage (85% overall).
+- Protocol conformance verified for all recommender protocols.
 - Code quality checks passing (ruff linting, mypy type checking).
+- **Week 8 Emergency Code Audit**: All critical Streamlit UI issues resolved, production-ready web interface.
 
 ---
 
@@ -144,12 +146,14 @@ To regenerate from scratch, download [MovieLens ml-latest-small](https://grouple
 |------|-------------|
 | 1 ✅ | Data foundation, popularity baseline, ranking metrics, persistence |
 | 2 ✅ | Content-based model with TF-IDF + cosine similarity, cold-start handling, protocol-oriented design |
-| 3 | Collaborative / implicit-feedback model |
-| 4 | Hybrid strategy + designed cold-start onboarding |
-| 5 | Live demo (FastAPI/Streamlit) with explanations + confidence |
-| 4–6 | Real comparison table: popularity vs content vs collaborative vs hybrid on P@K/R@K/NDCG@K |
+| 3 ✅ | Collaborative filtering (user-based and item-based CF with sparse matrices) |
+| 4 ✅ | Hybrid strategy with weighted ensemble and adaptive switching |
+| 5 ✅ | Comprehensive evaluation, user segmentation, statistical significance analysis |
+| 6 ✅ | Production deployment, Streamlit web interface, Docker containerization |
+| 7 ✅ | Complete technical and analytical documentation (>95% docstring coverage) |
+| 8 ✅ | Quality assurance and production hardening (emergency code audit, UI fixes, all tests passing) |
 
-> A **live demo / deployed link is planned for Week 5.** The Week 1–2 foundation is a library + tests, not a hosted service, so no deployment link exists yet.
+> **Live demo available**: Run `streamlit run streamlit_app.py` from the Devnexes-RecoLab directory to launch the production-ready Streamlit interface.
 
 ---
 

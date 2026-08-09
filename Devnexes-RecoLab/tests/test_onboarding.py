@@ -17,13 +17,13 @@ import streamlit as st
 if not hasattr(st, "session_state") or not isinstance(st.session_state, dict):
     st.session_state = {}
 
-from ui.session_manager import SessionManager
+from ui.data_provider import DataProvider
 from ui.onboarding.genre_provider import GenreProvider
 from ui.onboarding.movie_search_provider import MovieSearchProvider
+from ui.onboarding.onboarding_recommender import OnboardingRecommender
 from ui.onboarding.preference_validator import PreferenceValidator
 from ui.onboarding.wizard_controller import OnboardingWizard
-from ui.onboarding.onboarding_recommender import OnboardingRecommender
-from ui.data_provider import DataProvider
+from ui.session_manager import SessionManager
 
 
 def test_session_manager_onboarding():

@@ -1,8 +1,7 @@
 """Tests for ImageCacheManager (Day 3 Afternoon, Task-001)."""
 
-import pytest
 
-from ui.image_manager import ImageCacheManager, PLACEHOLDER_PREFIX
+from ui.image_manager import PLACEHOLDER_PREFIX, ImageCacheManager
 
 
 class TestImageCacheManager:

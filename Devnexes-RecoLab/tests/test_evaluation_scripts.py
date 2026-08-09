@@ -4,14 +4,15 @@ Tests ResultStorage, Validation functions, and metric calculation accuracy.
 """
 
 import json
+
+# Add scripts to path
+import sys
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pandas as pd
 import pytest
 
-# Add scripts to path
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts" / "evaluation"))
 
@@ -22,7 +23,7 @@ class TestResultStorage:
     def test_init_creates_directories(self, tmp_path):
         """Test that ResultStorage creates required directories."""
         from result_storage import ResultStorage
-        
+
         storage = ResultStorage(results_dir=tmp_path)
 
         assert storage.results_dir.exists()
@@ -30,7 +31,7 @@ class TestResultStorage:
     def test_save_model_results(self, tmp_path):
         """Test saving model evaluation results."""
         from result_storage import ResultStorage
-        
+
         storage = ResultStorage(results_dir=tmp_path)
 
         test_results = {
@@ -52,7 +53,7 @@ class TestResultStorage:
     def test_save_segmented_results(self, tmp_path):
         """Test saving segmented evaluation results."""
         from result_storage import ResultStorage
-        
+
         storage = ResultStorage(results_dir=tmp_path)
 
         test_segment_data = {
@@ -77,7 +78,7 @@ class TestValidation:
     def test_validate_train_data_valid(self, tmp_path):
         """Test validation of valid training data."""
         from validation import validate_train_data
-        
+
         # Create valid train.csv
         train_df = pd.DataFrame({
             "userId": [1, 2, 3],
@@ -87,13 +88,13 @@ class TestValidation:
         })
         train_path = tmp_path / "train.csv"
         train_df.to_csv(train_path, index=False)
-        
+
         # Should not raise
         validate_train_data(train_path)
 
     def test_validate_train_data_missing_columns(self, tmp_path):
         """Test validation fails with missing columns."""
-        from validation import validate_train_data, ValidationError
+        from validation import ValidationError, validate_train_data
 
         # Create invalid train.csv (missing required 'rating' column)
         train_df = pd.DataFrame({
@@ -109,7 +110,7 @@ class TestValidation:
     def test_validate_movies_data_valid(self, tmp_path):
         """Test validation of valid movies data."""
         from validation import validate_movies_data
-        
+
         # Create valid movies.csv
         movies_df = pd.DataFrame({
             "movieId": [1, 2, 3],
@@ -118,7 +119,7 @@ class TestValidation:
         })
         movies_path = tmp_path / "movies.csv"
         movies_df.to_csv(movies_path, index=False)
-        
+
         # Should not raise
         validate_movies_data(movies_path)
 
@@ -129,39 +130,39 @@ class TestStatisticalAnalysis:
     def test_compare_models_ranks_correctly(self):
         """Test that model comparison produces correct rankings."""
         from statistical_analysis import StatisticalAnalysis
-        
+
         # Mock storage
         storage = Mock()
         storage.comparison_dir = Path("/tmp")
-        
+
         analysis = StatisticalAnalysis(storage=storage)
-        
+
         test_results = {
             "ModelA": {"mean_precision@10": 0.1, "mean_recall@10": 0.05, "mean_ndcg@10": 0.08},
             "ModelB": {"mean_precision@10": 0.2, "mean_recall@10": 0.1, "mean_ndcg@10": 0.15},
         }
-        
+
         rankings = analysis._rank_models(test_results)
-        
+
         assert rankings["mean_precision@10"][0][0] == "ModelB"
         assert rankings["mean_precision@10"][-1][0] == "ModelA"
 
     def test_significance_test_performs_t_test(self):
         """Test that significance testing performs actual statistical tests."""
         from statistical_analysis import StatisticalAnalysis
-        
+
         storage = Mock()
         storage.comparison_dir = Path("/tmp")
-        
+
         analysis = StatisticalAnalysis(storage=storage)
-        
+
         test_results = {
             "ModelA": {"mean_precision@10": 0.1, "mean_recall@10": 0.05, "mean_ndcg@10": 0.08, "n_users": 100},
             "ModelB": {"mean_precision@10": 0.2, "mean_recall@10": 0.1, "mean_ndcg@10": 0.15, "n_users": 100},
         }
-        
+
         tests = analysis._perform_significance_tests(test_results)
-        
+
         assert "comparisons" in tests
         assert len(tests["comparisons"]) > 0
         assert "t_statistic" in tests["comparisons"][0]
@@ -174,10 +175,10 @@ class TestPathUtils:
     def test_get_validated_project_root_valid(self):
         """Test that get_validated_project_root returns valid path."""
         from path_utils import get_validated_project_root
-        
+
         # Test with current project structure
         project_root = get_validated_project_root()
-        
+
         assert project_root.exists()
         assert (project_root / "src").exists()
         assert (project_root / "data").exists()
@@ -187,19 +188,19 @@ class TestPathUtils:
     def test_validate_path_within_project_valid(self):
         """Test path validation within project."""
         from path_utils import validate_path_within_project
-        
+
         project_root = Path(__file__).resolve().parent.parent.parent
         valid_path = project_root / "src"
-        
+
         assert validate_path_within_project(valid_path, project_root) is True
 
     def test_validate_path_within_project_invalid(self):
         """Test path validation rejects paths outside project."""
         from path_utils import validate_path_within_project
-        
+
         project_root = Path(__file__).resolve().parent.parent.parent
         invalid_path = Path("C:\\Windows")
-        
+
         assert validate_path_within_project(invalid_path, project_root) is False
 
 

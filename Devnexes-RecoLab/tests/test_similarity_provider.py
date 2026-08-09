@@ -1,10 +1,10 @@
 """Tests for SimilarityProvider (Day 3 Afternoon, Task-004)."""
 
-import pandas as pd
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
-from ui.similarity_provider import SimilarityProvider, CONTENT_MODEL, ITEM_CF_MODEL
+import pandas as pd
+
+from ui.similarity_provider import CONTENT_MODEL, ITEM_CF_MODEL, SimilarityProvider
 
 
 class TestSimilarityProvider:

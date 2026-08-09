@@ -4,13 +4,10 @@ from __future__ import annotations
 
 import pathlib
 import time
-from typing import Any, Dict, List
 
-import numpy as np
 import pandas as pd
 import pytest
 
-from recolab.collaborative import ItemBasedCF, UserBasedCF
 from recolab.content import ContentModel
 from recolab.hybrid import (
     EnhancedColdStartHandler,
@@ -21,8 +18,8 @@ from recolab.hybrid import (
     PerformanceMonitor,
     UserProfile,
 )
-from recolab.interfaces import ColdStartHandler, FeatureError, Recommender
-from recolab.persistence import ModelBundle, PersistError
+from recolab.interfaces import ColdStartHandler, Recommender
+from recolab.persistence import ModelBundle
 
 
 @pytest.fixture

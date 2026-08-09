@@ -4,14 +4,15 @@ Tests AnalysisStorage, result loading, and error classification logic.
 """
 
 import json
+
+# Add scripts to path
+import sys
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pandas as pd
 import pytest
 
-# Add scripts to path
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts" / "analysis"))
 
@@ -80,45 +81,45 @@ class TestEvaluationResultLoader:
     def test_validate_models_ready_all_ready(self, tmp_path):
         """Test model validation when all models are ready."""
         from result_loader import EvaluationResultLoader
-        
+
         # Create mock evaluation results
         eval_dir = tmp_path / "evaluation" / "results"
         eval_dir.mkdir(parents=True)
-        
+
         for model in ["popularity", "content", "user_based_cf"]:
             result = {
                 "model_name": model,
                 "results": {"mean_precision@10": 0.1},
             }
             (eval_dir / f"{model}_results.json").write_text(json.dumps(result))
-        
+
         loader = EvaluationResultLoader(eval_dir=tmp_path / "evaluation")
         status = loader.validate_models_ready(["Popularity", "Content", "User-Based CF"])
-        
+
         assert all(status.values())
 
     def test_validate_models_ready_some_not_ready(self, tmp_path):
         """Test model validation when some models have errors."""
         from result_loader import EvaluationResultLoader
-        
+
         # Create mock evaluation results with one error
         eval_dir = tmp_path / "evaluation" / "results"
         eval_dir.mkdir(parents=True)
-        
+
         for model in ["popularity", "content"]:
             result = {
                 "model_name": model,
                 "results": {"mean_precision@10": 0.1},
             }
             (eval_dir / f"{model}_results.json").write_text(json.dumps(result))
-        
+
         # Add error result
         error_result = {"error": "Model failed to train"}
         (eval_dir / "user_based_cf_results.json").write_text(json.dumps(error_result))
-        
+
         loader = EvaluationResultLoader(eval_dir=tmp_path / "evaluation")
         status = loader.validate_models_ready(["Popularity", "Content", "User-Based CF"])
-        
+
         assert status["Popularity"] is True
         assert status["Content"] is True
         assert status["User-Based CF"] is False
@@ -126,28 +127,28 @@ class TestEvaluationResultLoader:
     def test_validate_model_result_valid(self, tmp_path):
         """Test validation of valid model result."""
         from result_loader import EvaluationResultLoader
-        
+
         loader = EvaluationResultLoader(eval_dir=tmp_path / "evaluation")
-        
+
         valid_result = {
             "mean_precision@10": 0.1,
             "mean_recall@10": 0.05,
             "mean_ndcg@10": 0.08,
         }
-        
+
         # Should not raise
         loader._validate_model_result("TestModel", valid_result)
 
     def test_validate_model_result_invalid_metric_range(self, tmp_path):
         """Test validation of model result with invalid metric range."""
         from result_loader import EvaluationResultLoader
-        
+
         loader = EvaluationResultLoader(eval_dir=tmp_path / "evaluation")
-        
+
         invalid_result = {
             "mean_precision@10": 1.5,  # Invalid: > 1.0
         }
-        
+
         # Should print warning but not raise
         loader._validate_model_result("TestModel", invalid_result)
 
@@ -178,22 +179,22 @@ class TestErrorAnalysis:
     def test_model_state_validation(self):
         """Test that model state is validated before recommendation."""
         from error_analysis import ErrorAnalyzer
-        
+
         loader = Mock()
         storage = Mock()
-        
+
         analyzer = ErrorAnalyzer(loader=loader, storage=storage)
-        
+
         # Mock model that is not fitted
         mock_model = Mock()
         mock_model.is_fitted = False
         mock_model.is_ready = False
         mock_model.recommend = Mock(return_value=pd.DataFrame())
-        
+
         # Should detect model is not ready
         is_fitted = hasattr(mock_model, 'is_fitted') and mock_model.is_fitted
         is_ready = hasattr(mock_model, 'is_ready') and mock_model.is_ready
-        
+
         assert not (is_fitted or is_ready)
 
 
@@ -245,17 +246,17 @@ class TestPathValidation:
         """Test that path_utils can be imported in analysis scripts."""
         # This test ensures the path_utils module is accessible
         from path_utils import get_validated_project_root, validate_path_within_project
-        
+
         assert callable(get_validated_project_root)
         assert callable(validate_path_within_project)
 
     def test_get_validated_project_root_from_analysis_dir(self):
         """Test path validation from analysis script directory."""
         from path_utils import get_validated_project_root
-        
+
         # Simulate calling from analysis script
         analysis_script_path = Path(__file__).resolve().parent.parent / "scripts" / "analysis" / "error_analysis.py"
-        
+
         if analysis_script_path.exists():
             project_root = get_validated_project_root(analysis_script_path)
             assert project_root.exists()

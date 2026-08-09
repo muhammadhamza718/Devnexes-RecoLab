@@ -67,6 +67,13 @@ DEFAULT_SESSION_STATE: dict[str, Any] = {
     "confidence_data": {},  # movie_id -> ConfidenceScore factors
     "accessibility_mode": False,  # WCAG-friendly high-contrast mode
     "performance_mode": "balanced",  # "fast" | "balanced" | "rich"
+    # Day 6: deployment & production readiness state (namespaced with deployment_)
+    "deployment_environment": "local",  # "local" | "production" | "streamlit_cloud"
+    "deployment_health_status": "healthy",  # "healthy" | "degraded" | "unhealthy"
+    "deployment_feedback_history": [],  # List of user feedback dicts
+    "deployment_active_operations": {},  # operation_id -> status dict
+    "deployment_error_count": 0,  # Count of logged user-facing errors
+    "deployment_last_health_check": None,  # Timestamp of last health check
 }
 
 
@@ -405,4 +412,66 @@ class SessionManager:
     @staticmethod
     def set_performance_mode(mode: str) -> None:
         st.session_state["performance_mode"] = mode
+
+    # --- Day 6: deployment & production accessors ------------------------
+
+    @staticmethod
+    def get_deployment_environment() -> str:
+        return str(st.session_state.get("deployment_environment") or "local")
+
+    @staticmethod
+    def set_deployment_environment(env: str) -> None:
+        st.session_state["deployment_environment"] = env
+
+    @staticmethod
+    def get_deployment_health_status() -> str:
+        return str(st.session_state.get("deployment_health_status") or "healthy")
+
+    @staticmethod
+    def set_deployment_health_status(status: str) -> None:
+        st.session_state["deployment_health_status"] = status
+
+    @staticmethod
+    def get_deployment_feedback_history() -> list[dict[str, Any]]:
+        return st.session_state.get("deployment_feedback_history") or []
+
+    @staticmethod
+    def add_deployment_feedback(feedback: dict[str, Any]) -> None:
+        history = SessionManager.get_deployment_feedback_history()
+        history.append(feedback)
+        st.session_state["deployment_feedback_history"] = history
+
+    @staticmethod
+    def get_deployment_active_operations() -> dict[str, dict[str, Any]]:
+        return st.session_state.get("deployment_active_operations") or {}
+
+    @staticmethod
+    def set_deployment_operation_status(op_id: str, status: dict[str, Any]) -> None:
+        ops = SessionManager.get_deployment_active_operations()
+        ops[op_id] = status
+        st.session_state["deployment_active_operations"] = ops
+
+    @staticmethod
+    def clear_deployment_operation(op_id: str) -> None:
+        ops = SessionManager.get_deployment_active_operations()
+        ops.pop(op_id, None)
+        st.session_state["deployment_active_operations"] = ops
+
+    @staticmethod
+    def get_deployment_error_count() -> int:
+        return int(st.session_state.get("deployment_error_count") or 0)
+
+    @staticmethod
+    def increment_deployment_error_count() -> int:
+        count = SessionManager.get_deployment_error_count() + 1
+        st.session_state["deployment_error_count"] = count
+        return count
+
+    @staticmethod
+    def get_deployment_last_health_check() -> str | None:
+        return st.session_state.get("deployment_last_health_check")
+
+    @staticmethod
+    def set_deployment_last_health_check(timestamp: str | None) -> None:
+        st.session_state["deployment_last_health_check"] = timestamp
 

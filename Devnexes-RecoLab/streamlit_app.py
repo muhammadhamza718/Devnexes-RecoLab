@@ -54,6 +54,15 @@ from ui.dashboard.performance_controls import (  # noqa: E402
 from ui.dashboard.model_comparison_engine import ModelComparisonEngine  # noqa: E402
 from ui.dashboard.model_comparison_view import render_model_comparison_view  # noqa: E402
 
+from scripts.logging_config import production_error_handler, UserFacingError  # noqa: E402
+from scripts.env_utils import perform_health_check  # noqa: E402
+from ui.loading_state import with_loading_state, render_operation_tracker  # noqa: E402
+from ui.empty_states import (  # noqa: E402
+    render_empty_user_selection,
+    render_empty_recommendations,
+)
+from ui.feedback import render_feedback_sidebar_widget, render_feedback_history_view  # noqa: E402
+
 SessionManager.ensure_initialized()
 inject_accessibility_styles()
 
@@ -114,6 +123,8 @@ def _build_rows(
     return rows
 
 
+@production_error_handler
+@with_loading_state(message="Generating movie recommendations…", timeout_seconds=300.0)
 def _generate(
     user_id: int,
     model_name: str,
@@ -122,66 +133,60 @@ def _generate(
     model_manager: ModelManager,
 ) -> None:
     """Run the selected model and store the rendered rows in session state."""
-    try:
-        with st.spinner(f"Running the {model_name} model…"):
-            model, provenance = model_manager.get_model(model_name)
-            model_manager.apply_params(model, model_name, params)
-            k = int(params.get("n", 10))
-            rec_ids = list(model.recommend(user_id, k=k, exclude_items=None) or [])
-            rows = _build_rows(model, model_name, rec_ids, user_id, provider, k)
-            SessionManager.set_recommendations(rows)
+    model, provenance = model_manager.get_model(model_name)
+    model_manager.apply_params(model, model_name, params)
+    k = int(params.get("n", 10))
+    rec_ids = list(model.recommend(user_id, k=k, exclude_items=None) or [])
+    rows = _build_rows(model, model_name, rec_ids, user_id, provider, k)
+    SessionManager.set_recommendations(rows)
 
-            # Task-016: skip expensive post-processing based on performance mode
-            if should_compute_enhanced_explanations():
-                enhancer = ExplanationEnhancer(model_manager, provider)
-                SessionManager.clear_enhanced_explanations()
-                for row in rows:
-                    movie_id = row.get("movie_id")
-                    if movie_id is None:
-                        continue
-                    SessionManager.set_enhanced_explanation(
-                        movie_id,
-                        enhancer.enhance_explanation(
-                            user_id,
-                            movie_id,
-                            model_name,
-                            detail_level=SessionManager.get_explanation_detail_level(),
-                        ),
-                    )
-            else:
-                SessionManager.clear_enhanced_explanations()
+    # Task-016: skip expensive post-processing based on performance mode
+    if should_compute_enhanced_explanations():
+        enhancer = ExplanationEnhancer(model_manager, provider)
+        SessionManager.clear_enhanced_explanations()
+        for row in rows:
+            movie_id = row.get("movie_id")
+            if movie_id is None:
+                continue
+            SessionManager.set_enhanced_explanation(
+                movie_id,
+                enhancer.enhance_explanation(
+                    user_id,
+                    movie_id,
+                    model_name,
+                    detail_level=SessionManager.get_explanation_detail_level(),
+                ),
+            )
+    else:
+        SessionManager.clear_enhanced_explanations()
 
-            # Task-013/014/016: confidence scores (skipped in fast mode)
-            if should_compute_confidence():
-                conf_calc = ConfidenceCalculator(model_manager, provider)
-                all_models_agreement: dict[str, list[int]] = {}
-                from ui.model_manager import MODEL_NAMES
-                for mname in MODEL_NAMES:
-                    try:
-                        mobj, _ = model_manager.get_model(mname)
-                        all_models_agreement[mname] = list(mobj.recommend(user_id, k=k, exclude_items=None) or [])
-                    except Exception:
-                        pass
-                SessionManager.set_confidence_data({})
-                for row in rows:
-                    movie_id = row.get("movie_id")
-                    if movie_id is None:
-                        continue
-                    SessionManager.set_confidence_data(
-                        {**SessionManager.get_confidence_data(), int(movie_id): conf_calc.calculate_confidence(
-                            user_id, int(movie_id), model_name, all_models_agreement
-                        )}
-                    )
-            else:
-                SessionManager.set_confidence_data({})
+    # Task-013/014/016: confidence scores (skipped in fast mode)
+    if should_compute_confidence():
+        conf_calc = ConfidenceCalculator(model_manager, provider)
+        all_models_agreement: dict[str, list[int]] = {}
+        from ui.model_manager import MODEL_NAMES
+        for mname in MODEL_NAMES:
+            try:
+                mobj, _ = model_manager.get_model(mname)
+                all_models_agreement[mname] = list(mobj.recommend(user_id, k=k, exclude_items=None) or [])
+            except Exception:
+                pass
+        SessionManager.set_confidence_data({})
+        for row in rows:
+            movie_id = row.get("movie_id")
+            if movie_id is None:
+                continue
+            SessionManager.set_confidence_data(
+                {**SessionManager.get_confidence_data(), int(movie_id): conf_calc.calculate_confidence(
+                    user_id, int(movie_id), model_name, all_models_agreement
+                )}
+            )
+    else:
+        SessionManager.set_confidence_data({})
 
-        st.success(f"**{model_name}** — {provenance}.")
-        if not rows:
-            st.warning("No recommendations could be generated for this user.")
-    except Exception as err:
-        SessionManager.clear_recommendations()
-        st.error(f"Could not generate recommendations: {err}")
-        st.caption("Tip: try another user or model.")
+    st.success(f"**{model_name}** — {provenance}.")
+    if not rows:
+        render_empty_recommendations(user_id)
 
 
 def _render_similar_items_view(
@@ -249,6 +254,30 @@ def main() -> None:
         render_confidence_sidebar_controls()
         render_accessibility_sidebar_controls()
         render_performance_sidebar_controls()
+        render_operation_tracker()
+        render_feedback_sidebar_widget()
+
+        st.markdown("---")
+        st.subheader("Diagnostics & Community")
+        show_feedback_hist = st.checkbox(
+            "Show Feedback History",
+            value=st.session_state.get("show_feedback_history", False),
+            key="show_feedback_history",
+        )
+        if st.button("Run System Health Check", key="btn_health_check", use_container_width=True):
+            health = perform_health_check()
+            st.session_state["last_health_check_result"] = health
+            if health["status"] == "healthy":
+                st.toast(f"System Healthy ({health['checks']['environment']} env)", icon="✅")
+            else:
+                st.toast(f"System Status: {health['status'].upper()}", icon="⚠️")
+
+    if st.session_state.get("show_feedback_history"):
+        render_feedback_history_view()
+        if st.session_state.get("last_health_check_result"):
+            with st.expander("🔍 System Health Check Results", expanded=True):
+                st.json(st.session_state["last_health_check_result"])
+        return
 
     # If onboarding wizard is active, render the wizard instead of main recommendations dashboard
     if SessionManager.is_onboarding_active():
@@ -288,7 +317,10 @@ def main() -> None:
         return
 
     if user_id is None:
-        st.info("Select a user from the sidebar or click '✨ Start New User Onboarding' to get started.")
+        def _start_onboarding_cb() -> None:
+            SessionManager.reset_onboarding_state()
+            st.rerun()
+        render_empty_user_selection(on_action=_start_onboarding_cb)
         return
 
     # Display active onboarding preferences banner if user completed onboarding
